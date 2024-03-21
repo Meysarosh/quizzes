@@ -16,6 +16,9 @@
   "lint-staged": {
     "*.jsx": "eslint"
   },
+  "resolutions": {
+    "styled-components": "^5"
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
     "@reduxjs/toolkit": "^2.2.1",
