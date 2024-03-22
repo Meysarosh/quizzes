@@ -1,12 +1,29 @@
+import { useDispatch } from 'react-redux';
 import { ConfirmButton, Form } from '../styles';
 import { InputBlock } from './InputBlock';
+import { login } from '../store/actions';
+import { useNavigate } from 'react-router';
 
 export function LoginForm() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  function clearInput(e) {
+    e.target[1].value = '';
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
-    const username = e.target[0].value;
-    const password = e.target[1].value;
-    alert(username, password);
+    const data = { email: e.target[0].value, password: e.target[1].value };
+    dispatch(login(data)).then((res) => {
+      if (res.type === 'login/rejected') {
+        alert(res.payload);
+        clearInput(e);
+      } else {
+        alert(`Logged in successfully!`);
+        navigate('/home');
+      }
+    });
   }
 
   return (

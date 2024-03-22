@@ -46,7 +46,7 @@ export function RegistrationForm() {
 
   function onSubmit(data) {
     dispatch(createNewUser(data)).then((res) => {
-      if (res.type === '/rejected') alert(res.payload);
+      if (res.type === 'createNewUser/rejected') alert(res.payload);
       else {
         alert(`Congratulation! New user ${res.payload.user.username} was successfully created!`);
         navigate('/home');
