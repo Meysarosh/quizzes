@@ -11,7 +11,7 @@ export function LoginForm() {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <InputBlock>username</InputBlock>
+      <InputBlock>email</InputBlock>
       <InputBlock>password</InputBlock>
       <ConfirmButton type="submit">Login</ConfirmButton>
     </Form>

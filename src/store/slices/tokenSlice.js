@@ -1,17 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createNewUser } from '../actions';
 
-const initialState = { user: {} };
+const initialState = { token: null };
 
-export const userSlice = createSlice({
-  name: 'user',
+export const tokenSlice = createSlice({
+  name: 'token',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(createNewUser.fulfilled, (state, action) => {
-      state.user = action.payload.user;
+      state.token = action.payload.accessToken;
     });
   },
 });
 
-export default userSlice.reducer;
+export default tokenSlice.reducer;

@@ -3,6 +3,9 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, ConfirmButton } from '../styles';
 import { InputBlock } from './InputBlock';
+import { createNewUser } from '../store/actions/createNewUser';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
 
 const schema = yup
   .object({
@@ -21,12 +24,20 @@ const schema = yup
       .string()
       .required('Password is required')
       .min(10, 'Password must be at least 10 character long')
-      .max(20, 'Password must not exceed 20 characters'),
+      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .matches(/[0-9]/, 'Password must contain at least one number')
+      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .matches(
+        /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/,
+        'Password must contain at least one special character'
+      ),
     passwordconfirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
   })
   .required();
 
 export function RegistrationForm() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -34,7 +45,13 @@ export function RegistrationForm() {
   } = useForm({ resolver: yupResolver(schema) });
 
   function onSubmit(data) {
-    alert(data);
+    dispatch(createNewUser(data)).then((res) => {
+      if (res.type === '/rejected') alert(res.payload);
+      else {
+        alert(`Congratulation! New user ${res.payload.user.username} was successfully created!`);
+        navigate('/home');
+      }
+    });
   }
 
   return (
