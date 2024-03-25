@@ -1,5 +1,5 @@
 import { PropTypes } from 'prop-types';
-import { Header } from '../styles/Header';
+import { Header } from './Header';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
