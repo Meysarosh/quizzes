@@ -1,5 +1,13 @@
 import App from '../App';
-import { RegistrationPage, LoginPage } from '../pages';
+import { Authorized } from '../components';
+import {
+  RegistrationPage,
+  LoginPage,
+  HomePage,
+  ProfilePage,
+  QuizPage,
+  NotFoundPage,
+} from '../pages';
 import { createBrowserRouter } from 'react-router-dom';
 
 const router = createBrowserRouter([
@@ -17,19 +25,31 @@ const router = createBrowserRouter([
       },
       {
         path: '/home',
-        element: <h1>Home</h1>,
+        element: (
+          <Authorized>
+            <HomePage />
+          </Authorized>
+        ),
       },
       {
         path: '/profile',
-        element: <h1>Profile</h1>,
+        element: (
+          <Authorized>
+            <ProfilePage />
+          </Authorized>
+        ),
       },
       {
         path: '/quiz',
-        element: <h1>Enroll Quiz</h1>,
+        element: (
+          <Authorized>
+            <QuizPage />
+          </Authorized>
+        ),
       },
       {
         path: '*',
-        element: <h1>Not Found</h1>,
+        element: <NotFoundPage />,
       },
     ],
   },
