@@ -1,11 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './slices/userSlice';
-import tokenReducer from './slices/tokenSlice';
+import { persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import { persistedReducer } from './persistedReducer';
 
 export const store = configureStore({
-  reducer: {
-    user: userReducer,
-    token: tokenReducer,
-  },
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: { ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] },
+    }),
   devTools: true,
 });
+
+export const persistor = persistStore(store);
