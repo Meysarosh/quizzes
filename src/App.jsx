@@ -1,12 +1,9 @@
 import { Outlet } from 'react-router-dom';
-import './App.css';
-import { Toast } from './components/Toast.jsx';
-import { GlobalStyles } from './styles';
+import { Toast } from './components/toast';
 
 export default function App() {
   return (
     <>
-      <GlobalStyles />
       <Toast />
       <Outlet />
     </>
