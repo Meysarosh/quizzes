@@ -58,6 +58,7 @@ const Aside = styled.aside`
 `;
 
 const BackToTop = styled.button`
+  visibility: ${(props) => (props.$isVisible ? 'visible' : 'hidden')};
   position: fixed;
   bottom: 4rem;
   right: 5.5rem;
