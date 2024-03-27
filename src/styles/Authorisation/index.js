@@ -1,3 +1,3 @@
 export * from './AuthMain';
-export * from './AuthInfo';
+export * from './AuthTitle';
 export * from './FormField';

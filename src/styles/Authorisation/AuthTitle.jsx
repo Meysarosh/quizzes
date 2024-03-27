@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const AuthInfo = styled.div`
+export const AuthTitle = styled.p`
   box-sizing: border-box;
   width: 70%;
   min-height: 100%;

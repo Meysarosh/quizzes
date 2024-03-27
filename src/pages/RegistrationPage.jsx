@@ -1,10 +1,10 @@
 import { RegistrationForm } from '../components';
-import { AuthMain, AuthInfo, FormField } from '../styles';
+import { AuthMain, AuthTitle, FormField } from '../styles';
 
 export function RegistrationPage() {
   return (
     <AuthMain>
-      <AuthInfo>Registration</AuthInfo>
+      <AuthTitle>Registration</AuthTitle>
       <FormField>
         <RegistrationForm />
       </FormField>

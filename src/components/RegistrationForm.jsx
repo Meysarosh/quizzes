@@ -48,13 +48,11 @@ export function RegistrationForm() {
   function onSubmit(data) {
     dispatch(createNewUser(data)).then((res) => {
       if (res.type === 'createNewUser/rejected') notify('error', res.payload);
-      else {
-        notify(
-          'success',
-          `Congratulation! New user ${res.payload.user.username} was successfully created!`
-        );
-        navigate('/home');
-      }
+      notify(
+        'success',
+        `Congratulation! New user ${res.payload.user.username} was successfully created!`
+      );
+      navigate('/home');
     });
   }
 
