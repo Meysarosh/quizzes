@@ -5,7 +5,7 @@ const Main = styled.main`
   flex-grow: 1;
   width: 100%;
   height: 100%;
-  padding: 0 5.5rem;
+  padding: 6.125rem 5.5rem 0 5.5rem;
 `;
 
 const Header = styled.header`

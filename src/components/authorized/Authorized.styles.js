@@ -9,6 +9,9 @@ const Body = styled.div`
 `;
 
 const Header = styled.header`
+  position: absolute;
+  z-index: 1;
+  top: 0;
   width: 100%;
   height: 4.7rem;
   padding: 0 1.2rem;
