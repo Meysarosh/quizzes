@@ -10,25 +10,12 @@ import {
 import { QuizCard } from '../../components/quizCard/QuizCard';
 import { Filters } from './components/Filters';
 import { useEffect, useState } from 'react';
-
-const quizes = [
-  { id: 1, title: 'Title', topic: 'Topic' },
-  { id: 2, title: 'Title', topic: 'Topic' },
-  { id: 3, title: 'Title', topic: 'Topic' },
-  { id: 4, title: 'Title', topic: 'Topic' },
-  { id: 5, title: 'Title', topic: 'Topic' },
-  { id: 6, title: 'Title', topic: 'Topic' },
-  { id: 7, title: 'Title', topic: 'Topic' },
-  { id: 8, title: 'Title', topic: 'Topic' },
-  { id: 9, title: 'Title', topic: 'Topic' },
-  { id: 10, title: 'Title', topic: 'Topic' },
-  { id: 11, title: 'Title', topic: 'Topic' },
-  { id: 12, title: 'Title', topic: 'Topic' },
-];
+import { useSelector } from 'react-redux';
 
 export function HomePage() {
   const [filterVisibility, setFilterVisibility] = useState(false);
   const [topVisibility, setTopVisibility] = useState(false);
+  const { data } = useSelector((state) => state.data);
 
   function handleClick() {
     setFilterVisibility((filterVisibility) => !filterVisibility);
@@ -61,8 +48,8 @@ export function HomePage() {
         <FilterButton onClick={handleClick} />
       </Header>
       <Content>
-        {quizes.map((quiz) => (
-          <QuizCard key={quiz.id} title={quiz.title} topic={quiz.topic} />
+        {data.topics.map((el) => (
+          <QuizCard key={el.topic} title={el.title} topic={el.topic} />
         ))}
       </Content>
       <BackToTop $isVisible={topVisibility} onClick={scroll}></BackToTop>

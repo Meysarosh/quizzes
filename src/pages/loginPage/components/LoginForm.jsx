@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { login } from '../../../store/actions';
+import { login, getData } from '../../../store/actions';
 import { Button, Form } from './LoginForm.styles';
 import { InputBlock } from '../../../components/inputBlock';
 import { notify } from '../../../components/toast/notify';
@@ -22,6 +22,7 @@ export function LoginForm() {
         clearInput(e);
       } else {
         notify('success', `Logged in successfully!`);
+        dispatch(getData(res.payload.accessToken));
         navigate('/home');
       }
     });

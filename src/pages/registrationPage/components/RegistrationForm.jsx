@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { Form, Button } from './RegistrationForm.styles';
 import { InputBlock } from '../../../components/inputBlock';
-import { createNewUser } from '../../../store/actions/createNewUser';
+import { createNewUser, getData } from '../../../store/actions';
 import { notify } from '../../../components/toast/notify';
 
 const schema = yup
@@ -48,11 +48,14 @@ export function RegistrationForm() {
   function onSubmit(data) {
     dispatch(createNewUser(data)).then((res) => {
       if (res.type === 'createNewUser/rejected') notify('error', res.payload);
-      notify(
-        'success',
-        `Congratulation! New user ${res.payload.user.username} was successfully created!`
-      );
-      navigate('/home');
+      else {
+        notify(
+          'success',
+          `Congratulation! New user ${res.payload.user.username} was successfully created!`
+        );
+        dispatch(getData(res.payload.accessToken));
+        navigate('/home');
+      }
     });
   }
 
