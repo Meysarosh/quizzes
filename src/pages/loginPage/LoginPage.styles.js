@@ -5,7 +5,7 @@ const AuthMain = styled.main`
   margin: 0;
 `;
 
-const AuthInfo = styled.div`
+const AuthTitle = styled.div`
   box-sizing: border-box;
   width: 70%;
   min-height: 100%;
@@ -28,4 +28,4 @@ const FormField = styled.aside`
   background-color: ${(props) => props.theme.colors.backgroundColorDark};
 `;
 
-export { AuthMain, AuthInfo, FormField };
+export { AuthMain, AuthTitle, FormField };
