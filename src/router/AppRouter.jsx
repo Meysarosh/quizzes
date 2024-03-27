@@ -1,31 +1,58 @@
-import { RegistrationPage, LoginPage } from '../pages';
+import App from '../App';
+import { Authorized } from '../components';
+import {
+  RegistrationPage,
+  LoginPage,
+  HomePage,
+  ProfilePage,
+  QuizPage,
+  NotFoundPage,
+} from '../pages';
 import { createBrowserRouter } from 'react-router-dom';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <LoginPage />
+    element: <App />,
+    children: [
+      {
+        path: '/',
+        element: <LoginPage />,
+      },
+      {
+        path: '/registration',
+        element: <RegistrationPage />,
+      },
+      {
+        path: '/home',
+        element: (
+          <Authorized>
+            <HomePage />
+          </Authorized>
+        ),
+      },
+      {
+        path: '/profile',
+        element: (
+          <Authorized>
+            <ProfilePage />
+          </Authorized>
+        ),
+      },
+      {
+        path: '/quiz',
+        element: (
+          <Authorized>
+            <QuizPage />
+          </Authorized>
+        ),
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />,
+      },
+    ],
   },
-  {
-    path: '/registration',
-    element: <RegistrationPage />
-  },
-  {
-    path: '/home',
-    element: <h1>Home</h1>
-  },
-  {
-    path: '/profile',
-    element: <h1>Profile</h1>
-  },
-  {
-    path: '/quiz',
-    element: <h1>Enroll Quiz</h1>
-  },
-  {
-    path: '*',
-    element: <h1>Not Found</h1>
-  }
 ]);
 
 export default router;

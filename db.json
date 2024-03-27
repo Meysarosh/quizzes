@@ -1,3 +1,16 @@
 {
-    "users": []
+  "users": [
+    {
+      "email": "roman.meszaros@nixs.com",
+      "password": "$2a$10$L6T7VFhMUm9sT61aN/Nn5OP9J.UStdetVxzvuppKZlS03Wc0KT7WG",
+      "fullname": "Romanroman",
+      "username": "Yahyahyah-1",
+      "id": 1
+    }
+  ],
+  "data": [
+    {
+      "name": "dummy data"
+    }
+  ]
 }

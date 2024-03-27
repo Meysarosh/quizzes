@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "concurrently \"npm:dev\" \"json-server-auth db.json\"",
+    "start": "concurrently \"npm:dev\" \"json-server-auth db.json -r routes.json\"",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
@@ -16,15 +16,20 @@
   "lint-staged": {
     "*.jsx": "eslint"
   },
+  "resolutions": {
+    "styled-components": "^5"
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
     "@reduxjs/toolkit": "^2.2.1",
+    "axios": "^1.6.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.1",
     "react-redux": "^9.1.0",
     "react-router": "^6.22.3",
     "react-router-dom": "^6.22.3",
+    "react-toastify": "^10.0.5",
     "redux-first-history": "^5.2.0",
     "redux-persist": "^6.0.0",
     "styled-components": "^6.1.8",

@@ -1,5 +1,13 @@
-import { RegistrationForm } from '../components/RegistrationForm';
+import { RegistrationForm } from '../components';
+import { AuthMain, AuthTitle, FormField } from '../styles';
 
 export function RegistrationPage() {
-  return <RegistrationForm />;
+  return (
+    <AuthMain>
+      <AuthTitle>Registration</AuthTitle>
+      <FormField>
+        <RegistrationForm />
+      </FormField>
+    </AuthMain>
+  );
 }
