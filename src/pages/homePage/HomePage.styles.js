@@ -17,7 +17,6 @@ const Header = styled.header`
 
 const PageTitle = styled.h1`
   margin: 0;
-  font-family: Jost, sans-serif;
   font-size: 5rem;
   font-weight: 400;
   color: ${(props) => props.theme.colors.rawUmber};
@@ -57,7 +56,7 @@ const Aside = styled.aside`
   transition: all 0.5s ease-in-out;
 `;
 
-const BackToTop = styled.button`
+const BackToTopButton = styled.button`
   visibility: ${(props) => (props.$isVisible ? 'visible' : 'hidden')};
   position: fixed;
   bottom: 4rem;
@@ -77,4 +76,4 @@ const BackToTop = styled.button`
   }
 `;
 
-export { Main, PageTitle, Content, Header, FilterButton, Aside, BackToTop };
+export { Main, PageTitle, Content, Header, FilterButton, Aside, BackToTopButton };

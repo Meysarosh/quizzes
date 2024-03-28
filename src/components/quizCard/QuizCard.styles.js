@@ -13,7 +13,6 @@ const Card = styled.div`
 
 const CardTitle = styled.p`
   margin: 0;
-  font-family: Jost, sans-serif;
   font-size: 2.5rem;
   color: ${(props) => props.theme.colors.rawUmber};
 `;

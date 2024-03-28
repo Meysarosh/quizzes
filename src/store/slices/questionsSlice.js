@@ -1,24 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getData } from '../actions';
+import { getQuestions } from '../actions';
 
-const initialState = { data: {} };
+const initialState = { questions: {} };
 
-export const dataSlice = createSlice({
-  name: 'data',
+export const questionsSlice = createSlice({
+  name: 'questions',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getData.fulfilled, (state, action) => {
-      state.data = processData(action.payload);
+    builder.addCase(getQuestions.fulfilled, (state, action) => {
+      state.questions = processData(action.payload);
     });
   },
 });
 
-export default dataSlice.reducer;
-
 function processData(data) {
   const topics = [];
-  const difficultiesSet = new Set();
 
   const entries = Object.entries(data);
 
@@ -27,7 +24,6 @@ function processData(data) {
     const title = entry[0];
     entry[1].forEach((question) => {
       curTopicsSet.add(question.topic);
-      difficultiesSet.add(question.level);
     });
 
     curTopicsSet.forEach((topic) => {
@@ -40,5 +36,7 @@ function processData(data) {
     });
   });
 
-  return { topics, difficultiesSet: [...difficultiesSet] };
+  return { topics };
 }
+
+export default questionsSlice.reducer;

@@ -5,7 +5,7 @@ import {
   Header,
   FilterButton,
   Aside,
-  BackToTop,
+  BackToTopButton,
 } from './HomePage.styles';
 import { QuizCard } from '../../components/quizCard/QuizCard';
 import { Filters } from './components/Filters';
@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 export function HomePage() {
   const [filterVisibility, setFilterVisibility] = useState(false);
   const [topVisibility, setTopVisibility] = useState(false);
-  const { data } = useSelector((state) => state.data);
+  const { questions } = useSelector((state) => state.questions);
 
   function handleClick() {
     setFilterVisibility((filterVisibility) => !filterVisibility);
@@ -48,11 +48,11 @@ export function HomePage() {
         <FilterButton onClick={handleClick} />
       </Header>
       <Content>
-        {data.topics.map((el) => (
+        {questions.topics.map((el) => (
           <QuizCard key={el.topic} title={el.title} topic={el.topic} />
         ))}
       </Content>
-      <BackToTop $isVisible={topVisibility} onClick={scroll}></BackToTop>
+      <BackToTopButton $isVisible={topVisibility} onClick={scroll}></BackToTopButton>
     </Main>
   );
 }

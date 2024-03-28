@@ -1,18 +1,18 @@
 import { PropTypes } from 'prop-types';
-import { Title, Header, Button } from './Filters.styles';
-import { InputBlock } from '../../../components/inputBlock';
+import { Title, Header, ButtonClose } from './Filters.styles';
+import { FormField } from '../../../components/formField';
 
 export function Filters({ onClick }) {
   return (
     <>
       <Header>
         <Title>Filters</Title>
-        <Button onClick={onClick}></Button>
+        <ButtonClose onClick={onClick}></ButtonClose>
       </Header>
-      <InputBlock>Name</InputBlock>
-      <InputBlock>Difficulty</InputBlock>
-      <InputBlock>Quiz bank</InputBlock>
-      <InputBlock>Status</InputBlock>
+      <FormField>Name</FormField>
+      <FormField>Difficulty</FormField>
+      <FormField>Quiz bank</FormField>
+      <FormField>Status</FormField>
     </>
   );
 }

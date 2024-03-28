@@ -1,7 +1,7 @@
-import { ErrorMessage, Input, Label } from './InputBlock.styles';
+import { ErrorMessage, Input, Label } from './FormField.styles';
 import { PropTypes } from 'prop-types';
 
-export function InputBlock({ children, register, error }) {
+export function FormField({ children, register, error }) {
   const name = children.split(' ').join('');
   const isPassword = children.split(' ')[0] === 'password' ? true : false;
 
@@ -24,7 +24,7 @@ export function InputBlock({ children, register, error }) {
   );
 }
 
-InputBlock.propTypes = {
+FormField.propTypes = {
   children: PropTypes.string,
   register: PropTypes.func,
   error: PropTypes.string,

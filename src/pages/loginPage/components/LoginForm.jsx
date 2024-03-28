@@ -1,8 +1,8 @@
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { login, getData } from '../../../store/actions';
+import { login, getQuestions } from '../../../store/actions';
 import { Button, Form } from './LoginForm.styles';
-import { InputBlock } from '../../../components/inputBlock';
+import { FormField } from '../../../components/formField';
 import { notify } from '../../../components/toast/notify';
 
 export function LoginForm() {
@@ -22,7 +22,7 @@ export function LoginForm() {
         clearInput(e);
       } else {
         notify('success', `Logged in successfully!`);
-        dispatch(getData(res.payload.accessToken));
+        dispatch(getQuestions(res.payload.accessToken));
         navigate('/home');
       }
     });
@@ -30,8 +30,8 @@ export function LoginForm() {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <InputBlock>email</InputBlock>
-      <InputBlock>password</InputBlock>
+      <FormField>email</FormField>
+      <FormField>password</FormField>
       <Button type="submit">Login</Button>
     </Form>
   );

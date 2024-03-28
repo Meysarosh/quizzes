@@ -12,7 +12,7 @@ const Title = styled.p`
   color: ${(props) => props.theme.colors.rawUmber};
 `;
 
-const Button = styled.button`
+const ButtonClose = styled.button`
   height: 2.5rem;
   width: 2.5rem;
   border: none;
@@ -27,4 +27,4 @@ const Button = styled.button`
   }
 `;
 
-export { Title, Header, Button };
+export { Title, Header, ButtonClose };

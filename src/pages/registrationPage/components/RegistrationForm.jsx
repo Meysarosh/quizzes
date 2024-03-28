@@ -1,40 +1,12 @@
-import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { Form, Button } from './RegistrationForm.styles';
-import { InputBlock } from '../../../components/inputBlock';
-import { createNewUser, getData } from '../../../store/actions';
+import { FormField } from '../../../components/formField';
+import { createNewUser, getQuestions } from '../../../store/actions';
 import { notify } from '../../../components/toast/notify';
-
-const schema = yup
-  .object({
-    fullname: yup
-      .string()
-      .required('* Name is required')
-      .min(7, '* Name must be at least 7 characters long')
-      .max(30, '* Name must not exceed 30 characters'),
-    email: yup.string().required('* Email is required').email('* Invalid email format'),
-    username: yup
-      .string()
-      .required('* Username is required')
-      .min(4, '* Username must be at least 4 characters long')
-      .max(20, '* Username must not exceed 20 character'),
-    password: yup
-      .string()
-      .required('* Password is required')
-      .min(10, '* Password must be at least 10 character long')
-      .matches(/[a-z]/, '* Password must contain at least one lowercase letter')
-      .matches(/[0-9]/, '* Password must contain at least one number')
-      .matches(/[A-Z]/, '* Password must contain at least one uppercase letter')
-      .matches(
-        /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/,
-        '* Password must contain at least one special character'
-      ),
-    passwordconfirm: yup.string().oneOf([yup.ref('password'), null], '* Passwords must match'),
-  })
-  .required();
+import { schema } from '../../../utils/yupSchema';
 
 export function RegistrationForm() {
   const dispatch = useDispatch();
@@ -53,7 +25,7 @@ export function RegistrationForm() {
           'success',
           `Congratulation! New user ${res.payload.user.username} was successfully created!`
         );
-        dispatch(getData(res.payload.accessToken));
+        dispatch(getQuestions(res.payload.accessToken));
         navigate('/home');
       }
     });
@@ -61,21 +33,21 @@ export function RegistrationForm() {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <InputBlock register={register} error={errors.fullname?.message}>
+      <FormField register={register} error={errors.fullname?.message}>
         full name
-      </InputBlock>
-      <InputBlock register={register} error={errors.email?.message}>
+      </FormField>
+      <FormField register={register} error={errors.email?.message}>
         email
-      </InputBlock>
-      <InputBlock register={register} error={errors.username?.message}>
+      </FormField>
+      <FormField register={register} error={errors.username?.message}>
         username
-      </InputBlock>
-      <InputBlock register={register} error={errors.password?.message}>
+      </FormField>
+      <FormField register={register} error={errors.password?.message}>
         password
-      </InputBlock>
-      <InputBlock register={register} error={errors.passwordconfirm?.message}>
+      </FormField>
+      <FormField register={register} error={errors.passwordconfirm?.message}>
         password confirm
-      </InputBlock>
+      </FormField>
       <Button type="submit">Register</Button>
     </Form>
   );

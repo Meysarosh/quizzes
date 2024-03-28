@@ -5,20 +5,19 @@ const AuthMain = styled.main`
   margin: 0;
 `;
 
-const AuthTitle = styled.div`
+const AuthTitle = styled.p`
   box-sizing: border-box;
   width: 70%;
   min-height: 100%;
   padding: 2rem 1rem;
   transform: rotate(-180deg);
   writing-mode: tb-rl;
-  font-family: Jost, sans-serif;
   font-size: 10rem;
   color: ${(props) => props.theme.colors.textColorBrown};
   background-color: ${(props) => props.theme.colors.backgroundColorMedium};
 `;
 
-const FormField = styled.aside`
+const FormContainer = styled.aside`
   width: 30%;
   min-height: 100%;
   padding: 2rem 5rem;
@@ -28,4 +27,4 @@ const FormField = styled.aside`
   background-color: ${(props) => props.theme.colors.backgroundColorDark};
 `;
 
-export { AuthMain, AuthTitle, FormField };
+export { AuthMain, AuthTitle, FormContainer };
