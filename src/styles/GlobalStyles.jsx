@@ -2,23 +2,37 @@ import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
 
-:root {
-  font-size: 16px;
-  --background-color-medium: #faf0e6;
-  --background-color-dark: #00000030;
-  --input-field-color: #d6d6d6;
-  --input-text-color: #5e3023;
-  --input-label-color: #895737;
-  --button-color: #c08552;
-  --button-color-hover: #ca6813;
-  --button-color-active: #ca3413;
-  --button-text-color: #f3e9dc;
-  --text-color-brown: #5e30237a;
+@font-face {
+  font-family: Jost;
+  src: url('src/assets/fonts/Jost/Jost-Regular.woff');
+  src: url('src/assets/fonts/Jost/Jost-Regular.woff2');
 }
 
-body {
-    margin: 0;
-    box-sizing: border-box;
-  }
+@font-face {
+  font-family: JostSemiBold;
+  src: url('src/assets/fonts/Jost/Jost-SemiBold.woff');
+}
+
+@font-face {
+  font-family: InterReg;
+  src: url('src/assets/fonts/Inter/Inter-Regular.woff');
+  src: url('src/assets/fonts/Inter/Inter-Regular.woff2');
+}
+
+@font-face {
+  font-family: InterBold;
+  src: url('src/assets/fonts/Inter/Inter-Bold.woff');
+  src: url('src/assets/fonts/Inter/Inter-Bold.woff2');
+}
+
+:root {
+  font-size: 16px;
+}
+
+* {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: Jost, sans-serif;
+}
 
 `;

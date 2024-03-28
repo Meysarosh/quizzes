@@ -1,5 +1,5 @@
 import App from '../App';
-import { Authorized } from '../components';
+import { Authorized } from '../components/authorized/Authorized';
 import {
   RegistrationPage,
   LoginPage,
