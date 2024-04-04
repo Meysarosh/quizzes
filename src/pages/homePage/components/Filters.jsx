@@ -1,5 +1,20 @@
 import { PropTypes } from 'prop-types';
-import { Title, Header, ButtonClose } from './Filters.styles';
+import {
+  Title,
+  Header,
+  ButtonClose,
+  Container,
+  Label,
+  Paragraph,
+  DifficultyContainer,
+  DifficultyControll,
+  SelectedList,
+  ArrowContainer,
+  Menu,
+  CheckboxContainer,
+  CheckboxInput,
+  CustomCheckbox,
+} from './Filters.styles';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setQuizBankFilter,
@@ -9,18 +24,48 @@ import {
   filterByQuizBank,
   setQuantityFilter,
 } from '../../../store/slices/questionsSlice';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Select from 'react-select';
+import { DropdownIndicator } from './DropdownIndicator';
+import { selectStyles } from '../../../utils/const/selectStyles';
+
+const quantityOptions = [
+  { value: '', label: 'All' },
+  { value: 5, label: '5' },
+  { value: 10, label: '10' },
+];
+
 export function Filters({ onClick }) {
   const dispatch = useDispatch();
-  const { filters } = useSelector((state) => state.questions);
-  const { quizBanks } = useSelector((state) => state.questions);
-  const { difficulties } = useSelector((state) => state.questions);
-  const { questions } = useSelector((state) => state.questions);
-  const { filteredQuestions } = useSelector((state) => state.questions);
+  const difficultiesContainerRef = useRef(null);
 
-  const [all, setAll] = useState(true);
+  const { filters, quizBanks, difficulties, questions, filteredQuestions } = useSelector(
+    (state) => state.questions
+  );
+
+  const [quizBankOptions, setQuizBankOptions] = useState([]);
   const [difficultiesForFilter, setDifficultiesForFilter] = useState([]);
+  const [difficultyMenuIsDisabled, setDifficultyMenuIsDisabled] = useState(true);
+  const [difficultyMenuIsOpen, setDifficultyMenuIsOpen] = useState(false);
+  const [all, setAll] = useState(true);
   const [questionsCount, setQuestionsCount] = useState(questions.length);
+
+  useEffect(() => {
+    dispatch(setQuizBankFilter(''));
+    dispatch(filterByQuizBank());
+  }, [dispatch]);
+
+  useEffect(() => {
+    setQuizBankOptions(
+      quizBanks.reduce(
+        (acc, cur) => {
+          acc.push({ value: cur, label: cur });
+          return acc;
+        },
+        [{ value: '', label: 'Select' }]
+      )
+    );
+  }, [quizBanks]);
 
   useEffect(() => {
     setDifficultiesForFilter(
@@ -29,8 +74,24 @@ export function Filters({ onClick }) {
   }, [filters.quizBank, difficulties]);
 
   useEffect(() => {
-    if (filters.difficulty.length === difficultiesForFilter.length) setAll(true);
-    else setAll(false);
+    setDifficultyMenuIsDisabled(!filters.quizBank);
+  }, [filters.quizBank]);
+
+  useEffect(() => {
+    function handleClickOutsideMenu(e) {
+      difficultiesContainerRef.current &&
+        !difficultiesContainerRef.current.contains(e.target) &&
+        difficultyMenuIsOpen &&
+        setDifficultyMenuIsOpen((prev) => !prev);
+    }
+    document.addEventListener('mousedown', handleClickOutsideMenu);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutsideMenu);
+    };
+  }, [difficultiesContainerRef, difficultyMenuIsOpen]);
+
+  useEffect(() => {
+    setAll(filters.difficulty.length === difficultiesForFilter.length);
   }, [filters.difficulty, difficultiesForFilter.length]);
 
   useEffect(() => {
@@ -43,18 +104,18 @@ export function Filters({ onClick }) {
   }, [filteredQuestions]);
 
   function handleBankChange(e) {
-    dispatch(setQuizBankFilter(e.target.value));
+    dispatch(setQuizBankFilter(e.value));
     dispatch(filterByQuizBank());
   }
 
+  function handleDifficultyMenu() {
+    !difficultyMenuIsDisabled && setDifficultyMenuIsOpen((prev) => !prev);
+  }
+
   function handleCheckboxAllChange() {
-    if (all) {
-      dispatch(setDifficultyFilterAll([]));
-      setAll(false);
-    } else {
-      dispatch(setDifficultyFilterAll(difficultiesForFilter));
-      setAll(true);
-    }
+    const arr = all ? [] : difficultiesForFilter;
+    dispatch(setDifficultyFilterAll(arr));
+    setAll(!all);
     dispatch(filterByDifficulty());
   }
 
@@ -64,13 +125,11 @@ export function Filters({ onClick }) {
   }
 
   function handleQuantityChange(e) {
-    dispatch(setQuantityFilter(e.target.value));
+    dispatch(setQuantityFilter(e.value));
   }
 
   function isChecked(name) {
-    const result = filters.difficulty.find((el) => el === name);
-    if (result) return true;
-    return false;
+    return !!filters.difficulty.find((el) => el === name);
   }
 
   return (
@@ -79,53 +138,67 @@ export function Filters({ onClick }) {
         <Title>Filters</Title>
         <ButtonClose onClick={onClick}></ButtonClose>
       </Header>
-      <div>
-        <label htmlFor="bank">Quiz bank</label>
-        <select name="bank" id="bank" onChange={handleBankChange}>
-          <option value="">Select</option>
-          {quizBanks.map((bank) => (
-            <option key={bank} value={bank}>
-              {bank}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label>Difficulty</label>
-        <input
-          type="checkbox"
-          id="all"
-          name="all"
-          checked={all}
-          onChange={handleCheckboxAllChange}
-          disabled={filters.quizBank === null ? true : false}
+      <Container>
+        <Label htmlFor="quizBank">Quiz bank</Label>
+        <Select
+          inputId="quizBank"
+          onChange={handleBankChange}
+          options={quizBankOptions}
+          defaultValue={quizBankOptions[0]}
+          styles={selectStyles}
+          components={{ DropdownIndicator }}
+          hideSelectedOptions={true}
         />
-        <label htmlFor="all">All</label>
-        {filters.quizBank != null &&
-          difficultiesForFilter.map((difficulty) => (
-            <div key={difficulty}>
-              <input
+      </Container>
+      <DifficultyContainer ref={difficultiesContainerRef} onClick={handleDifficultyMenu}>
+        <Paragraph $isDisabled={difficultyMenuIsDisabled}>Difficulty</Paragraph>
+        <DifficultyControll>
+          <SelectedList $isDisabled={difficultyMenuIsDisabled}>
+            {(all && 'All') || filters.difficulty.map((el) => <li key={el}>{el}</li>)}
+          </SelectedList>
+          <ArrowContainer $menuIsOpen={difficultyMenuIsOpen} />
+        </DifficultyControll>
+        <Menu $menuIsOpen={difficultyMenuIsOpen}>
+          <CheckboxContainer htmlFor="all">
+            All
+            <CheckboxInput
+              type="checkbox"
+              id="all"
+              name="all"
+              checked={all}
+              onChange={handleCheckboxAllChange}
+              disabled={difficultyMenuIsDisabled}
+            />
+            <CustomCheckbox checked={all} />
+          </CheckboxContainer>
+          {difficultiesForFilter.map((difficulty) => (
+            <CheckboxContainer htmlFor={difficulty} key={difficulty}>
+              {difficulty}
+              <CheckboxInput
                 type="checkbox"
                 id={difficulty}
                 name={difficulty}
                 checked={isChecked(difficulty)}
                 onChange={handleCheckboxChange}
-                disabled={filters.quizBank === null ? true : false}
+                disabled={difficultyMenuIsDisabled}
               />
-              <label htmlFor={difficulty}>{difficulty}</label>
-            </div>
+              <CustomCheckbox checked={isChecked(difficulty)} />
+            </CheckboxContainer>
           ))}
-      </div>
-
-      <p>Available questions: {questionsCount}</p>
-      <div>
-        <label htmlFor="quantity">Questions quantity:</label>
-        <select name="quantity" id="quantity" onChange={handleQuantityChange}>
-          <option value="">All</option>
-          <option value={5}>5</option>
-          <option value={10}>10</option>
-        </select>
-      </div>
+        </Menu>
+      </DifficultyContainer>
+      <Container>
+        <Label htmlFor="quantity">Questions quantity:</Label>
+        <Select
+          inputId="quantity"
+          onChange={handleQuantityChange}
+          options={quantityOptions}
+          defaultValue={quantityOptions[0]}
+          styles={selectStyles}
+          components={{ DropdownIndicator }}
+        />
+      </Container>
+      <Paragraph>Available questions: {questionsCount}</Paragraph>
     </>
   );
 }

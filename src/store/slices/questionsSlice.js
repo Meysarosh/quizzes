@@ -17,42 +17,31 @@ export const questionsSlice = createSlice({
   initialState,
   reducers: {
     setQuizBankFilter(state, action) {
-      if (action.payload === '') {
-        state.filters.quizBank = null;
-        state.filters.difficulty = [];
-      } else {
-        state.filters.quizBank = action.payload;
-      }
+      state.filters.quizBank = !action.payload ? null : action.payload;
     },
     filterByQuizBank(state) {
-      if (state.filters.quizBank === null) state.filteredQuestions = state.questions;
-      else
-        state.filteredQuestions = state.questions.filter(
-          (question) => question.title === state.filters.quizBank
-        );
+      state.filteredQuestions = state.filters.quizBank
+        ? state.questions.filter((question) => question.title === state.filters.quizBank)
+        : state.questions;
     },
     setDifficultyFilterAll(state, action) {
       state.filters.difficulty = action.payload;
     },
     setDifficultyFilter(state, action) {
       const idx = state.filters.difficulty.indexOf(action.payload);
-      if (idx < 0) state.filters.difficulty.push(action.payload);
-      else state.filters.difficulty.splice(idx, 1);
+      idx < 0
+        ? state.filters.difficulty.push(action.payload)
+        : state.filters.difficulty.splice(idx, 1);
     },
     filterByDifficulty(state) {
-      if (state.filters.quizBank === null) state.filteredQuestions = state.questions;
-      else {
-        const filteredByBank = state.questions.filter(
-          (question) => question.title === state.filters.quizBank
-        );
-        state.filteredQuestions = filteredByBank.filter((question) =>
-          state.filters.difficulty.includes(question.level)
-        );
-      }
+      state.filteredQuestions = !state.filters.quizBank
+        ? state.questions
+        : state.questions
+            .filter((question) => question.title === state.filters.quizBank)
+            .filter((question) => state.filters.difficulty.includes(question.level));
     },
     setQuantityFilter(state, action) {
-      if (action.payload === '') state.filters.quantity = null;
-      else state.filters.quantity = action.payload;
+      state.filters.quantity = action.payload === '' ? null : action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -65,17 +54,9 @@ export const questionsSlice = createSlice({
 });
 
 function processData(data) {
-  const questions = [];
-  const entries = Object.entries(data);
-
-  entries.forEach((entry) => {
-    const title = entry[0];
-    entry[1].forEach((question) => {
-      questions.push({ ...question, title: title });
-    });
-  });
-
-  return questions;
+  return Object.keys(data).reduce((acc, curr) => {
+    return acc.concat(data[curr].map((q) => ({ ...q, title: curr })));
+  }, []);
 }
 
 function readQuizBanks(data) {
