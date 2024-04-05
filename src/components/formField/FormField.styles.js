@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+const Container = styled.div`
+  width: 100%;
+`;
+
 const Input = styled.input`
   width: 100%;
   height: 2.75rem;
@@ -11,6 +15,10 @@ const Input = styled.input`
   border: none;
   border-radius: 0.3rem;
   background-color: ${(props) => props.theme.colors.inputFieldColor};
+
+  &[type='date']::-webkit-calendar-picker-indicator {
+    background-image: url('src/assets/img/calendar-symbol.svg');
+  }
 `;
 
 const Label = styled.label`
@@ -28,4 +36,4 @@ const ErrorMessage = styled.p`
   color: red;
 `;
 
-export { Input, Label, ErrorMessage };
+export { Container, Input, Label, ErrorMessage };
