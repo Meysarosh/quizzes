@@ -1,23 +1,28 @@
 import { PropTypes } from 'prop-types';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { Body, Avatar, Logo, Header } from './Authorized.styles';
+import { push, go } from 'redux-first-history';
 
 export function Authorized({ children }) {
   const { token } = useSelector((state) => state.token);
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   function handleClickAvatar() {
-    navigate('/profile');
+    dispatch(push('/profile'));
+    dispatch(go());
   }
 
   function handleClickLogo() {
-    navigate('/home');
+    dispatch(push('/home'));
+    dispatch(go());
   }
 
   useEffect(() => {
-    if (token === null) navigate('/');
+    if (!token) {
+      dispatch(push('/'));
+      dispatch(go());
+    }
   });
 
   return (

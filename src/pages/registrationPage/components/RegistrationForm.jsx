@@ -1,16 +1,16 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
 import { Form, Button } from './RegistrationForm.styles';
 import { FormField } from '../../../components/formField';
 import { createNewUser, getQuestions } from '../../../store/actions';
-import { notify } from '../../../components/toast/notify';
-import { schema } from '../../../utils/yupSchema';
+import { notify } from '../../../utils/helperFunctions/notify';
+import { schema } from '../../../utils/const/yupSchema';
+import { push, go } from 'redux-first-history';
 
 export function RegistrationForm() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -25,8 +25,10 @@ export function RegistrationForm() {
           'success',
           `Congratulation! New user ${res.payload.user.username} was successfully created!`
         );
-        dispatch(getQuestions(res.payload.accessToken));
-        navigate('/home');
+        dispatch(getQuestions(res.payload.accessToken)).then(() => {
+          dispatch(push('/home'));
+          dispatch(go());
+        });
       }
     });
   }

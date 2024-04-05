@@ -11,6 +11,7 @@ export const selectStyles = {
   }),
   dropdownIndicator: (baseStyles, state) => ({
     ...baseStyles,
+    color: state.isFocused ? '#dab49d' : '#dab49d',
     transform: state.selectProps.menuIsOpen ? 'rotate(180deg)' : null,
   }),
   menu: (baseStyles) => ({
