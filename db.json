@@ -1,10 +1,12 @@
 {
   "users": [
     {
+      "fullname": "Roman Roman",
       "email": "roman.meszaros@nixs.com",
-      "password": "$2a$10$L6T7VFhMUm9sT61aN/Nn5OP9J.UStdetVxzvuppKZlS03Wc0KT7WG",
-      "fullname": "Romanroman",
       "username": "Yahyahyah-1",
+      "password": "$2a$10$FxCRxNJCVXlNrzu.eHLlTeZ1bW9Ggsosw65E6aoiQIlVlIhkAH4Xe",
+      "img": "user.jpg",
+      "dateofbirth": "2024-03-18",
       "id": 1
     }
   ],

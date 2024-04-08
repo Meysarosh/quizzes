@@ -5,11 +5,14 @@ import { FormField } from '../../../components/formField';
 import { notify } from '../../../utils/helperFunctions/notify';
 import { MdAdd } from 'react-icons/md';
 import { Form, Button, Avatar, PlusButton, UserName } from './ProfileForm.styles';
-import { useSelector } from 'react-redux';
-import { useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useRef, useState } from 'react';
+import { updateUserData } from '../../../store/actions';
 
 export function ProfileForm() {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+  const { token } = useSelector((state) => state.token);
   const {
     register,
     handleSubmit,
@@ -18,20 +21,31 @@ export function ProfileForm() {
 
   const addFileRef = useRef();
   const [file, setFile] = useState(null);
+
+  useEffect(() => {
+    user.img && setFile(user.img);
+  }, [user]);
+
   function handleChange(e) {
-    setFile(URL.createObjectURL(e.target.files[0]));
+    setFile(e.target.files[0].name);
   }
+
   function addUserImage() {
     addFileRef && addFileRef.current.click();
   }
 
   function onSubmit(data) {
-    notify('success', JSON.stringify(data));
+    const dataToUpdate = { ...data, img: file, token, id: user.id };
+    dispatch(updateUserData(dataToUpdate)).then((res) => {
+      res.type === 'updateUserData/rejected'
+        ? notify('error', res.payload)
+        : notify('success', 'Your data updated successfully');
+    });
   }
 
   return (
     <>
-      <Avatar $img={file ? file : 'src/assets/img/default.png'}>
+      <Avatar $img={file ? `src/assets/img/${file}` : 'src/assets/img/default.png'}>
         <PlusButton onClick={addUserImage}>
           <MdAdd />
         </PlusButton>
@@ -62,7 +76,11 @@ export function ProfileForm() {
         <FormField register={register} error={errors.passwordconfirm?.message}>
           password confirm
         </FormField>
-        <FormField register={register} error={errors.passwordconfirm?.message}>
+        <FormField
+          register={register}
+          defaultValue={user.dateofbirth ? user.dateofbirth : null}
+          error={errors.passwordconfirm?.message}
+        >
           date of birth
         </FormField>
         <Button type="submit">Submit</Button>

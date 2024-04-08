@@ -6,8 +6,7 @@ import { createBrowserHistory } from 'history';
 
 const { createReduxHistory, routerMiddleware } = createReduxHistoryContext({
   history: createBrowserHistory(),
-  oldLocationChangePayload: true,
-  showHistoryAction: true,
+  savePreviousLocations: 10,
 });
 
 export const store = configureStore({

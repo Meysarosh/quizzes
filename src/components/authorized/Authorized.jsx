@@ -6,6 +6,7 @@ import { push, go } from 'redux-first-history';
 
 export function Authorized({ children }) {
   const { token } = useSelector((state) => state.token);
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   function handleClickAvatar() {
@@ -26,13 +27,18 @@ export function Authorized({ children }) {
   });
 
   return (
-    <Body>
-      <Header>
-        <Logo onClick={handleClickLogo} />
-        <Avatar $img="src/assets/img/default.png" onClick={handleClickAvatar} />
-      </Header>
-      {children}
-    </Body>
+    token && (
+      <Body>
+        <Header>
+          <Logo onClick={handleClickLogo} />
+          <Avatar
+            $img={user.img ? `src/assets/img/${user.img}` : 'src/assets/img/default.png'}
+            onClick={handleClickAvatar}
+          />
+        </Header>
+        {children}
+      </Body>
+    )
   );
 }
 
