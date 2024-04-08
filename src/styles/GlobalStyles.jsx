@@ -35,4 +35,8 @@ export const GlobalStyles = createGlobalStyle`
   font-family: Jost, sans-serif;
 }
 
+.hidden {
+  display: none;
+}
+
 `;
