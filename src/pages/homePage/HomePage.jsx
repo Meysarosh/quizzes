@@ -15,14 +15,11 @@ import { useSelector } from 'react-redux';
 export function HomePage() {
   const [filterVisibility, setFilterVisibility] = useState(false);
   const [topVisibility, setTopVisibility] = useState(false);
-  const { questions } = useSelector((state) => state.questions);
+  const { filteredQuestions } = useSelector((state) => state.questions);
+  const [topics, setTopics] = useState([]);
 
   function handleClick() {
     setFilterVisibility((filterVisibility) => !filterVisibility);
-  }
-
-  function scroll() {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }
 
   useEffect(() => {
@@ -38,6 +35,10 @@ export function HomePage() {
     };
   }, [topVisibility]);
 
+  useEffect(() => {
+    setTopics(readTopics(filteredQuestions));
+  }, [filteredQuestions]);
+
   return (
     <Main>
       <Aside $isVisible={filterVisibility}>
@@ -48,11 +49,36 @@ export function HomePage() {
         <FilterButton onClick={handleClick} />
       </Header>
       <Content>
-        {questions.topics.map((el) => (
+        {topics.map((el) => (
           <QuizCard key={el.topic} title={el.title} topic={el.topic} />
         ))}
       </Content>
       <BackToTopButton $isVisible={topVisibility} onClick={scroll}></BackToTopButton>
     </Main>
   );
+}
+
+function scroll() {
+  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+}
+
+function readTopics(questions) {
+  const topics = [];
+  const banks = new Set();
+  questions.forEach((question) => {
+    banks.add(question.title);
+  });
+
+  banks.forEach((bank) => {
+    const bankTopic = new Set();
+    questions.forEach((question) => {
+      if (question.title === bank) bankTopic.add(question.topic);
+    });
+
+    bankTopic.forEach((topic) => {
+      topics.push({ title: bank, topic });
+    });
+  });
+
+  return topics;
 }

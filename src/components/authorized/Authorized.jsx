@@ -17,8 +17,8 @@ export function Authorized({ children }) {
   }
 
   useEffect(() => {
-    if (!token) navigate('/');
-  }, [token, navigate]);
+    if (token === null) navigate('/');
+  });
 
   return (
     <Body>
