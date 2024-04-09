@@ -11,7 +11,7 @@ const Main = styled.main`
 const Header = styled.header`
   width: 100%;
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: space-between;
 `;
 
@@ -25,10 +25,15 @@ const PageTitle = styled.h1`
 const FilterButton = styled.button`
   height: 3.125rem;
   width: 3.125rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: ${(props) => props.theme.colors.linen};
+  background-color: ${(props) => props.theme.colors.caramel};
   border: none;
-  background-image: url('src/assets/img/filter_button.svg');
-  background-size: cover;
-
+  border-radius: 0.3rem;
   &:hover {
     cursor: pointer;
   }
@@ -63,16 +68,20 @@ const BackToTopButton = styled.button`
   right: 5.5rem;
   height: 3.125rem;
   width: 3.125rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.125rem;
+  color: ${(props) => props.theme.colors.linen};
   border: none;
   border-radius: 50%;
   background-color: ${(props) => props.theme.colors.caramel};
-  background-image: url('src/assets/img/arrow_up_icon.svg');
-  background-size: 2.5rem 2.5rem;
-  background-repeat: no-repeat;
-  background-position: center;
+  outline: #ffffff66 solid 1rem;
 
   &:hover {
     cursor: pointer;
+    transform: scale(1.2);
   }
 `;
 

@@ -15,12 +15,14 @@ const Title = styled.p`
 const ButtonClose = styled.button`
   height: 2.5rem;
   width: 2.5rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.25rem;
+  color: ${(props) => props.theme.colors.linen};
   border: none;
   background-color: ${(props) => props.theme.colors.caramel};
-  background-image: url('src/assets/img/x.svg');
-  background-size: 1.45rem 1.45rem;
-  background-repeat: no-repeat;
-  background-position: center;
 
   &:hover {
     cursor: pointer;

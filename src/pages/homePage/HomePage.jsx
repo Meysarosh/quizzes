@@ -11,6 +11,8 @@ import { QuizCard } from '../../components/quizCard/QuizCard';
 import { Filters } from './components/Filters';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2';
+import { IoIosArrowDropup } from 'react-icons/io';
 
 export function HomePage() {
   const [filterVisibility, setFilterVisibility] = useState(false);
@@ -46,14 +48,18 @@ export function HomePage() {
       </Aside>
       <Header>
         <PageTitle>Quizzes</PageTitle>
-        <FilterButton onClick={handleClick} />
+        <FilterButton onClick={handleClick}>
+          <HiOutlineAdjustmentsHorizontal />
+        </FilterButton>
       </Header>
       <Content>
-        {topics.map((el) => (
-          <QuizCard key={el.topic} title={el.title} topic={el.topic} />
+        {topics.map(({ topic, title }) => (
+          <QuizCard key={topic} title={title} topic={topic} />
         ))}
       </Content>
-      <BackToTopButton $isVisible={topVisibility} onClick={scroll}></BackToTopButton>
+      <BackToTopButton $isVisible={topVisibility} onClick={scroll}>
+        <IoIosArrowDropup />
+      </BackToTopButton>
     </Main>
   );
 }
@@ -63,22 +69,9 @@ function scroll() {
 }
 
 function readTopics(questions) {
-  const topics = [];
-  const banks = new Set();
-  questions.forEach((question) => {
-    banks.add(question.title);
-  });
-
-  banks.forEach((bank) => {
-    const bankTopic = new Set();
-    questions.forEach((question) => {
-      if (question.title === bank) bankTopic.add(question.topic);
-    });
-
-    bankTopic.forEach((topic) => {
-      topics.push({ title: bank, topic });
-    });
-  });
-
-  return topics;
+  return [
+    ...questions.reduce((acc, { title, topic }) => {
+      return acc.add(JSON.stringify({ title, topic }));
+    }, new Set()),
+  ].map((el) => JSON.parse(el));
 }

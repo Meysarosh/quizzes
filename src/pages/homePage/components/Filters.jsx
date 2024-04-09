@@ -28,6 +28,7 @@ import { useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
 import { DropdownIndicator } from './DropdownIndicator';
 import { selectStyles } from '../../../utils/const/selectStyles';
+import { MdClose } from 'react-icons/md';
 
 const quantityOptions = [
   { value: '', label: 'All' },
@@ -136,7 +137,9 @@ export function Filters({ onClick }) {
     <>
       <Header>
         <Title>Filters</Title>
-        <ButtonClose onClick={onClick}></ButtonClose>
+        <ButtonClose onClick={onClick}>
+          <MdClose />
+        </ButtonClose>
       </Header>
       <Container>
         <Label htmlFor="quizBank">Quiz bank</Label>
