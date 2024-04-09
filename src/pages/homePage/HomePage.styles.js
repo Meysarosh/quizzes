@@ -50,7 +50,7 @@ const Aside = styled.aside`
   position: fixed;
   z-index: 2;
   top: 0;
-  right: ${(props) => (props.$isVisible ? '0' : '-25%')};
+  right: 0;
   width: 25%;
   height: 100%;
   padding: 1.7rem;

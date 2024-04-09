@@ -43,7 +43,7 @@ export function HomePage() {
 
   return (
     <Main>
-      <Aside $isVisible={filterVisibility}>
+      <Aside className={filterVisibility ? '' : 'filter-hidden'}>
         <Filters onClick={handleClick} />
       </Aside>
       <Header>

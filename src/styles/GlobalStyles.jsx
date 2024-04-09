@@ -39,4 +39,20 @@ export const GlobalStyles = createGlobalStyle`
   display: none;
 }
 
+.filter-hidden {
+  right: -25%;
+}
+
+.menu-disabled {
+  color: grey;
+}
+
+.rotate-icon {
+  transform: rotate(180deg);
+}
+
+.checkbox-checked {
+  background-color:#dab49d;
+}
+
 `;

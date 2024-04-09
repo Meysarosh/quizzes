@@ -14,6 +14,7 @@ import {
   CheckboxContainer,
   CheckboxInput,
   CustomCheckbox,
+  CustomCheckboxChecked,
 } from './Filters.styles';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -154,14 +155,16 @@ export function Filters({ onClick }) {
         />
       </Container>
       <DifficultyContainer ref={difficultiesContainerRef} onClick={handleDifficultyMenu}>
-        <Paragraph $isDisabled={difficultyMenuIsDisabled}>Difficulty</Paragraph>
+        <Paragraph className={difficultyMenuIsDisabled ? 'menu-disabled' : ''}>
+          Difficulty
+        </Paragraph>
         <DifficultyControll>
-          <SelectedList $isDisabled={difficultyMenuIsDisabled}>
+          <SelectedList className={difficultyMenuIsDisabled ? 'menu-disabled' : ''}>
             {(all && 'All') || filters.difficulty.map((el) => <li key={el}>{el}</li>)}
           </SelectedList>
-          <ArrowContainer $menuIsOpen={difficultyMenuIsOpen} />
+          <ArrowContainer className={difficultyMenuIsOpen ? 'rotate-icon' : ''} />
         </DifficultyControll>
-        <Menu $menuIsOpen={difficultyMenuIsOpen}>
+        <Menu className={difficultyMenuIsOpen ? '' : 'hidden'}>
           <CheckboxContainer htmlFor="all">
             All
             <CheckboxInput
@@ -172,7 +175,9 @@ export function Filters({ onClick }) {
               onChange={handleCheckboxAllChange}
               disabled={difficultyMenuIsDisabled}
             />
-            <CustomCheckbox checked={all} />
+            <CustomCheckbox className={all ? 'checkbox-checked' : ''}>
+              <CustomCheckboxChecked className={all ? '' : 'hidden'} />
+            </CustomCheckbox>
           </CheckboxContainer>
           {difficultiesForFilter.map((difficulty) => (
             <CheckboxContainer htmlFor={difficulty} key={difficulty}>
@@ -185,7 +190,9 @@ export function Filters({ onClick }) {
                 onChange={handleCheckboxChange}
                 disabled={difficultyMenuIsDisabled}
               />
-              <CustomCheckbox checked={isChecked(difficulty)} />
+              <CustomCheckbox className={isChecked(difficulty) ? 'checkbox-checked' : ''}>
+                <CustomCheckboxChecked className={isChecked(difficulty) ? '' : 'hidden'} />
+              </CustomCheckbox>
             </CheckboxContainer>
           ))}
         </Menu>

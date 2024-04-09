@@ -44,7 +44,7 @@ const Label = styled.label`
 const Paragraph = styled.p`
   font-family: InterReg, sans-serif;
   font-size: 1.25rem;
-  color: ${(props) => (props.$isDisabled ? 'grey' : props.theme.colors.rawUmber)};
+  color: ${(props) => props.theme.colors.rawUmber};
 `;
 
 const DifficultyContainer = styled.div`
@@ -72,11 +72,11 @@ const SelectedList = styled.ul`
   flex-wrap: wrap;
   padding: 0;
   margin: 0;
+  list-style-type: none;
   font-family: InterReg, sans-serif;
   font-size: 1.25rem;
-  color: ${(props) => (props.$isDisabled ? 'grey' : props.theme.colors.caputMortuum)};
   line-height: normal;
-  list-style-type: none;
+  color: ${(props) => props.theme.colors.caputMortuum};
 
   & li {
     padding-right: 0.5rem;
@@ -90,11 +90,11 @@ const ArrowContainer = styled.div`
   background-size: 1rem 1rem;
   background-repeat: no-repeat;
   background-position: center;
-  transform: ${(props) => (props.$menuIsOpen ? 'rotate(180deg)' : 'rotate(0)')};
+  transform: rotate(0);
 `;
 
 const Menu = styled.div`
-  display: ${(props) => (props.$menuIsOpen ? 'block' : 'none')};
+  display: 'block';
   width: 100%;
   min-height: fit-content;
   padding: 0.5rem 0.5rem 0 0.5rem;
@@ -131,21 +131,19 @@ const CustomCheckbox = styled.span`
   left: 0;
   height: 1.25rem;
   width: 1.25rem;
-  background-color: ${(props) =>
-    props.checked ? props.theme.colors.desertSand : props.theme.colors.linen};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.colors.linen};
+`;
 
-  &:after {
-    display: ${(props) => (props.checked ? 'block' : 'none')};
-    content: '';
-    position: absolute;
-    top: 0.1rem;
-    left: 0.35rem;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    transform: rotate(45deg);
-  }
+const CustomCheckboxChecked = styled.div`
+  display: block;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
 `;
 
 export {
@@ -163,4 +161,5 @@ export {
   CheckboxContainer,
   CheckboxInput,
   CustomCheckbox,
+  CustomCheckboxChecked,
 };
