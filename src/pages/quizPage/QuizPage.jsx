@@ -13,14 +13,10 @@ import {
   Nav,
   ForvardButtons,
   Button,
-  Modal,
-  ModalWindow,
-  ModalTitle,
-  ModalText,
-  ButtonsContainer,
 } from './QuizPage.styles';
 import { GoChevronLeft, GoChevronRight } from 'react-icons/go';
 import { useEffect, useState } from 'react';
+import { Modal } from '../../components/modal';
 
 export function QuizPage() {
   const { questions } = useSelector((state) => state.questions);
@@ -40,7 +36,7 @@ export function QuizPage() {
     setIsModal(true);
   }
 
-  function handleModalButtonDiscard() {
+  function handleModalButtonCancel() {
     setIsModal(false);
   }
 
@@ -81,18 +77,18 @@ export function QuizPage() {
           <Button>Next</Button>
         </ForvardButtons>
       </Nav>
-      <Modal className={isModal ? '' : 'hidden'}>
-        <ModalWindow>
-          <ModalTitle>Do you want to discard?</ModalTitle>
-          <ModalText>
-            You are trying to leave quiz evaluation page!
-            <br /> Your changes will be saved into your profile on leave
-          </ModalText>
-          <ButtonsContainer>
-            <Button onClick={handleModalButtonDiscard}>Discard</Button>
-            <Button $warning={true}>Leave</Button>
-          </ButtonsContainer>
-        </ModalWindow>
+      <Modal
+        isModal={isModal}
+        title="Do you want to discard?"
+        text={
+          <>
+            You are trying to leave quiz evaluation page! <br />
+            Your changes will be saved into your profile on leave
+          </>
+        }
+      >
+        <Button onClick={handleModalButtonCancel}>Cancel</Button>
+        <Button $warning={true}>Discard</Button>
       </Modal>
     </Main>
   );
