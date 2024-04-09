@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createNewUser, login } from '../actions';
+import { createNewUser, login, updateUserData } from '../actions';
 
 const initialState = { token: null };
 
@@ -19,6 +19,9 @@ export const tokenSlice = createSlice({
     });
     builder.addCase(login.rejected, (state) => {
       state.token = null;
+    });
+    builder.addCase(updateUserData.rejected, (state, action) => {
+      if (action.payload === 'jwt expired') state.token = null;
     });
   },
 });

@@ -35,6 +35,7 @@ const Avatar = styled.div`
   border: 2px solid ${(props) => props.theme.colors.rawUmber};
   background-image: url(${(props) => props.$img});
   background-size: cover;
+  background-position: center;
 
   &:hover {
     cursor: pointer;
