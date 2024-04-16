@@ -1,28 +1,39 @@
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { Body, Avatar, Logo, Header } from './Authorized.styles';
-import { push, go } from 'redux-first-history';
+import { Body, Avatar, LogoContainer, Header, Img } from './Authorized.styles';
+import { Logo } from '../logo/Logo';
+import { useLocation, useNavigate } from 'react-router';
+import { addLocation } from '../../store/slices/userSlice';
+import { endQuiz } from '../../store/slices/quizSlice';
 
 export function Authorized({ children }) {
-  const { token } = useSelector((state) => state.token);
-  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { token } = useSelector((state) => state.token);
+  const { user, history } = useSelector((state) => state.user);
+  const { quiz } = useSelector((state) => state.quiz);
+
+  useEffect(() => {
+    dispatch(addLocation(location.pathname));
+  }, [location.pathname, dispatch]);
+
+  useEffect(() => {
+    history.length > 1 && history.at(-2) === `/quiz/${quiz.id}` && dispatch(endQuiz());
+  }, [history, quiz.id, dispatch]);
 
   function handleClickAvatar() {
-    dispatch(push('/profile'));
-    dispatch(go());
+    navigate('/profile');
   }
 
   function handleClickLogo() {
-    dispatch(push('/home'));
-    dispatch(go());
+    navigate('/home');
   }
 
   useEffect(() => {
     if (!token) {
-      dispatch(push('/'));
-      dispatch(go());
+      navigate('/');
     }
   });
 
@@ -30,11 +41,12 @@ export function Authorized({ children }) {
     token && (
       <Body>
         <Header>
-          <Logo onClick={handleClickLogo} />
-          <Avatar
-            $img={user.img ? `src/assets/img/${user.img}` : 'src/assets/img/default.png'}
-            onClick={handleClickAvatar}
-          />
+          <LogoContainer onClick={handleClickLogo}>
+            <Logo />
+          </LogoContainer>
+          <Avatar onClick={handleClickAvatar}>
+            <Img src={user.img ? `src/assets/img/${user.img}` : 'src/assets/img/default.png'} />
+          </Avatar>
         </Header>
         {children}
       </Body>

@@ -16,6 +16,6 @@ export function Modal({ isModal, title, text, children }) {
 Modal.propTypes = {
   isModal: PropTypes.bool,
   title: PropTypes.string,
-  text: PropTypes.string,
-  children: PropTypes.element,
+  text: PropTypes.object,
+  children: PropTypes.arrayOf(PropTypes.element),
 };

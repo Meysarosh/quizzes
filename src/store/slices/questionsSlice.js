@@ -18,6 +18,10 @@ export const questionsSlice = createSlice({
   reducers: {
     setQuizBankFilter(state, action) {
       state.filters.quizBank = !action.payload ? null : action.payload;
+      if (!action.payload) {
+        state.filters.difficulty = [];
+        state.filters.quantity = null;
+      }
     },
     filterByQuizBank(state) {
       state.filteredQuestions = state.filters.quizBank
@@ -25,7 +29,7 @@ export const questionsSlice = createSlice({
         : state.questions;
     },
     setDifficultyFilterAll(state, action) {
-      state.filters.difficulty = action.payload;
+      if (state.filters.quizBank) state.filters.difficulty = action.payload;
     },
     setDifficultyFilter(state, action) {
       const idx = state.filters.difficulty.indexOf(action.payload);

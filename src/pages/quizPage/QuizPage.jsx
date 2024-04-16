@@ -1,9 +1,10 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Main,
   Header,
   Heading,
   ProcessStatus,
+  ArrowButton,
   QuestionText,
   Form,
   RadioContainer,
@@ -17,79 +18,307 @@ import {
 import { GoChevronLeft, GoChevronRight } from 'react-icons/go';
 import { useEffect, useState } from 'react';
 import { Modal } from '../../components/modal';
+import {
+  getQuestion,
+  updateUserData,
+  updateQuizData,
+  getQuestionById,
+  getQuizById,
+} from '../../store/actions';
+import { endQuiz, setSelectedOptions } from '../../store/slices/quizSlice';
+import { notify } from '../../utils/helperFunctions/notify';
+import { useLocation, useNavigate } from 'react-router';
 
 export function QuizPage() {
-  const { questions } = useSelector((state) => state.questions);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { quiz, currentQuestion, selectedOptions } = useSelector((state) => state.quiz);
+  const { user, history } = useSelector((state) => state.user);
+  const { token } = useSelector((state) => state.token);
+
+  const [isModal, setIsModal] = useState(false);
   const [answers, setAnswers] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [isModal, setIsModal] = useState(false);
+  const [currentPosition, setCurrentPosition] = useState(1);
 
   useEffect(() => {
-    setAnswers(Object.values(questions[2].answers).map((el) => el.text));
-  }, [questions]);
+    if (!quiz.id && history.at(-1) === location.pathname) {
+      const id = Number(location.pathname.slice(6));
+      dispatch(getQuizById({ token, id }));
+    }
+  }, [quiz.id, history, location.pathname, dispatch, token]);
+
+  useEffect(() => {
+    !currentQuestion &&
+      quiz.questions.length > 0 &&
+      quiz.id &&
+      dispatch(getQuestionById({ token, filters: quiz.filters, id: quiz.questions[0] })).then(
+        () => {
+          setSelectedAnswer(quiz.submittedAnswers[0]);
+        }
+      );
+  }, [currentQuestion, quiz, dispatch, token]);
+
+  useEffect(() => {
+    !currentQuestion &&
+      quiz.questions.length === 0 &&
+      quiz.id &&
+      history.at(-1) === location.pathname &&
+      dispatch(
+        getQuestion({
+          token,
+          prevQuestions: [],
+          filters: quiz.filters,
+        })
+      );
+  }, [currentQuestion, history, location.pathname, quiz, token, dispatch]);
+
+  useEffect(() => {
+    setSelectedAnswer(null);
+    currentQuestion?.answers &&
+      setAnswers(Object.values(currentQuestion.answers).map((el) => el.text));
+  }, [currentQuestion]);
+
+  useEffect(() => {
+    selectedOptions[currentPosition - 1] && setSelectedAnswer(selectedOptions[currentPosition - 1]);
+  }, [currentPosition, selectedOptions, selectedAnswer]);
 
   function handleSelection(e) {
-    setSelectedAnswer(Number(e.currentTarget.attributes.id.value));
+    if (!quiz.submittedAnswers[currentPosition - 1]) {
+      setSelectedAnswer(Number(e.currentTarget.attributes.id.value));
+      dispatch(
+        setSelectedOptions({
+          idx: currentPosition - 1,
+          value: Number(e.currentTarget.attributes.id.value),
+        })
+      );
+    }
   }
 
-  function handleQuizButtonDiscard() {
+  function handleBtnForward() {
+    currentPosition === quiz.questions.length && updateQuiz(false, false);
+    showNextQuestion(true, false);
+  }
+
+  function handleBtnSkip() {
+    currentPosition === quiz.questions.length && updateQuiz(false, false);
+    showNextQuestion(true, false);
+  }
+
+  function handleBtnBackward() {
+    showNextQuestion(false, false);
+  }
+
+  function handleBtnDiscard() {
     setIsModal(true);
   }
 
-  function handleModalButtonCancel() {
+  function handleModalBtnCancel() {
     setIsModal(false);
   }
 
-  return (
-    <Main>
-      <Header>
-        <Heading>{questions[2].title}</Heading>
-        <ProcessStatus>
-          <GoChevronLeft />
-          1 / 10
-          <GoChevronRight />
-        </ProcessStatus>
-      </Header>
-      <QuestionText>{questions[2].question}</QuestionText>
-      <Form>
-        {answers.map((el, idx) => (
-          <RadioContainer key={el} htmlFor={idx + 1}>
-            <RadioInput
-              type="radio"
-              name="answer"
-              id={idx + 1}
-              onChange={handleSelection}
-              checked={selectedAnswer === idx + 1 ? true : false}
-            />
-            <CustomRadio>
-              <Checked className={selectedAnswer === idx + 1 ? '' : 'hidden'} />
-            </CustomRadio>
-            {el}
-          </RadioContainer>
-        ))}
-      </Form>
-      <Nav>
-        <Button $warning={true} onClick={handleQuizButtonDiscard}>
-          Discard
-        </Button>
-        <ForvardButtons>
-          <Button>Skip</Button>
-          <Button>Next</Button>
-        </ForvardButtons>
-      </Nav>
-      <Modal
-        isModal={isModal}
-        title="Do you want to discard?"
-        text={
-          <>
-            You are trying to leave quiz evaluation page! <br />
-            Your changes will be saved into your profile on leave
-          </>
+  function handleModalBtnDiscard() {
+    updateQuiz(false, false).then(() => {
+      notify('success', 'You can always find your unfinished quizzes at Profile Page.');
+      dispatch(endQuiz());
+      navigate('/home');
+    });
+  }
+
+  function handleBtnSubmit() {
+    if (selectedAnswer) {
+      const answeredQuestions = new Set(user.quizzes.answeredQuestions);
+      answeredQuestions.add(currentQuestion.id);
+
+      if (currentPosition < quiz.filters.quantity) {
+        dispatch(
+          updateUserData({
+            token,
+            user: {
+              ...user,
+              password: user.username,
+              quizzes: {
+                ...user.quizzes,
+                answeredQuestions: [...answeredQuestions],
+              },
+            },
+          })
+        );
+        updateQuiz(false, true);
+        showNextQuestion(true, true);
+      }
+      if (currentPosition === quiz.filters.quantity) {
+        const idx = user.quizzes.unfinished.indexOf(quiz.id);
+        const unfinished = [...user.quizzes.unfinished];
+        unfinished.splice(idx, 1);
+        const finished = new Set(user.quizzes.finished).add(quiz.id);
+
+        dispatch(
+          updateUserData({
+            token,
+            user: {
+              ...user,
+              password: user.username,
+              quizzes: {
+                ...user.quizzes,
+                answeredQuestions: [...answeredQuestions],
+                finished: [...finished],
+                unfinished,
+              },
+            },
+          })
+        );
+        updateQuiz(true, true).then(() => {
+          notify('success', 'Congratulation! You have successfully finished the quiz!');
+          dispatch(endQuiz());
+          navigate('/home');
+        });
+      }
+    } else notify('error', 'Select an answer before proceed!');
+  }
+
+  function updateQuiz(isFinished, isAnswer) {
+    const newAnswers = [...quiz.submittedAnswers];
+    newAnswers[currentPosition - 1] = isAnswer
+      ? selectedAnswer
+      : quiz.submittedAnswers[currentPosition - 1] ?? null;
+
+    return dispatch(
+      updateQuizData({
+        token,
+        quiz: {
+          ...quiz,
+          isFinished,
+          submittedAnswers: newAnswers,
+        },
+      })
+    );
+  }
+
+  function showNextQuestion(isForward, isNextUnsubmited) {
+    const idx = [...quiz.submittedAnswers].slice(currentPosition).indexOf(null);
+
+    if (
+      (isForward && currentPosition < quiz.questions.length) ||
+      (!isForward && currentPosition > 1)
+    ) {
+      const index = isForward
+        ? isNextUnsubmited
+          ? idx > -1
+            ? idx + currentPosition
+            : quiz.questions.length - 1
+          : currentPosition
+        : currentPosition - 2;
+
+      dispatch(getQuestionById({ token, filters: quiz.filters, id: quiz.questions[index] })).then(
+        () => {
+          setSelectedAnswer(quiz.submittedAnswers[index]);
         }
-      >
-        <Button onClick={handleModalButtonCancel}>Cancel</Button>
-        <Button $warning={true}>Discard</Button>
-      </Modal>
-    </Main>
+      );
+
+      setCurrentPosition((prev) =>
+        isForward ? (isNextUnsubmited ? index + 1 : prev + 1) : prev - 1
+      );
+    }
+    if (
+      isForward &&
+      currentPosition === quiz.questions.length &&
+      quiz.questions.length < quiz.filters.quantity
+    ) {
+      setCurrentPosition((prev) => prev + 1);
+      dispatch(
+        getQuestion({
+          token,
+          prevQuestions: [...quiz.questions, currentQuestion.id],
+          filters: quiz.filters,
+        })
+      );
+    }
+  }
+
+  const classArrowBtnBack = () => {
+    return currentPosition === 1 ? 'menu-disabled' : '';
+  };
+
+  const classArrowBtnForw = () => {
+    return quiz.filters.quantity === currentPosition ? 'menu-disabled' : '';
+  };
+
+  const classCustomRadio = () => {
+    return quiz.questions.length != currentPosition && quiz.submittedAnswers[currentPosition - 1]
+      ? 'border-disabled'
+      : '';
+  };
+
+  const classChecked = (idx) => {
+    return selectedAnswer === idx + 1
+      ? quiz.questions.length != currentPosition && quiz.submittedAnswers[currentPosition - 1]
+        ? 'background-disabled'
+        : ''
+      : 'hidden';
+  };
+
+  return (
+    currentQuestion && (
+      <Main>
+        <Header>
+          <Heading>{currentQuestion.topic}</Heading>
+          <ProcessStatus>
+            <ArrowButton onClick={handleBtnBackward} className={classArrowBtnBack()}>
+              <GoChevronLeft />
+            </ArrowButton>
+            {currentPosition} / {quiz.filters.quantity}
+            <ArrowButton onClick={handleBtnForward} className={classArrowBtnForw()}>
+              <GoChevronRight />
+            </ArrowButton>
+          </ProcessStatus>
+        </Header>
+        <QuestionText>{currentQuestion.question}</QuestionText>
+        <Form>
+          {answers.map((el, idx) => (
+            <RadioContainer key={el} htmlFor={idx + 1}>
+              <RadioInput
+                type="radio"
+                name="answer"
+                id={idx + 1}
+                onChange={handleSelection}
+                checked={selectedAnswer === idx + 1 ? true : false}
+              />
+              <CustomRadio className={classCustomRadio()}>
+                <Checked className={classChecked(idx)} />
+              </CustomRadio>
+              {el}
+            </RadioContainer>
+          ))}
+        </Form>
+        <Nav>
+          <Button $warning={true} onClick={handleBtnDiscard}>
+            Discard
+          </Button>
+          <ForvardButtons>
+            <Button onClick={handleBtnSkip}>Skip</Button>
+            <Button onClick={handleBtnSubmit}>
+              {currentPosition === quiz.filters.quantity ? 'Finish' : 'Submit'}
+            </Button>
+          </ForvardButtons>
+        </Nav>
+        <Modal
+          isModal={isModal}
+          title="Do you want to discard?"
+          text={
+            <>
+              You are trying to leave quiz evaluation page! <br />
+              Your changes will be saved into your profile on leave
+            </>
+          }
+        >
+          <Button onClick={handleModalBtnCancel}>Cancel</Button>
+          <Button $warning={true} onClick={handleModalBtnDiscard}>
+            Discard
+          </Button>
+        </Modal>
+      </Main>
+    )
   );
 }

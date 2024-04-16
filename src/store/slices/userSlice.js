@@ -1,12 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createNewUser, login, updateUserData, getQuestions } from '../actions';
 
-const initialState = { user: {}, error: null, message: null };
+const initialState = { user: {}, error: null, message: null, history: [] };
 
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    addLocation(state, action) {
+      state.history.length > 10 && state.history.shift();
+      state.history.at(-1) != action.payload && state.history.push(action.payload);
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(createNewUser.fulfilled, (state, action) => {
       state.user = action.payload.user;
@@ -37,3 +42,4 @@ export const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
+export const { addLocation } = userSlice.actions;

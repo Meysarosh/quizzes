@@ -1,13 +1,19 @@
 {
+  "quizzes": [],
   "users": [
     {
-      "fullname": "Roman Roman",
       "email": "roman.meszaros@nixs.com",
+      "fullname": "Roman Roman",
       "username": "Yahyahyah-1",
-      "password": "$2a$10$FxCRxNJCVXlNrzu.eHLlTeZ1bW9Ggsosw65E6aoiQIlVlIhkAH4Xe",
-      "img": "user.jpg",
+      "quizzes": {
+        "finished": [],
+        "unfinished": [],
+        "answeredQuestions": []
+      },
+      "id": 1,
+      "img": "default.png",
       "dateofbirth": "2024-03-18",
-      "id": 1
+      "password": "$2a$10$S5DBl.S/UKCHjaK0KR4ho.9/rJcY4tePxYHh1YGuC50fNSjv6/wWe"
     }
   ],
   "data": {

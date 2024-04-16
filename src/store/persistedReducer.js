@@ -4,6 +4,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import userReducer from './slices/userSlice';
 import tokenReducer from './slices/tokenSlice';
 import questionsReducer from './slices/questionsSlice';
+import quizReducer from './slices/quizSlice';
 import { createReduxHistoryContext } from 'redux-first-history';
 import { createBrowserHistory } from 'history';
 
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   token: tokenReducer,
   user: userReducer,
   questions: questionsReducer,
+  quiz: quizReducer,
   router: routerReducer,
 });
 

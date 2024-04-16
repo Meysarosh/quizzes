@@ -109,11 +109,25 @@ const Button = styled.button`
   }
 `;
 
+const ArrowButton = styled.button`
+  height: 3rem;
+  width: 3rem;
+  padding: 0;
+  font-size: 3rem;
+  background-color: transparent;
+  border: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 export {
   Main,
   Header,
   Heading,
   ProcessStatus,
+  ArrowButton,
   QuestionText,
   Form,
   RadioContainer,

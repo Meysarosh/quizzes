@@ -21,11 +21,9 @@ const Header = styled.header`
   background-image: linear-gradient(#5e30237a, #d9d9d900);
 `;
 
-const Logo = styled.div`
+const LogoContainer = styled.div`
   height: 2.375rem;
   width: 2.375rem;
-  background-image: url('src/assets/img/logo.svg');
-  background-size: cover;
 `;
 
 const Avatar = styled.div`
@@ -33,13 +31,17 @@ const Avatar = styled.div`
   width: 2.375rem;
   border-radius: 50%;
   border: 2px solid ${(props) => props.theme.colors.rawUmber};
-  background-image: url(${(props) => props.$img});
-  background-size: cover;
-  background-position: center;
+  overflow: hidden;
 
   &:hover {
     cursor: pointer;
   }
 `;
 
-export { Body, Header, Logo, Avatar };
+const Img = styled.img`
+  height: 100%;
+  margin-left: 50%;
+  transform: translateX(-50%);
+`;
+
+export { Body, Header, LogoContainer, Avatar, Img };

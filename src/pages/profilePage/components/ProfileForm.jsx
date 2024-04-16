@@ -34,8 +34,11 @@ export function ProfileForm() {
     addFileRef && addFileRef.current.click();
   }
 
-  function onSubmit(data) {
-    const dataToUpdate = { ...data, img: file, token, id: user.id };
+  function onSubmit({ fullname, username, email, password, dateofbirth }) {
+    const dataToUpdate = {
+      token,
+      user: { ...user, img: file, fullname, username, email, password, dateofbirth },
+    };
     dispatch(updateUserData(dataToUpdate)).then((res) => {
       res.type === 'updateUserData/rejected'
         ? notify('error', res.payload)

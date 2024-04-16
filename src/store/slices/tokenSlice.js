@@ -1,5 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createNewUser, login, updateUserData } from '../actions';
+import {
+  createNewUser,
+  login,
+  updateUserData,
+  createNewQuiz,
+  getQuestion,
+  updateQuizData,
+  getQuestionById,
+  getQuizById,
+} from '../actions';
 
 const initialState = { token: null };
 
@@ -14,13 +23,28 @@ export const tokenSlice = createSlice({
     builder.addCase(createNewUser.rejected, (state) => {
       state.token = null;
     });
+    builder.addCase(updateUserData.rejected, (state, action) => {
+      if (action.payload === 'jwt expired') state.token = null;
+    });
     builder.addCase(login.fulfilled, (state, action) => {
       state.token = action.payload.accessToken;
     });
     builder.addCase(login.rejected, (state) => {
       state.token = null;
     });
-    builder.addCase(updateUserData.rejected, (state, action) => {
+    builder.addCase(createNewQuiz.rejected, (state, action) => {
+      if (action.payload === 'jwt expired') state.token = null;
+    });
+    builder.addCase(updateQuizData.rejected, (state, action) => {
+      if (action.payload === 'jwt expired') state.token = null;
+    });
+    builder.addCase(getQuizById.rejected, (state, action) => {
+      if (action.payload === 'jwt expired') state.token = null;
+    });
+    builder.addCase(getQuestion.rejected, (state, action) => {
+      if (action.payload === 'jwt expired') state.token = null;
+    });
+    builder.addCase(getQuestionById.rejected, (state, action) => {
       if (action.payload === 'jwt expired') state.token = null;
     });
   },
