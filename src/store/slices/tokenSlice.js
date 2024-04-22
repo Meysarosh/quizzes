@@ -8,6 +8,8 @@ import {
   updateQuizData,
   getQuestionById,
   getQuizById,
+  getAvailableQuestions,
+  getQuestionsBanksAndTopics,
 } from '../actions';
 
 const initialState = { token: null };
@@ -45,6 +47,12 @@ export const tokenSlice = createSlice({
       if (action.payload === 'jwt expired') state.token = null;
     });
     builder.addCase(getQuestionById.rejected, (state, action) => {
+      if (action.payload === 'jwt expired') state.token = null;
+    });
+    builder.addCase(getAvailableQuestions.rejected, (state, action) => {
+      if (action.payload === 'jwt expired') state.token = null;
+    });
+    builder.addCase(getQuestionsBanksAndTopics.rejected, (state, action) => {
       if (action.payload === 'jwt expired') state.token = null;
     });
   },

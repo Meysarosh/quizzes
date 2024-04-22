@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createNewUser, login, updateUserData, getQuestions } from '../actions';
+import { createNewUser, login, updateUserData } from '../actions';
 
 const initialState = { user: {}, error: null, message: null, history: [] };
 
@@ -33,9 +33,6 @@ export const userSlice = createSlice({
       state.error = null;
     });
     builder.addCase(updateUserData.rejected, (state, action) => {
-      state.error = action.payload;
-    });
-    builder.addCase(getQuestions.rejected, (state, action) => {
       state.error = action.payload;
     });
   },

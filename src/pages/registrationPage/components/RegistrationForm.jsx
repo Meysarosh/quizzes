@@ -3,13 +3,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
 import { Form, Button } from './RegistrationForm.styles';
 import { FormField } from '../../../components/formField';
-import { createNewUser, getQuestions } from '../../../store/actions';
+import { createNewUser } from '../../../store/actions';
 import { notify } from '../../../utils/helperFunctions/notify';
 import { schema } from '../../../utils/const/yupSchema';
-import { push, go } from 'redux-first-history';
+import { useNavigate } from 'react-router';
 
 export function RegistrationForm() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -25,10 +26,7 @@ export function RegistrationForm() {
           'success',
           `Congratulation! New user ${res.payload.user.username} was successfully created!`
         );
-        dispatch(getQuestions(res.payload.accessToken)).then(() => {
-          dispatch(push('/home'));
-          dispatch(go());
-        });
+        navigate('/home');
       }
     });
   }

@@ -1,12 +1,13 @@
 import { useDispatch } from 'react-redux';
-import { login, getQuestions } from '../../../store/actions';
+import { login } from '../../../store/actions';
 import { Button, Form } from './LoginForm.styles';
 import { FormField } from '../../../components/formField';
 import { notify } from '../../../utils/helperFunctions/notify';
-import { push, go } from 'redux-first-history';
+import { useNavigate } from 'react-router';
 
 export function LoginForm() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function clearInput(e) {
     e.target[1].value = '';
@@ -21,10 +22,7 @@ export function LoginForm() {
         clearInput(e);
       } else {
         notify('success', `Logged in successfully!`);
-        dispatch(getQuestions(res.payload.accessToken)).then(() => {
-          dispatch(push('/home'));
-          dispatch(go());
-        });
+        navigate('/home');
       }
     });
   }

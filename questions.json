@@ -1258,7 +1258,7 @@
       "correct_answer": 1
     },
     {
-      "id": 61,
+      "id": 349,
       "topic": "React Components",
       "level": "Easy",
       "question": "What is a class component in React?",
@@ -1277,7 +1277,7 @@
       "correct_answer": 1
     },
     {
-      "id": 62,
+      "id": 350,
       "topic": "React Rendering",
       "level": "Easy",
       "question": "What is the purpose of the render method in React components?",
@@ -1296,7 +1296,7 @@
       "correct_answer": 1
     },
     {
-      "id": 63,
+      "id": 351,
       "topic": "React Props",
       "level": "Easy",
       "question": "How do you pass props to a component in React?",
@@ -1315,7 +1315,7 @@
       "correct_answer": 1
     },
     {
-      "id": 64,
+      "id": 352,
       "topic": "React Lifecycle",
       "level": "Easy",
       "question": "What is the constructor method used for in React class components?",
@@ -2651,7 +2651,7 @@
       "correct_answer": 2
     },
     {
-      "id": 133,
+      "id": 353,
       "topic": "CSS",
       "level": "Easy",
       "question": "What does the 'margin' property in CSS control?",
@@ -2670,7 +2670,7 @@
       "correct_answer": 1
     },
     {
-      "id": 134,
+      "id": 354,
       "topic": "CSS",
       "level": "Easy",
       "question": "Which CSS property is used to set the font size of an element?",
@@ -2689,7 +2689,7 @@
       "correct_answer": 2
     },
     {
-      "id": 135,
+      "id": 355,
       "topic": "CSS",
       "level": "Medium",
       "question": "What does the 'flex-direction' property in CSS Flexbox control?",
@@ -2708,7 +2708,7 @@
       "correct_answer": 2
     },
     {
-      "id": 136,
+      "id": 356,
       "topic": "CSS",
       "level": "Medium",
       "question": "What is the purpose of the 'position: relative;' property in CSS?",
@@ -2727,7 +2727,7 @@
       "correct_answer": 3
     },
     {
-      "id": 137,
+      "id": 357,
       "topic": "CSS",
       "level": "Hard",
       "question": "What is the purpose of the 'justify-content' property in CSS Flexbox?",
@@ -2746,7 +2746,7 @@
       "correct_answer": 3
     },
     {
-      "id": 138,
+      "id": 358,
       "topic": "CSS",
       "level": "Hard",
       "question": "What is the purpose of the 'grid-template-rows' property in CSS Grid Layout?",
@@ -2765,7 +2765,7 @@
       "correct_answer": 1
     },
     {
-      "id": 139,
+      "id": 359,
       "topic": "CSS",
       "level": "Hard",
       "question": "What is the purpose of the 'opacity' property in CSS?",
@@ -2784,7 +2784,7 @@
       "correct_answer": 3
     },
     {
-      "id": 140,
+      "id": 360,
       "topic": "CSS",
       "level": "Hard",
       "question": "What is the purpose of the 'backface-visibility' property in CSS?",
@@ -4030,26 +4030,7 @@
   ],
   "TypeScript": [
     {
-      "id": 189,
-      "topic": "TypeScript",
-      "level": "Easy",
-      "question": "What is TypeScript?",
-      "answers": {
-        "1": {
-          "text": "A superset of JavaScript that adds optional static typing.",
-          "correct": true
-        },
-        "2": {
-          "text": "A framework for building web applications."
-        },
-        "3": {
-          "text": "A version control system for managing code changes."
-        }
-      },
-      "correct_answer": 1
-    },
-    {
-      "id": 190,
+      "id": 361,
       "topic": "TypeScript",
       "level": "Easy",
       "question": "What are the main benefits of using TypeScript?",
@@ -4068,7 +4049,7 @@
       "correct_answer": 3
     },
     {
-      "id": 191,
+      "id": 362,
       "topic": "TypeScript",
       "level": "Medium",
       "question": "What is a type declaration file in TypeScript?",
@@ -4087,7 +4068,7 @@
       "correct_answer": 2
     },
     {
-      "id": 192,
+      "id": 363,
       "topic": "TypeScript",
       "level": "Medium",
       "question": "What is the 'any' type in TypeScript?",
@@ -4106,7 +4087,7 @@
       "correct_answer": 1
     },
     {
-      "id": 193,
+      "id": 364,
       "topic": "TypeScript",
       "level": "Hard",
       "question": "What is a decorator in TypeScript?",
@@ -4125,7 +4106,7 @@
       "correct_answer": 1
     },
     {
-      "id": 194,
+      "id": 365,
       "topic": "TypeScript",
       "level": "Hard",
       "question": "What is the purpose of type assertion in TypeScript?",
@@ -4144,7 +4125,7 @@
       "correct_answer": 2
     },
     {
-      "id": 195,
+      "id": 366,
       "topic": "TypeScript",
       "level": "Hard",
       "question": "What is the 'never' type in TypeScript?",
@@ -4163,7 +4144,7 @@
       "correct_answer": 3
     },
     {
-      "id": 196,
+      "id": 367,
       "topic": "TypeScript",
       "level": "Hard",
       "question": "What is the purpose of type guards in TypeScript?",
@@ -4182,7 +4163,7 @@
       "correct_answer": 3
     },
     {
-      "id": 189,
+      "id": 368,
       "topic": "TypeScript",
       "level": "Easy",
       "question": "What is TypeScript?",
@@ -4201,7 +4182,7 @@
       "correct_answer": 1
     },
     {
-      "id": 190,
+      "id": 369,
       "topic": "TypeScript",
       "level": "Easy",
       "question": "What extension do TypeScript files use?",
@@ -4220,7 +4201,7 @@
       "correct_answer": 2
     },
     {
-      "id": 191,
+      "id": 370,
       "topic": "TypeScript",
       "level": "Medium",
       "question": "What is the main benefit of using TypeScript?",
@@ -4239,7 +4220,7 @@
       "correct_answer": 2
     },
     {
-      "id": 192,
+      "id": 371,
       "topic": "TypeScript",
       "level": "Medium",
       "question": "What are interfaces in TypeScript?",
@@ -4258,7 +4239,7 @@
       "correct_answer": 3
     },
     {
-      "id": 193,
+      "id": 372,
       "topic": "TypeScript",
       "level": "Hard",
       "question": "What is a generic type in TypeScript?",
@@ -4277,7 +4258,7 @@
       "correct_answer": 2
     },
     {
-      "id": 194,
+      "id": 373,
       "topic": "TypeScript",
       "level": "Hard",
       "question": "What is the 'never' type in TypeScript?",
@@ -4296,7 +4277,7 @@
       "correct_answer": 1
     },
     {
-      "id": 195,
+      "id": 374,
       "topic": "TypeScript",
       "level": "Hard",
       "question": "What is the 'keyof' operator used for in TypeScript?",
@@ -4315,7 +4296,7 @@
       "correct_answer": 2
     },
     {
-      "id": 196,
+      "id": 375,
       "topic": "TypeScript",
       "level": "Hard",
       "question": "What is the purpose of the 'readonly' modifier in TypeScript?",
@@ -4334,7 +4315,7 @@
       "correct_answer": 1
     },
     {
-      "id": 189,
+      "id": 376,
       "topic": "TypeScript",
       "level": "Easy",
       "question": "What is TypeScript?",
@@ -4353,7 +4334,7 @@
       "correct_answer": 2
     },
     {
-      "id": 190,
+      "id": 377,
       "topic": "TypeScript",
       "level": "Easy",
       "question": "What is the purpose of static typing in TypeScript?",
@@ -4372,7 +4353,7 @@
       "correct_answer": 2
     },
     {
-      "id": 191,
+      "id": 378,
       "topic": "TypeScript",
       "level": "Medium",
       "question": "What are interfaces in TypeScript?",
@@ -4391,7 +4372,7 @@
       "correct_answer": 1
     },
     {
-      "id": 192,
+      "id": 379,
       "topic": "TypeScript",
       "level": "Medium",
       "question": "What is the purpose of type annotations in TypeScript?",
@@ -4410,7 +4391,7 @@
       "correct_answer": 2
     },
     {
-      "id": 193,
+      "id": 380,
       "topic": "TypeScript",
       "level": "Hard",
       "question": "What are generics in TypeScript?",
@@ -4429,7 +4410,7 @@
       "correct_answer": 2
     },
     {
-      "id": 194,
+      "id": 381,
       "topic": "TypeScript",
       "level": "Hard",
       "question": "What is a tuple in TypeScript?",
@@ -4448,7 +4429,7 @@
       "correct_answer": 1
     },
     {
-      "id": 195,
+      "id": 382,
       "topic": "TypeScript",
       "level": "Hard",
       "question": "What is the purpose of 'strictNullChecks' compiler option in TypeScript?",
@@ -4467,7 +4448,7 @@
       "correct_answer": 2
     },
     {
-      "id": 196,
+      "id": 383,
       "topic": "TypeScript",
       "level": "Hard",
       "question": "What is the difference between 'any' and 'unknown' types in TypeScript?",
@@ -5864,7 +5845,7 @@
       "correct_answer": 3
     },
     {
-      "id": 269,
+      "id": 384,
       "topic": "JavaScript",
       "level": "Easy",
       "question": "What is the purpose of the 'slice()' method in JavaScript arrays?",
@@ -5883,7 +5864,7 @@
       "correct_answer": 2
     },
     {
-      "id": 270,
+      "id": 385,
       "topic": "JavaScript",
       "level": "Easy",
       "question": "What is the output of 'typeof null' in JavaScript?",
@@ -5902,7 +5883,7 @@
       "correct_answer": 3
     },
     {
-      "id": 271,
+      "id": 386,
       "topic": "JavaScript",
       "level": "Medium",
       "question": "What is the purpose of the 'reduce()' method in JavaScript arrays?",
@@ -5921,7 +5902,7 @@
       "correct_answer": 2
     },
     {
-      "id": 272,
+      "id": 387,
       "topic": "JavaScript",
       "level": "Medium",
       "question": "What is the difference between 'window.onload' and 'document.onload' in JavaScript?",
@@ -5940,7 +5921,7 @@
       "correct_answer": 1
     },
     {
-      "id": 273,
+      "id": 388,
       "topic": "JavaScript",
       "level": "Hard",
       "question": "What is the purpose of the 'Object.defineProperty()' method in JavaScript?",
@@ -5959,7 +5940,7 @@
       "correct_answer": 1
     },
     {
-      "id": 274,
+      "id": 389,
       "topic": "JavaScript",
       "level": "Hard",
       "question": "What is the 'setTimeout()' function used for in JavaScript?",
@@ -5978,7 +5959,7 @@
       "correct_answer": 1
     },
     {
-      "id": 275,
+      "id": 390,
       "topic": "JavaScript",
       "level": "Hard",
       "question": "What is a weakmap in JavaScript?",
@@ -5997,7 +5978,7 @@
       "correct_answer": 1
     },
     {
-      "id": 276,
+      "id": 391,
       "topic": "JavaScript",
       "level": "Hard",
       "question": "What is the 'use strict' directive in JavaScript?",
@@ -6928,7 +6909,7 @@
       "correct_answer": 2
     },
     {
-      "id": 317,
+      "id": 392,
       "topic": "JavaScript",
       "level": "Easy",
       "question": "What is the result of 5 + '3' in JavaScript?",
@@ -6947,7 +6928,7 @@
       "correct_answer": 2
     },
     {
-      "id": 318,
+      "id": 393,
       "topic": "JavaScript",
       "level": "Easy",
       "question": "What does the 'pop()' method do in JavaScript arrays?",
@@ -6966,7 +6947,7 @@
       "correct_answer": 2
     },
     {
-      "id": 319,
+      "id": 394,
       "topic": "JavaScript",
       "level": "Medium",
       "question": "What is the difference between 'find()' and 'filter()' methods in JavaScript arrays?",
@@ -6985,7 +6966,7 @@
       "correct_answer": 1
     },
     {
-      "id": 320,
+      "id": 395,
       "topic": "JavaScript",
       "level": "Medium",
       "question": "What is the purpose of the 'reduce()' method in JavaScript arrays?",
@@ -7004,7 +6985,7 @@
       "correct_answer": 1
     },
     {
-      "id": 321,
+      "id": 396,
       "topic": "JavaScript",
       "level": "Hard",
       "question": "What is the 'bind()' method used for in JavaScript?",
@@ -7023,7 +7004,7 @@
       "correct_answer": 2
     },
     {
-      "id": 322,
+      "id": 397,
       "topic": "JavaScript",
       "level": "Hard",
       "question": "What is the 'Object.keys()' method used for in JavaScript?",
@@ -7042,7 +7023,7 @@
       "correct_answer": 1
     },
     {
-      "id": 323,
+      "id": 398,
       "topic": "JavaScript",
       "level": "Hard",
       "question": "What is the purpose of the 'Array.isArray()' method in JavaScript?",
@@ -7061,7 +7042,7 @@
       "correct_answer": 1
     },
     {
-      "id": 324,
+      "id": 399,
       "topic": "JavaScript",
       "level": "Hard",
       "question": "What is a closure in JavaScript?",

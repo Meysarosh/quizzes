@@ -3,7 +3,7 @@ import { persistReducer } from 'redux-persist';
 import { combineReducers } from '@reduxjs/toolkit';
 import userReducer from './slices/userSlice';
 import tokenReducer from './slices/tokenSlice';
-import questionsReducer from './slices/questionsSlice';
+import filtersReducer from './slices/filtersSlice';
 import quizReducer from './slices/quizSlice';
 import { createReduxHistoryContext } from 'redux-first-history';
 import { createBrowserHistory } from 'history';
@@ -20,7 +20,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   token: tokenReducer,
   user: userReducer,
-  questions: questionsReducer,
+  filters: filtersReducer,
   quiz: quizReducer,
   router: routerReducer,
 });

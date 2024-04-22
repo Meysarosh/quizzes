@@ -1,16 +1,25 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { filterByIds } from '../../utils/helperFunctions/filterById';
 
 export const getQuestion = createAsyncThunk(
-  'getOneQuestion',
-  async function ({ token, filters, prevQuestions }, { rejectWithValue }) {
-    const { quizBank, topic, difficulty } = filters;
-    const difficultiesQuerryString = difficulty.map((el) => `&level=${el}`).join('');
-    const prevQuestionsFilterQuerryString = prevQuestions.map((id) => `&id_ne=${id}`).join('');
+  'getQuestion',
+  async function ({ token, filters, answeredQuestions, prevQuestions }, { rejectWithValue }) {
+    const {
+      quizBank,
+      topic,
+      difficulty,
+      isCorrectlyAnswered,
+      isIncorrectlyAnswered,
+      isUnanswered,
+    } = filters;
+
+    const difficultiesQueryString = difficulty.map((el) => `&level=${el}`).join('');
+    const prevQuestionsFilterQueryString = prevQuestions.map((id) => `&id_ne=${id}`).join('');
 
     const response = await axios
       .get(
-        `http://localhost:4000/${quizBank}?topic=${topic}${difficultiesQuerryString ?? ''}${prevQuestionsFilterQuerryString ?? ''}&_limit=1`,
+        `http://localhost:4000/${quizBank}?topic=${topic}${difficultiesQueryString ?? ''}${prevQuestionsFilterQueryString ?? ''}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -23,6 +32,14 @@ export const getQuestion = createAsyncThunk(
         else throw rejectWithValue(error.message);
       });
 
-    return response.data;
+    return isCorrectlyAnswered && isIncorrectlyAnswered && isUnanswered
+      ? response.data[0]
+      : filterByIds(
+          response.data,
+          answeredQuestions[quizBank],
+          isCorrectlyAnswered,
+          isIncorrectlyAnswered,
+          isUnanswered
+        )[0];
   }
 );

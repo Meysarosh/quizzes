@@ -86,10 +86,8 @@ const SelectedList = styled.ul`
 const ArrowContainer = styled.div`
   height: 1rem;
   width: 1rem;
-  background-image: url('src/assets/img/polygon.svg');
-  background-size: 1rem 1rem;
-  background-repeat: no-repeat;
-  background-position: center;
+  font-size: 1rem;
+  color: ${(props) => props.theme.colors.desertSand};
   transform: rotate(0);
 `;
 
@@ -146,6 +144,26 @@ const CustomCheckboxChecked = styled.div`
   transform: rotate(45deg);
 `;
 
+const ExcludeContainer = styled.div`
+  width: 100%;
+  min-height: fit-content;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+`;
+
+const ExcludeControll = styled.div`
+  width: 100%;
+  min-height: 2.7rem;
+  padding: 0.3rem 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0.3rem;
+  background-color: ${(props) => props.theme.colors.cardBackgroundColor};
+  cursor: pointer;
+`;
+
 export {
   Title,
   Header,
@@ -162,4 +180,6 @@ export {
   CheckboxInput,
   CustomCheckbox,
   CustomCheckboxChecked,
+  ExcludeContainer,
+  ExcludeControll,
 };

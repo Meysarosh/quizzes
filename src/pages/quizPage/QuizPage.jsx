@@ -25,9 +25,10 @@ import {
   getQuestionById,
   getQuizById,
 } from '../../store/actions';
-import { endQuiz, setSelectedOptions } from '../../store/slices/quizSlice';
+import { setSelectedOptions } from '../../store/slices/quizSlice';
 import { notify } from '../../utils/helperFunctions/notify';
 import { useLocation, useNavigate } from 'react-router';
+import { deepCopyOAO } from '../../utils/helperFunctions/deepCopyOAO';
 
 export function QuizPage() {
   const dispatch = useDispatch();
@@ -67,12 +68,21 @@ export function QuizPage() {
       history.at(-1) === location.pathname &&
       dispatch(
         getQuestion({
+          answeredQuestions: user.quizzes.answeredQuestions,
           token,
           prevQuestions: [],
           filters: quiz.filters,
         })
       );
-  }, [currentQuestion, history, location.pathname, quiz, token, dispatch]);
+  }, [
+    currentQuestion,
+    history,
+    location.pathname,
+    quiz,
+    token,
+    dispatch,
+    user.quizzes.answeredQuestions,
+  ]);
 
   useEffect(() => {
     setSelectedAnswer(null);
@@ -121,15 +131,30 @@ export function QuizPage() {
   function handleModalBtnDiscard() {
     updateQuiz(false, false).then(() => {
       notify('success', 'You can always find your unfinished quizzes at Profile Page.');
-      dispatch(endQuiz());
       navigate('/home');
     });
   }
 
   function handleBtnSubmit() {
     if (selectedAnswer) {
-      const answeredQuestions = new Set(user.quizzes.answeredQuestions);
-      answeredQuestions.add(currentQuestion.id);
+      const answeredQuestions = deepCopyOAO(user.quizzes.answeredQuestions);
+
+      if (answeredQuestions[quiz.filters.quizBank]) {
+        const idx = answeredQuestions[quiz.filters.quizBank].findIndex(
+          ({ id }) => id === currentQuestion.id
+        );
+
+        idx > -1
+          ? (answeredQuestions[quiz.filters.quizBank][idx].answer = selectedAnswer)
+          : answeredQuestions[quiz.filters.quizBank].push({
+              id: currentQuestion.id,
+              answer: selectedAnswer,
+            });
+      } else {
+        answeredQuestions[quiz.filters.quizBank] = [
+          { id: currentQuestion.id, answer: selectedAnswer },
+        ];
+      }
 
       if (currentPosition < quiz.filters.quantity) {
         dispatch(
@@ -140,7 +165,7 @@ export function QuizPage() {
               password: user.username,
               quizzes: {
                 ...user.quizzes,
-                answeredQuestions: [...answeredQuestions],
+                answeredQuestions,
               },
             },
           })
@@ -162,7 +187,7 @@ export function QuizPage() {
               password: user.username,
               quizzes: {
                 ...user.quizzes,
-                answeredQuestions: [...answeredQuestions],
+                answeredQuestions,
                 finished: [...finished],
                 unfinished,
               },
@@ -171,7 +196,6 @@ export function QuizPage() {
         );
         updateQuiz(true, true).then(() => {
           notify('success', 'Congratulation! You have successfully finished the quiz!');
-          dispatch(endQuiz());
           navigate('/home');
         });
       }
@@ -229,6 +253,7 @@ export function QuizPage() {
       setCurrentPosition((prev) => prev + 1);
       dispatch(
         getQuestion({
+          answeredQuestions: user.quizzes.answeredQuestions,
           token,
           prevQuestions: [...quiz.questions, currentQuestion.id],
           filters: quiz.filters,

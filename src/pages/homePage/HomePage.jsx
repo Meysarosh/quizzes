@@ -10,15 +10,26 @@ import {
 import { QuizCard } from '../../components/quizCard/QuizCard';
 import { Filters } from './components/Filters';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2';
 import { IoIosArrowDropup } from 'react-icons/io';
+import { getQuestionsBanksAndTopics } from '../../store/actions';
+import { useLocation } from 'react-router';
 
 export function HomePage() {
+  const dispatch = useDispatch();
+  const location = useLocation();
   const [filterVisibility, setFilterVisibility] = useState(false);
   const [topVisibility, setTopVisibility] = useState(false);
-  const { filteredQuestions } = useSelector((state) => state.questions);
-  const [topics, setTopics] = useState([]);
+  const { token } = useSelector((state) => state.token);
+  const { history } = useSelector((state) => state.user);
+  const { availableTopics, quizBanks } = useSelector((state) => state.filters);
+
+  useEffect(() => {
+    quizBanks.length === 0 &&
+      history.at(-1) === location.pathname &&
+      dispatch(getQuestionsBanksAndTopics({ token }));
+  }, [quizBanks, dispatch, token, history, location]);
 
   function handleClick() {
     setFilterVisibility((filterVisibility) => !filterVisibility);
@@ -37,10 +48,6 @@ export function HomePage() {
     };
   }, [topVisibility]);
 
-  useEffect(() => {
-    setTopics(readTopics(filteredQuestions));
-  }, [filteredQuestions]);
-
   return (
     <Main>
       <Aside className={filterVisibility ? '' : 'filter-hidden'}>
@@ -53,7 +60,7 @@ export function HomePage() {
         </FilterButton>
       </Header>
       <Content>
-        {topics.map(({ topic, title }) => (
+        {availableTopics?.map(({ topic, title }) => (
           <QuizCard key={topic} title={title} topic={topic} />
         ))}
       </Content>
@@ -66,12 +73,4 @@ export function HomePage() {
 
 function scroll() {
   window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-}
-
-function readTopics(questions) {
-  return [
-    ...questions.reduce((acc, { title, topic }) => {
-      return acc.add(JSON.stringify({ title, topic }));
-    }, new Set()),
-  ].map((el) => JSON.parse(el));
 }

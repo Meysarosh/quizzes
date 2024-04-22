@@ -44,7 +44,7 @@ export const GlobalStyles = createGlobalStyle`
 }
 
 .menu-disabled {
-  color: grey;
+  color: #a7a7a7;
 }
 
 .rotate-icon {
@@ -56,14 +56,14 @@ export const GlobalStyles = createGlobalStyle`
 }
 
 .border-disabled {
-  border-color: grey;
+  border-color: #a7a7a7;
 }
 
 .background-disabled {
-  background-color: grey;
+  background-color: #a7a7a7;
   
   &:hover {
-    background-color: grey;
+    background-color: #a7a7a7;
   }
 }
 

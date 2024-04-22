@@ -2,30 +2,38 @@ import { PropTypes } from 'prop-types';
 import { Card, CardTitle, CardTopic, Button } from './QuizCard.styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { createNewQuiz } from '../../store/actions/createNewQuiz';
-import { setQuizBankFilter } from '../../store/slices/questionsSlice';
-import { getAvailableQuestionsQuantity } from '../../store/actions/getAvailableQuestionsQuntity';
+import { setQuizBankFilter } from '../../store/slices/filtersSlice';
+import { getAvailableQuestions } from '../../store/actions/getAvailableQuestions';
 import { useNavigate } from 'react-router';
 import { updateUserData } from '../../store/actions';
 
 export function QuizCard({ title, topic }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { filters } = useSelector((state) => state.questions);
+  const { selectedFilters } = useSelector((state) => state.filters);
   const { user } = useSelector((state) => state.user);
   const { token } = useSelector((state) => state.token);
   const { quiz } = useSelector((state) => state.quiz);
 
   function handleBtnStart() {
     dispatch(
-      getAvailableQuestionsQuantity({
+      getAvailableQuestions({
         token,
+        answeredQuestions: user.quizzes.answeredQuestions,
         filters: {
-          ...filters,
+          ...selectedFilters,
           quizBank: title,
           topic,
         },
       })
     ).then((res) => {
+      const data = res.payload.data;
+      const quantity = selectedFilters.quantity
+        ? selectedFilters.quantity < data.length
+          ? selectedFilters.quantity
+          : data.length
+        : data.length;
+
       dispatch(
         createNewQuiz({
           token,
@@ -33,14 +41,10 @@ export function QuizCard({ title, topic }) {
             ...quiz,
             userId: user.id,
             filters: {
-              ...filters,
+              ...selectedFilters,
               quizBank: title,
               topic,
-              quantity: filters.quantity
-                ? filters.quantity < res.payload
-                  ? filters.quantity
-                  : res.payload
-                : res.payload,
+              quantity,
             },
             date: Date.now(),
           },
