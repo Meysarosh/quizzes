@@ -1,17 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const createNewQuiz = createAsyncThunk(
-  'createNewQuiz',
-  async function ({ token, quiz }, { rejectWithValue }) {
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    };
-
+export const getUserQuizzes = createAsyncThunk(
+  'getUserQuizzes',
+  async function ({ token, id }, { rejectWithValue }) {
     const response = await axios
-      .post('http://localhost:3000/quizzes', quiz, {
-        headers: headers,
+      .get(`http://localhost:3000/quizzes?userId=${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
       })
       .catch(function (error) {
         if (error.response) throw rejectWithValue(error.response.data);

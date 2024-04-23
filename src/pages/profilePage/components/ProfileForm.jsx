@@ -4,7 +4,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FormField } from '../../../components/formField';
 import { notify } from '../../../utils/helperFunctions/notify';
 import { MdAdd } from 'react-icons/md';
-import { Form, Button, Avatar, PlusButton, UserName } from './ProfileForm.styles';
+import {
+  Form,
+  Button,
+  Avatar,
+  ImgContainer,
+  Img,
+  PlusButton,
+  UserName,
+} from './ProfileForm.styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import { updateUserData } from '../../../store/actions';
@@ -48,7 +56,13 @@ export function ProfileForm() {
 
   return (
     <>
-      <Avatar $img={file ? `src/assets/img/${file}` : 'src/assets/img/default.png'}>
+      <Avatar>
+        <ImgContainer>
+          <Img
+            src={file ? `/src/assets/img/${file}` : '/src/assets/img/default.png'}
+            alt="profile photo"
+          ></Img>
+        </ImgContainer>
         <PlusButton onClick={addUserImage}>
           <MdAdd />
         </PlusButton>

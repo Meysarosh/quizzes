@@ -38,9 +38,19 @@ const Avatar = styled.div`
   flex-basis: 10rem;
   border-radius: 50%;
   border: 2px solid ${(props) => props.theme.colors.rawUmber};
-  background-image: url(${(props) => props.$img});
-  background-size: cover;
-  background-position: center;
+`;
+
+const ImgContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 50%;
+`;
+
+const Img = styled.img`
+  height: 100%;
+  margin-left: 50%;
+  transform: translateX(-50%);
 `;
 
 const UserName = styled.p`
@@ -50,6 +60,7 @@ const UserName = styled.p`
 
 const PlusButton = styled.button`
   position: absolute;
+  z-index: 2;
   top: 7.75rem;
   left: 7.75rem;
   width: 1.5rem;
@@ -69,4 +80,4 @@ const PlusButton = styled.button`
   }
 `;
 
-export { Form, Button, Avatar, UserName, PlusButton };
+export { Form, Button, Avatar, ImgContainer, Img, UserName, PlusButton };

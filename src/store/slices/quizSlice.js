@@ -33,6 +33,16 @@ export const quizSlice = createSlice({
     setSelectedOptions(state, action) {
       state.selectedOptions[action.payload.idx] = action.payload.value;
     },
+    prepairQuizForCopy(state) {
+      state.quiz.isFinished = false;
+      state.quiz.submittedAnswers = Array(state.quiz.questions.length).fill(
+        null,
+        0,
+        state.quiz.questions.length
+      );
+      state.quiz.date = null;
+      state.quiz.id = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state) => {
@@ -61,4 +71,4 @@ export const quizSlice = createSlice({
 });
 
 export default quizSlice.reducer;
-export const { endQuiz, setSelectedOptions } = quizSlice.actions;
+export const { endQuiz, setSelectedOptions, prepairQuizForCopy } = quizSlice.actions;

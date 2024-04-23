@@ -9,8 +9,9 @@ const Main = styled.main`
 `;
 
 const Section = styled.section`
-  padding: 6.125rem 5.5rem 0 5.5rem;
+  padding: 6.125rem 5.5rem 3rem 5.5rem;
   width: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 `;

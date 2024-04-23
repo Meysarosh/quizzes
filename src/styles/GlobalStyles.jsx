@@ -67,4 +67,12 @@ export const GlobalStyles = createGlobalStyle`
   }
 }
 
+.green {
+  color: #008000;
+}
+
+.red {
+  color: #ff0000;
+}
+
 `;

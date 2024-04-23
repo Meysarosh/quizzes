@@ -45,7 +45,7 @@ export function Authorized({ children }) {
             <Logo />
           </LogoContainer>
           <Avatar onClick={handleClickAvatar}>
-            <Img src={user.img ? `src/assets/img/${user.img}` : 'src/assets/img/default.png'} />
+            <Img src={user.img ? `/src/assets/img/${user.img}` : '/src/assets/img/default.png'} />
           </Avatar>
         </Header>
         {children}

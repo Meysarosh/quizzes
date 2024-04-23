@@ -271,14 +271,12 @@ export function QuizPage() {
   };
 
   const classCustomRadio = () => {
-    return quiz.questions.length != currentPosition && quiz.submittedAnswers[currentPosition - 1]
-      ? 'border-disabled'
-      : '';
+    return quiz.submittedAnswers[currentPosition - 1] ? 'border-disabled' : '';
   };
 
   const classChecked = (idx) => {
     return selectedAnswer === idx + 1
-      ? quiz.questions.length != currentPosition && quiz.submittedAnswers[currentPosition - 1]
+      ? quiz.submittedAnswers[currentPosition - 1]
         ? 'background-disabled'
         : ''
       : 'hidden';

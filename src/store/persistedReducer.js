@@ -5,6 +5,7 @@ import userReducer from './slices/userSlice';
 import tokenReducer from './slices/tokenSlice';
 import filtersReducer from './slices/filtersSlice';
 import quizReducer from './slices/quizSlice';
+import userQuizzesReducer from './slices/userQuizzesSlice';
 import { createReduxHistoryContext } from 'redux-first-history';
 import { createBrowserHistory } from 'history';
 
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   filters: filtersReducer,
   quiz: quizReducer,
   router: routerReducer,
+  userQuizzes: userQuizzesReducer,
 });
 
 export const persistedReducer = persistReducer(persistConfig, rootReducer);
