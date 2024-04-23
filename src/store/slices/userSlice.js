@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createNewUser, login, updateUserData } from '../actions';
+import { createNewUser, login, updateUserData, updateQuizData } from '../actions';
 
 const initialState = { user: {}, error: null, message: null, history: [] };
 
@@ -11,18 +11,28 @@ export const userSlice = createSlice({
       state.history.length > 10 && state.history.shift();
       state.history.at(-1) != action.payload && state.history.push(action.payload);
     },
+    setUserMessage(state, action) {
+      state.message = action.payload;
+    },
+    setUserError(state, action) {
+      state.error = action.payload;
+    },
+    resetUserMessage(state) {
+      state.error = null;
+      state.message = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(createNewUser.fulfilled, (state, action) => {
       state.user = action.payload.user;
-      state.error = null;
+      state.message = `Congratulation, ${action.payload.user.fullname.split(' ')[0]}! You have successfully registered.`;
     });
     builder.addCase(createNewUser.rejected, (state, action) => {
       state.error = action.payload;
     });
     builder.addCase(login.fulfilled, (state, action) => {
       state.user = action.payload.user;
-      state.error = null;
+      state.message = `Welcome back, ${action.payload.user.fullname.split(' ')[0]}!`;
     });
     builder.addCase(login.rejected, (state, action) => {
       state.user = null;
@@ -30,13 +40,18 @@ export const userSlice = createSlice({
     });
     builder.addCase(updateUserData.fulfilled, (state, action) => {
       state.user = { ...action.payload, password: 'try to guess' };
-      state.error = null;
+      if (state.history.at(-1).includes('profile'))
+        state.message = 'Your data updated successfully!';
     });
     builder.addCase(updateUserData.rejected, (state, action) => {
       state.error = action.payload;
+    });
+    builder.addCase(updateQuizData.fulfilled, (state, action) => {
+      if (action.payload.isFinished)
+        state.message = 'Congratulation! You have successfully finished the quiz!';
     });
   },
 });
 
 export default userSlice.reducer;
-export const { addLocation } = userSlice.actions;
+export const { addLocation, setUserMessage, setUserError, resetUserMessage } = userSlice.actions;

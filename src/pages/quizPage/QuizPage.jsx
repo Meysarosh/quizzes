@@ -26,9 +26,9 @@ import {
   getQuizById,
 } from '../../store/actions';
 import { setSelectedOptions } from '../../store/slices/quizSlice';
-import { notify } from '../../utils/helperFunctions/notify';
 import { useLocation, useNavigate } from 'react-router';
 import { deepCopyOAO } from '../../utils/helperFunctions/deepCopyOAO';
+import { setUserMessage, setUserError } from '../../store/slices/userSlice';
 
 export function QuizPage() {
   const dispatch = useDispatch();
@@ -129,10 +129,8 @@ export function QuizPage() {
   }
 
   function handleModalBtnDiscard() {
-    updateQuiz(false, false).then(() => {
-      notify('success', 'You can always find your unfinished quizzes at Profile Page.');
-      navigate('/home');
-    });
+    dispatch(setUserMessage('You can always find your unfinished quizzes at Profile Page.'));
+    navigate('/home');
   }
 
   function handleBtnSubmit() {
@@ -194,12 +192,10 @@ export function QuizPage() {
             },
           })
         );
-        updateQuiz(true, true).then(() => {
-          notify('success', 'Congratulation! You have successfully finished the quiz!');
-          navigate('/home');
-        });
+        updateQuiz(true, true);
+        navigate('/home');
       }
-    } else notify('error', 'Select an answer before proceed!');
+    } else dispatch(setUserError('Select an answer before proceed!'));
   }
 
   function updateQuiz(isFinished, isAnswer) {

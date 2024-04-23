@@ -2,7 +2,6 @@ import { schema } from '../../../utils/const/yupSchema';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormField } from '../../../components/formField';
-import { notify } from '../../../utils/helperFunctions/notify';
 import { MdAdd } from 'react-icons/md';
 import {
   Form,
@@ -47,11 +46,7 @@ export function ProfileForm() {
       token,
       user: { ...user, img: file, fullname, username, email, password, dateofbirth },
     };
-    dispatch(updateUserData(dataToUpdate)).then((res) => {
-      res.type === 'updateUserData/rejected'
-        ? notify('error', res.payload)
-        : notify('success', 'Your data updated successfully');
-    });
+    dispatch(updateUserData(dataToUpdate));
   }
 
   return (
