@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createNewUser, login, updateUserData, updateQuizData } from '../actions';
+import { createNewUser, login, updateUserData, updateQuizData, getQuizById } from '../actions';
 
 const initialState = { user: {}, error: null, message: null, history: [] };
 
@@ -49,6 +49,9 @@ export const userSlice = createSlice({
     builder.addCase(updateQuizData.fulfilled, (state, action) => {
       if (action.payload.isFinished)
         state.message = 'Congratulation! You have successfully finished the quiz!';
+    });
+    builder.addCase(getQuizById.fulfilled, (state, action) => {
+      if (!action.payload) state.error = 'Quiz Not Found';
     });
   },
 });

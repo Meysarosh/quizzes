@@ -25,8 +25,8 @@ import {
   getQuestionById,
   getQuizById,
 } from '../../store/actions';
-import { setSelectedOptions } from '../../store/slices/quizSlice';
-import { useLocation, useNavigate } from 'react-router';
+import { endQuiz, setSelectedOptions } from '../../store/slices/quizSlice';
+import { useBlocker, useLocation, useNavigate } from 'react-router';
 import { deepCopyOAO } from '../../utils/helperFunctions/deepCopyOAO';
 import { setUserMessage, setUserError } from '../../store/slices/userSlice';
 
@@ -34,14 +34,28 @@ export function QuizPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
   const { quiz, currentQuestion, selectedOptions } = useSelector((state) => state.quiz);
-  const { user, history } = useSelector((state) => state.user);
+  const { user, history, error } = useSelector((state) => state.user);
   const { token } = useSelector((state) => state.token);
 
-  const [isModal, setIsModal] = useState(false);
   const [answers, setAnswers] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [currentPosition, setCurrentPosition] = useState(1);
+  const [isBlocked, setIsBlocked] = useState(true);
+
+  let blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      quiz.id && isBlocked && currentLocation.pathname !== nextLocation.pathname
+  );
+
+  useEffect(() => {
+    !isBlocked && navigate('/home');
+  }, [isBlocked, navigate]);
+
+  useEffect(() => {
+    error === 'Quiz Not Found' && navigate('/*');
+  }, [error, navigate]);
 
   useEffect(() => {
     if (!quiz.id && history.at(-1) === location.pathname) {
@@ -121,16 +135,17 @@ export function QuizPage() {
   }
 
   function handleBtnDiscard() {
-    setIsModal(true);
+    navigate('/home');
   }
 
   function handleModalBtnCancel() {
-    setIsModal(false);
+    blocker.reset();
   }
 
   function handleModalBtnDiscard() {
     dispatch(setUserMessage('You can always find your unfinished quizzes at Profile Page.'));
-    navigate('/home');
+    dispatch(endQuiz());
+    blocker.proceed();
   }
 
   function handleBtnSubmit() {
@@ -193,7 +208,7 @@ export function QuizPage() {
           })
         );
         updateQuiz(true, true);
-        navigate('/home');
+        setIsBlocked(false);
       }
     } else dispatch(setUserError('Select an answer before proceed!'));
   }
@@ -322,21 +337,23 @@ export function QuizPage() {
             </Button>
           </ForvardButtons>
         </Nav>
-        <Modal
-          isModal={isModal}
-          title="Do you want to discard?"
-          text={
-            <>
-              You are trying to leave quiz evaluation page! <br />
-              Your changes will be saved into your profile on leave
-            </>
-          }
-        >
-          <Button onClick={handleModalBtnCancel}>Cancel</Button>
-          <Button $warning={true} onClick={handleModalBtnDiscard}>
-            Discard
-          </Button>
-        </Modal>
+        {blocker.state === 'blocked' ? (
+          <Modal
+            isModal={true}
+            title="Do you want to discard?"
+            text={
+              <>
+                You are trying to leave quiz evaluation page! <br />
+                Your changes will be saved into your profile on leave
+              </>
+            }
+          >
+            <Button onClick={handleModalBtnCancel}>Cancel</Button>
+            <Button $warning={true} onClick={handleModalBtnDiscard}>
+              Discard
+            </Button>
+          </Modal>
+        ) : null}
       </Main>
     )
   );

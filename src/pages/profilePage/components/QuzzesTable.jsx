@@ -50,7 +50,7 @@ export function QuizzesTable() {
       });
   }, [quiz, dispatch, navigate, token, user]);
 
-  async function handleActionBtn(id) {
+  function handleActionBtn(id) {
     dispatch(getQuizById({ token, id }));
   }
 

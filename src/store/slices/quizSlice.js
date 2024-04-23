@@ -54,10 +54,10 @@ export const quizSlice = createSlice({
       state.quiz = action.payload;
     });
     builder.addCase(updateQuizData.fulfilled, (state, action) => {
-      state.quiz.submittedAnswers = action.payload.submittedAnswers;
+      if (!action.payload.isFinished) state.quiz.submittedAnswers = action.payload.submittedAnswers;
     });
     builder.addCase(getQuizById.fulfilled, (state, action) => {
-      state.quiz = action.payload;
+      if (action.payload) state.quiz = action.payload;
     });
     builder.addCase(getQuestion.fulfilled, (state, action) => {
       state.currentQuestion = action.payload;
