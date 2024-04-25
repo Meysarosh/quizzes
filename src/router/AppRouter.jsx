@@ -9,6 +9,7 @@ import {
   NotFoundPage,
 } from '../pages';
 import { createBrowserRouter } from 'react-router-dom';
+import { SummaryPage } from '../pages/summaryPage/SummaryPage';
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,14 @@ const router = createBrowserRouter([
         element: (
           <Authorized>
             <QuizPage />
+          </Authorized>
+        ),
+      },
+      {
+        path: '/summary/:id',
+        element: (
+          <Authorized>
+            <SummaryPage />
           </Authorized>
         ),
       },

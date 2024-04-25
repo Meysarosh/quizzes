@@ -26,7 +26,7 @@ import {
   getQuizById,
 } from '../../store/actions';
 import { endQuiz, setSelectedOptions } from '../../store/slices/quizSlice';
-import { useBlocker, useLocation, useNavigate } from 'react-router';
+import { useBlocker, useLocation, useNavigate, useParams } from 'react-router';
 import { deepCopyOAO } from '../../utils/helperFunctions/deepCopyOAO';
 import { setUserMessage, setUserError } from '../../store/slices/userSlice';
 
@@ -34,6 +34,7 @@ export function QuizPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { id } = useParams();
 
   const { quiz, currentQuestion, selectedOptions } = useSelector((state) => state.quiz);
   const { user, history, error } = useSelector((state) => state.user);
@@ -50,8 +51,8 @@ export function QuizPage() {
   );
 
   useEffect(() => {
-    !isBlocked && navigate('/home');
-  }, [isBlocked, navigate]);
+    !isBlocked && navigate(`/summary/${id}`);
+  }, [isBlocked, navigate, id]);
 
   useEffect(() => {
     error === 'Quiz Not Found' && navigate('/*');
@@ -59,13 +60,13 @@ export function QuizPage() {
 
   useEffect(() => {
     if (!quiz.id && history.at(-1) === location.pathname) {
-      const id = Number(location.pathname.slice(6));
       dispatch(getQuizById({ token, id }));
     }
-  }, [quiz.id, history, location.pathname, dispatch, token]);
+  }, [quiz.id, history, location.pathname, dispatch, token, id]);
 
   useEffect(() => {
-    !currentQuestion &&
+    history.at(-1) === location.pathname &&
+      !currentQuestion &&
       quiz.questions.length > 0 &&
       quiz.id &&
       dispatch(getQuestionById({ token, filters: quiz.filters, id: quiz.questions[0] })).then(
@@ -73,7 +74,7 @@ export function QuizPage() {
           setSelectedAnswer(quiz.submittedAnswers[0]);
         }
       );
-  }, [currentQuestion, quiz, dispatch, token]);
+  }, [currentQuestion, quiz, dispatch, token, history, location.pathname]);
 
   useEffect(() => {
     !currentQuestion &&

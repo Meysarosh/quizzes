@@ -8,3 +8,5 @@ export * from './getQuestion';
 export * from './getQuestionById';
 export * from './getQuestionsBanksAndTopics';
 export * from './getAvailableQuestions';
+export * from './getQuestionsForSummary';
+export * from './getUserQuizzes';

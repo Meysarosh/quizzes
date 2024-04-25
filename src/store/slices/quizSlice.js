@@ -33,15 +33,23 @@ export const quizSlice = createSlice({
     setSelectedOptions(state, action) {
       state.selectedOptions[action.payload.idx] = action.payload.value;
     },
-    prepairQuizForCopy(state) {
+    prepairQuizForCopy(state, action) {
+      const length = action.payload ? action.payload.length : state.quiz.questions.length;
+
+      if (action.payload) {
+        state.quiz.correctAnswers = action.payload.reduce((acc, curr) => {
+          acc.push(state.quiz.correctAnswers[state.quiz.questions.indexOf(curr)]);
+          return acc;
+        }, []);
+        state.quiz.questions = action.payload;
+      }
       state.quiz.isFinished = false;
-      state.quiz.submittedAnswers = Array(state.quiz.questions.length).fill(
-        null,
-        0,
-        state.quiz.questions.length
-      );
+      state.quiz.submittedAnswers = Array(length).fill(null, 0, length);
       state.quiz.date = null;
       state.quiz.id = null;
+      state.quiz.filters.quantity = length;
+      state.currentQuestion = null;
+      state.selectedOptions = [];
     },
   },
   extraReducers: (builder) => {
@@ -54,7 +62,8 @@ export const quizSlice = createSlice({
       state.quiz = action.payload;
     });
     builder.addCase(updateQuizData.fulfilled, (state, action) => {
-      if (!action.payload.isFinished) state.quiz.submittedAnswers = action.payload.submittedAnswers;
+      state.quiz.submittedAnswers = action.payload.submittedAnswers;
+      state.quiz.isFinished = action.payload.isFinished;
     });
     builder.addCase(getQuizById.fulfilled, (state, action) => {
       if (action.payload) state.quiz = action.payload;
