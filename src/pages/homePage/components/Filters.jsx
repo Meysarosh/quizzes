@@ -316,7 +316,7 @@ export function Filters({ onClick }) {
         <Paragraph className={!selectedFilters.quizBank ? 'menu-disabled' : ''}>
           Difficulty
         </Paragraph>
-        <DifficultyControll>
+        <DifficultyControll data-testid="diff-ctrl">
           <SelectedList className={!selectedFilters.quizBank ? 'menu-disabled' : ''}>
             {!selectedFilters.quizBank && !all && 'All'}
             {(all && 'All') || selectedFilters.difficulty.map((el) => <li key={el}>{el}</li>)}
@@ -362,7 +362,7 @@ export function Filters({ onClick }) {
         <Paragraph className={!selectedFilters.quizBank ? 'menu-disabled' : ''}>
           User answers
         </Paragraph>
-        <ExcludeControll onClick={handleExcludeMenu}>
+        <ExcludeControll onClick={handleExcludeMenu} data-testid="user_answer-ctrl">
           <SelectedList className={!selectedFilters.quizBank ? 'menu-disabled' : ''}>
             <ListForExclude />
           </SelectedList>

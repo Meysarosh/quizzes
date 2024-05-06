@@ -11,8 +11,9 @@ const Card = styled.div`
   background-color: ${(props) => props.theme.colors.cardBackgroundColor};
 `;
 
-const CardTitle = styled.p`
+const CardTitle = styled.h3`
   margin: 0;
+  font-weight: 400;
   font-size: 2.5rem;
   color: ${(props) => props.theme.colors.rawUmber};
 `;

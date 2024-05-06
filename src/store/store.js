@@ -9,14 +9,19 @@ const { createReduxHistory, routerMiddleware } = createReduxHistoryContext({
   savePreviousLocations: 10,
 });
 
-export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: { ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] },
-    }).concat(routerMiddleware),
-  devTools: true,
-});
+export function setupStore(preloadedState) {
+  return configureStore({
+    reducer: persistedReducer,
+    preloadedState,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: { ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] },
+      }).concat(routerMiddleware),
+    devTools: true,
+  });
+}
+
+export const store = setupStore();
 
 export const persistor = persistStore(store);
 export const history = createReduxHistory(store);

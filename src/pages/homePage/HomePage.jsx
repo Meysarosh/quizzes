@@ -60,7 +60,7 @@ export function HomePage() {
         </FilterButton>
       </Header>
       <Content>
-        {availableTopics?.map(({ topic, title }) => (
+        {availableTopics.map(({ topic, title }) => (
           <QuizCard key={topic} title={title} topic={topic} />
         ))}
       </Content>

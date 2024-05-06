@@ -70,7 +70,7 @@ export function QuizCard({ title, topic }) {
   }
 
   return (
-    <Card>
+    <Card className="card">
       <CardTitle>{title}</CardTitle>
       <CardTopic>{topic}</CardTopic>
       <Button onClick={handleBtnStart}>Start</Button>
