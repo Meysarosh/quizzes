@@ -114,6 +114,7 @@ const htmlQuestion = [
     correct_answer: 1,
   },
 ];
+const quizzes = [];
 
 export const handlers = [
   http.get('http://localhost:4000/structure', () => {
@@ -149,5 +150,8 @@ export const handlers = [
   }),
   http.post('http://localhost:3000/users', () => {
     return HttpResponse.json({ user, accessToken: 'EncryptedJSONWebToken' });
+  }),
+  http.get('http://localhost:3000/quizzes', () => {
+    return HttpResponse.json(quizzes);
   }),
 ];

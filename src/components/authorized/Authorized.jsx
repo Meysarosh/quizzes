@@ -38,12 +38,10 @@ export function Authorized({ children }) {
   }, [dispatch, history, questions]);
 
   function handleClickAvatar() {
-    quiz.id && dispatch(endQuiz());
     navigate('/profile');
   }
 
   function handleClickLogo() {
-    quiz.id && dispatch(endQuiz());
     navigate('/home');
   }
 
