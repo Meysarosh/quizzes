@@ -1,29 +1,42 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../../store/actions';
 import { Button, Form } from './LoginForm.styles';
 import { FormField } from '../../../components/formField';
 import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
 
 export function LoginForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  function clearInput(e) {
-    e.target[1].value = '';
-  }
+  const { token } = useSelector((state) => state.token);
+  const { error } = useSelector((state) => state.user);
+
+  const [emailValue, setEmailValue] = useState('');
+  const [passValue, setPassValue] = useState('');
+
+  useEffect(() => {
+    token && navigate('/home');
+  }, [token, navigate]);
+
+  useEffect(() => {
+    error && setPassValue('');
+  }, [error]);
 
   function handleSubmit(e) {
     e.preventDefault();
-    const data = { email: e.target[0].value, password: e.target[1].value };
-    dispatch(login(data)).then((res) => {
-      res.type === 'login/rejected' ? clearInput(e) : navigate('/home');
-    });
+    const data = { email: emailValue, password: passValue };
+    dispatch(login(data));
   }
 
   return (
     <Form onSubmit={handleSubmit}>
-      <FormField>email</FormField>
-      <FormField>password</FormField>
+      <FormField value={emailValue} onChange={(e) => setEmailValue(e.target.value)}>
+        email
+      </FormField>
+      <FormField value={passValue} onChange={(e) => setPassValue(e.target.value)}>
+        password
+      </FormField>
       <Button type="submit">Login</Button>
     </Form>
   );

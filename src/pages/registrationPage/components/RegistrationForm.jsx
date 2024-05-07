@@ -1,15 +1,18 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Button } from './RegistrationForm.styles';
 import { FormField } from '../../../components/formField';
 import { createNewUser } from '../../../store/actions';
 import { schema } from '../../../utils/const/yupSchema';
 import { useNavigate } from 'react-router';
+import { useEffect } from 'react';
 
 export function RegistrationForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { token } = useSelector((state) => state.token);
 
   const {
     register,
@@ -17,10 +20,12 @@ export function RegistrationForm() {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  useEffect(() => {
+    token && navigate('/home');
+  }, [token, navigate]);
+
   function onSubmit(data) {
-    dispatch(createNewUser(data)).then((res) => {
-      res.type === 'createNewUser/fulfilled' && navigate('/home');
-    });
+    dispatch(createNewUser(data));
   }
 
   return (

@@ -5,7 +5,7 @@ const AuthMain = styled.main`
   margin: 0;
 `;
 
-const AuthTitle = styled.p`
+const AuthTitle = styled.h1`
   box-sizing: border-box;
   width: 70%;
   min-height: 100%;
@@ -13,6 +13,7 @@ const AuthTitle = styled.p`
   transform: rotate(-180deg);
   writing-mode: tb-rl;
   font-size: 10rem;
+  font-weight: 400;
   color: ${(props) => props.theme.colors.textColorBrown};
   background-color: ${(props) => props.theme.colors.backgroundColorMedium};
 `;

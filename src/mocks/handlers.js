@@ -144,4 +144,10 @@ export const handlers = [
   http.post('http://localhost:3000/quizzes', () => {
     return HttpResponse.json(quiz);
   }),
+  http.post('http://localhost:3000/login', () => {
+    return HttpResponse.json({ user, accessToken: 'EncryptedJSONWebToken' });
+  }),
+  http.post('http://localhost:3000/users', () => {
+    return HttpResponse.json({ user, accessToken: 'EncryptedJSONWebToken' });
+  }),
 ];

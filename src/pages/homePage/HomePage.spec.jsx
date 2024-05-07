@@ -6,6 +6,7 @@ import { HomePage } from './HomePage';
 import React from 'react';
 import { server } from '../../mocks/server';
 import selectEvent from 'react-select-event';
+import { MemoryRouter } from 'react-router-dom';
 
 const initialState = {
   token: {
@@ -85,9 +86,14 @@ const initialState = {
 };
 
 const renderFunction = () =>
-  renderWithProviders(<HomePage />, {
-    preloadedState: initialState,
-  });
+  renderWithProviders(
+    <MemoryRouter initialEntries={['/home']}>
+      <HomePage />
+    </MemoryRouter>,
+    {
+      preloadedState: initialState,
+    }
+  );
 
 describe('Home Page', () => {
   it('Homepage should have heading', async () => {
