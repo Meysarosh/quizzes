@@ -1,12 +1,14 @@
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { Body, Avatar, LogoContainer, Header, Img } from './Authorized.styles';
+import { useContext, useEffect } from 'react';
+import { Body, Avatar, LogoContainer, Header, Img, Switch, SwitchBtn } from './Authorized.styles';
 import { Logo } from '../logo/Logo';
 import { useLocation, useNavigate } from 'react-router';
 import { addLocation } from '../../store/slices/userSlice';
 import { endQuiz } from '../../store/slices/quizSlice';
 import { resetSummary } from '../../store/slices/summarySlice';
+import { ThemeContext } from '../../styles/ThemeProvider';
+import { BsMoonStars, BsSun } from 'react-icons/bs';
 
 export function Authorized({ children }) {
   const dispatch = useDispatch();
@@ -51,6 +53,8 @@ export function Authorized({ children }) {
     }
   });
 
+  const { nightMode, setNightMode } = useContext(ThemeContext);
+
   return (
     token && (
       <Body>
@@ -58,6 +62,11 @@ export function Authorized({ children }) {
           <LogoContainer onClick={handleClickLogo}>
             <Logo />
           </LogoContainer>
+          <Switch onClick={() => setNightMode(!nightMode)}>
+            <BsMoonStars />
+            <BsSun />
+            <SwitchBtn $nightMode={nightMode} />
+          </Switch>
           <Avatar onClick={handleClickAvatar}>
             <Img src={user.img ? `/src/assets/img/${user.img}` : '/src/assets/img/default.png'} />
           </Avatar>

@@ -25,6 +25,7 @@ const TableContainer = styled.div`
 const Table = styled.table`
   width: 100%;
   table-layout: fixed;
+  color: ${(props) => props.theme.colors.text};
   border: 2px solid ${(props) => props.theme.colors.caramel};
   border-collapse: collapse;
 `;

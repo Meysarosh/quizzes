@@ -29,14 +29,14 @@ const ModalWindow = styled.div`
 const ModalTitle = styled.h2`
   font-family: InterBold, sans-serif;
   font-size: 2.5rem;
-  color: ${(props) => props.theme.colors.caputMortum};
+  color: ${(props) => props.theme.colors.caputMortuum};
 `;
 
 const ModalText = styled.p`
   text-align: center;
   font-family: Inter, sans-serif;
   font-size: 1.5rem;
-  color: ${(props) => props.theme.colors.caputMortum};
+  color: ${(props) => props.theme.colors.caputMortuum};
 `;
 
 const ButtonsContainer = styled.div`

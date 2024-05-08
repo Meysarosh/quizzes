@@ -95,10 +95,11 @@ export const filtersSlice = createSlice({
     });
     builder.addCase(getAvailableQuestions.fulfilled, (state, action) => {
       state.availableQuestionsQuantity = action.payload.data.length;
-      state.availableTopics = readAvailableTopics(
-        state.selectedFilters.quizBank,
-        action.payload.data
-      );
+      if (state.selectedFilters.quizBank)
+        state.availableTopics = readAvailableTopics(
+          state.selectedFilters.quizBank,
+          action.payload.data
+        );
       state.isAvailableQuestionsByAnswer = action.payload.isAvailableQuestionsByAnswer;
     });
   },

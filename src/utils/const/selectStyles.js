@@ -1,9 +1,13 @@
+export const theme = {
+  colors: {},
+};
+
 export const selectStyles = {
   control: (baseStyles) => ({
     ...baseStyles,
     border: 0,
     boxShadow: 'none',
-    backgroundColor: '#d9d9d9',
+    backgroundColor: theme.colors.cardBackgroundColor,
   }),
   indicatorSeparator: (baseStyles) => ({
     ...baseStyles,
@@ -19,7 +23,7 @@ export const selectStyles = {
     position: 'relative',
     top: '0',
     padding: '0.5rem 0.25rem 0.5rem 0.5rem',
-    backgroundColor: '#F3E9DC',
+    backgroundColor: theme.colors.linen,
   }),
   menuList: (baseStyles) => ({
     ...baseStyles,
@@ -45,20 +49,23 @@ export const selectStyles = {
     cursor: state.isFocused && 'pointer',
     fontFamily: 'InterReg, sans-serif',
     fontSize: '1.25rem',
-    color: state.isDisabled ? '#a7a7a7' : '#5E3023',
-    backgroundColor: state.isSelected || state.isFocused ? '#DAB49D' : '#d9d9d9',
+    color: state.isDisabled ? '#a7a7a7' : theme.colors.caputMortuum,
+    backgroundColor:
+      state.isSelected || state.isFocused
+        ? theme.colors.desertSand
+        : theme.colors.cardBackgroundColor,
     borderRadius: '0.3rem',
   }),
   placeholder: (baseStyles, state) => ({
     ...baseStyles,
     fontFamily: 'InterReg, sans-serif',
     fontSize: '1.25rem',
-    color: state.isDisabled ? '#a7a7a7' : '#5E3023',
+    color: state.isDisabled ? '#a7a7a7' : theme.colors.caputMortuum,
   }),
   singleValue: (baseStyles, state) => ({
     ...baseStyles,
     fontFamily: 'InterReg, sans-serif',
     fontSize: '1.25rem',
-    color: state.isDisabled ? '#a7a7a7' : '#5E3023',
+    color: state.isDisabled ? '#a7a7a7' : theme.colors.caputMortuum,
   }),
 };

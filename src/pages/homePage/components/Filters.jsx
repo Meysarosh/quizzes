@@ -31,7 +31,7 @@ import {
   setIsUnanswered,
   setQuizTopicFilter,
 } from '../../../store/slices/filtersSlice';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
 import { DropdownIndicator } from './DropdownIndicator';
 import { selectStyles } from '../../../utils/const/selectStyles';
@@ -39,6 +39,7 @@ import { MdClose } from 'react-icons/md';
 import { TbTriangleInvertedFilled } from 'react-icons/tb';
 import { getAvailableQuestions } from '../../../store/actions';
 import { useLocation } from 'react-router';
+import { ThemeContext } from '../../../styles/ThemeProvider';
 
 const quantityOptions = [
   { value: '', label: 'All' },
@@ -276,6 +277,8 @@ export function Filters({ onClick }) {
     return selectedFilters.isIncorrectlyAnswered && isAvailableQuestionsByAnswer.incorrect;
   };
 
+  const { nightMode } = useContext(ThemeContext);
+
   return (
     <>
       <Header>
@@ -291,7 +294,7 @@ export function Filters({ onClick }) {
           onChange={handleBankChange}
           options={quizBankOptions}
           defaultValue={quizBankOptions[0]}
-          styles={selectStyles}
+          styles={nightMode ? selectStyles : selectStyles}
           components={{ DropdownIndicator }}
           hideSelectedOptions={true}
         />

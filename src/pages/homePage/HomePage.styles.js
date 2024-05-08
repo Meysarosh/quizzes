@@ -6,6 +6,7 @@ const Main = styled.main`
   width: 100%;
   height: 100%;
   padding: 6.125rem 5.5rem 0 5.5rem;
+  background-color: ${(props) => props.theme.colors.mainBackground};
 `;
 
 const Header = styled.header`

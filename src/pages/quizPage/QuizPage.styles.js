@@ -9,6 +9,7 @@ const Main = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: ${(props) => props.theme.colors.mainBackground};
 `;
 
 const Header = styled.header`
@@ -33,6 +34,7 @@ const ProcessStatus = styled.p`
 const QuestionText = styled.p`
   padding: 4rem 3rem 0 3rem;
   font-size: 2.2rem;
+  color: ${(props) => props.theme.colors.text};
 `;
 
 const Form = styled.form`
@@ -41,6 +43,7 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   row-gap: 1.8rem;
+  color: ${(props) => props.theme.colors.text};
 `;
 
 const RadioContainer = styled.label`
@@ -114,6 +117,7 @@ const ArrowButton = styled.button`
   width: 3rem;
   padding: 0;
   font-size: 3rem;
+  color: ${(props) => props.theme.colors.text};
   background-color: transparent;
   border: none;
 

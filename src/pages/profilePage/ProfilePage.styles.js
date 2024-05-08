@@ -6,6 +6,7 @@ const Main = styled.main`
   width: 100%;
   height: 100%;
   display: flex;
+  background-color: ${(props) => props.theme.colors.mainBackground};
 `;
 
 const Section = styled.section`
