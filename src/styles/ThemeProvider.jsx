@@ -48,14 +48,14 @@ theme.colors = { ...dayTheme.colors };
 export const ThemeContext = createContext(false);
 
 export const ThemeProvider = ({ children }) => {
-  const [nightMode, setNightMode] = useState(false);
+  const [isNightMode, setIsNightMode] = useState(false);
 
-  if (nightMode) theme.colors = { ...nigthTheme.colors };
+  if (isNightMode) theme.colors = { ...nigthTheme.colors };
   else theme.colors = { ...dayTheme.colors };
 
   return (
-    <ThemeContext.Provider value={{ nightMode, setNightMode }}>
-      <ScThemeProvider theme={nightMode ? nigthTheme : dayTheme}>{children}</ScThemeProvider>
+    <ThemeContext.Provider value={{ isNightMode, setIsNightMode }}>
+      <ScThemeProvider theme={isNightMode ? nigthTheme : dayTheme}>{children}</ScThemeProvider>
     </ThemeContext.Provider>
   );
 };

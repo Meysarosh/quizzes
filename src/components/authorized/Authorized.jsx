@@ -1,11 +1,20 @@
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useContext, useEffect } from 'react';
-import { Body, Avatar, LogoContainer, Header, Img, Switch, SwitchBtn } from './Authorized.styles';
+import {
+  Body,
+  Avatar,
+  LogoContainer,
+  Header,
+  Img,
+  Switch,
+  SwitchBtn,
+  SwitchText,
+} from './Authorized.styles';
 import { Logo } from '../logo/Logo';
 import { useLocation, useNavigate } from 'react-router';
-import { addLocation } from '../../store/slices/userSlice';
-import { endQuiz } from '../../store/slices/quizSlice';
+import { addLocation, setDarkMode } from '../../store/slices/userSlice';
+import { endQuiz, switchHighlight } from '../../store/slices/quizSlice';
 import { resetSummary } from '../../store/slices/summarySlice';
 import { ThemeContext } from '../../styles/ThemeProvider';
 import { BsMoonStars, BsSun } from 'react-icons/bs';
@@ -15,9 +24,11 @@ export function Authorized({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { token } = useSelector((state) => state.token);
-  const { user, history } = useSelector((state) => state.user);
-  const { quiz } = useSelector((state) => state.quiz);
+  const { user, history, darkMode } = useSelector((state) => state.user);
+  const { quiz, highlight } = useSelector((state) => state.quiz);
   const { questions } = useSelector((state) => state.summary);
+
+  const { isNightMode, setIsNightMode } = useContext(ThemeContext);
 
   useEffect(() => {
     dispatch(addLocation(location.pathname));
@@ -40,7 +51,7 @@ export function Authorized({ children }) {
   }, [dispatch, history, questions]);
 
   function handleClickAvatar() {
-    navigate('/profile');
+    !history.at(-1).includes('summary') && navigate('/profile');
   }
 
   function handleClickLogo() {
@@ -53,7 +64,17 @@ export function Authorized({ children }) {
     }
   });
 
-  const { nightMode, setNightMode } = useContext(ThemeContext);
+  useEffect(() => {
+    setIsNightMode(darkMode);
+  }, [darkMode, setIsNightMode]);
+
+  function handleSwitchHighlight() {
+    dispatch(switchHighlight());
+  }
+
+  function handleThemeChange() {
+    dispatch(setDarkMode());
+  }
 
   return (
     token && (
@@ -62,11 +83,16 @@ export function Authorized({ children }) {
           <LogoContainer onClick={handleClickLogo}>
             <Logo />
           </LogoContainer>
-          <Switch onClick={() => setNightMode(!nightMode)}>
+          <Switch onClick={handleThemeChange}>
             <BsMoonStars />
             <BsSun />
-            <SwitchBtn $nightMode={nightMode} />
+            <SwitchBtn $nightMode={isNightMode} />
           </Switch>
+          {location.pathname.slice(0, 5) === '/quiz' && (
+            <Switch onClick={handleSwitchHighlight}>
+              <SwitchText>highlight {highlight.isHighlight ? 'on' : 'off'}</SwitchText>
+            </Switch>
+          )}
           <Avatar onClick={handleClickAvatar}>
             <Img src={user.img ? `/src/assets/img/${user.img}` : '/src/assets/img/default.png'} />
           </Avatar>

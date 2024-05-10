@@ -75,4 +75,12 @@ export const GlobalStyles = createGlobalStyle`
   color: #ff0000;
 }
 
+.highlighted {
+  background-color: #ffff00;
+}
+
+.highlighted-dark {
+  background-color: #ffff00;
+  color: #000000;
+}
 `;

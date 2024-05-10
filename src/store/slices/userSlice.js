@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createNewUser, login, updateUserData, updateQuizData, getQuizById } from '../actions';
 
-const initialState = { user: {}, error: null, message: null, history: [] };
+const initialState = { user: {}, error: null, message: null, history: [], darkMode: false };
 
 export const userSlice = createSlice({
   name: 'user',
@@ -20,6 +20,9 @@ export const userSlice = createSlice({
     resetUserMessage(state) {
       state.error = null;
       state.message = null;
+    },
+    setDarkMode(state) {
+      state.darkMode = !state.darkMode;
     },
   },
   extraReducers: (builder) => {
@@ -57,4 +60,5 @@ export const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-export const { addLocation, setUserMessage, setUserError, resetUserMessage } = userSlice.actions;
+export const { addLocation, setUserMessage, setUserError, resetUserMessage, setDarkMode } =
+  userSlice.actions;

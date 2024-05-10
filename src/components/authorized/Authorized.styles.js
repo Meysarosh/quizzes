@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 const Body = styled.div`
-  box-sizing: border-box;
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -48,26 +47,34 @@ const Switch = styled.div`
   position: relative;
   width: 6rem;
   height: 2rem;
-  padding: 0.35rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   font-size: 1.35rem;
   color: ${(props) => props.theme.colors.caputMortuum};
   background-color: ${(props) => props.theme.colors.linen};
   border: 0.15rem solid ${(props) => props.theme.colors.rawUmber};
   border-radius: 1rem;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const SwitchBtn = styled.div`
   position: absolute;
   top: -0.2;
-  right: ${(props) => (props.$nightMode ? '2.8rem' : '0')};
+  margin-right: ${(props) => (props.$nightMode ? '2.8rem' : '-2.8rem')};
   height: 1.9rem;
   width: 3rem;
   border-radius: 1rem;
   background-color: ${(props) => props.theme.colors.rawUmber};
-  transition: right 1s;
+  transition: all 1s;
 `;
 
-export { Body, Header, LogoContainer, Avatar, Img, Switch, SwitchBtn };
+const SwitchText = styled.p`
+  font-size: 1rem;
+  font-weight: 600;
+`;
+
+export { Body, Header, LogoContainer, Avatar, Img, Switch, SwitchBtn, SwitchText };

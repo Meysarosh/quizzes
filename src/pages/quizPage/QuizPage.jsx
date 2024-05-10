@@ -16,7 +16,7 @@ import {
   Button,
 } from './QuizPage.styles';
 import { GoChevronLeft, GoChevronRight } from 'react-icons/go';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Modal } from '../../components/modal';
 import {
   getQuestion,
@@ -25,7 +25,12 @@ import {
   getQuestionById,
   getQuizById,
 } from '../../store/actions';
-import { endQuiz, setSelectedOptions } from '../../store/slices/quizSlice';
+import {
+  endQuiz,
+  setSelectedOptions,
+  addHighlighted,
+  removeHighlighted,
+} from '../../store/slices/quizSlice';
 import { useBlocker, useLocation, useNavigate, useParams } from 'react-router';
 import { deepCopyOAO } from '../../utils/helperFunctions/deepCopyOAO';
 import { setUserMessage, setUserError } from '../../store/slices/userSlice';
@@ -34,16 +39,18 @@ export function QuizPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const questionRef = useRef();
   const { id } = useParams();
 
-  const { quiz, currentQuestion, selectedOptions } = useSelector((state) => state.quiz);
-  const { user, history, error } = useSelector((state) => state.user);
+  const { quiz, currentQuestion, selectedOptions, highlight } = useSelector((state) => state.quiz);
+  const { user, history, error, darkMode } = useSelector((state) => state.user);
   const { token } = useSelector((state) => state.token);
 
   const [answers, setAnswers] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [currentPosition, setCurrentPosition] = useState(1);
   const [isBlocked, setIsBlocked] = useState(true);
+  const [currentSelection, setCurrentSelection] = useState('');
 
   let blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
@@ -69,11 +76,15 @@ export function QuizPage() {
       !currentQuestion &&
       quiz.questions.length > 0 &&
       quiz.id &&
-      dispatch(getQuestionById({ token, filters: quiz.filters, id: quiz.questions[0] })).then(
-        () => {
-          setSelectedAnswer(quiz.submittedAnswers[0]);
-        }
-      );
+      dispatch(
+        getQuestionById({
+          token,
+          filters: quiz.filters,
+          id: quiz.questions[0],
+        })
+      ).then(() => {
+        setSelectedAnswer(quiz.submittedAnswers[0]);
+      });
   }, [currentQuestion, quiz, dispatch, token, history, location.pathname]);
 
   useEffect(() => {
@@ -109,6 +120,86 @@ export function QuizPage() {
     selectedOptions[currentPosition - 1] && setSelectedAnswer(selectedOptions[currentPosition - 1]);
   }, [currentPosition, selectedOptions, selectedAnswer]);
 
+  useEffect(() => {
+    if (highlight.isHighlight && currentSelection.length > 0 && currentSelection != '?') {
+      const start = currentQuestion.question.search(currentSelection);
+      const end = start + currentSelection.length;
+
+      start > -1 &&
+        end > -1 &&
+        dispatch(
+          addHighlighted({
+            id: currentQuestion.id,
+            range: [start, end],
+          })
+        );
+    }
+  }, [currentSelection, currentQuestion, highlight.isHighlight, dispatch]);
+
+  useEffect(() => {
+    const highlightedQuestionData = highlight.highlighted.find(
+      ({ id }) => id === currentQuestion?.id
+    );
+    if (
+      highlight.isHighlight &&
+      highlightedQuestionData &&
+      highlightedQuestionData.range.length > 0
+    ) {
+      const highlightedRanges = highlightedQuestionData.range;
+      const highlightedQuestion = [];
+
+      let position = highlightedRanges.length - 1;
+
+      highlightedQuestion.push(currentQuestion.question.slice(highlightedRanges[position][1]));
+
+      while (position > -1) {
+        highlightedQuestion.unshift(
+          `<span class='highlighted${darkMode ? '-dark' : ''}' id='span${position}'>${currentQuestion.question.slice(highlightedRanges[position][0], highlightedRanges[position][1])}</span>`
+        );
+        position > 0
+          ? highlightedQuestion.unshift(
+              currentQuestion.question.slice(
+                highlightedRanges[position - 1][1],
+                highlightedRanges[position][0]
+              )
+            )
+          : highlightedQuestion.unshift(
+              currentQuestion.question.slice(0, highlightedRanges[position][0])
+            );
+        position -= 1;
+      }
+
+      questionRef.current.innerHTML = highlightedQuestion.join('');
+    }
+  }, [highlight, currentQuestion, darkMode]);
+
+  useEffect(() => {
+    setCurrentSelection('');
+  }, [highlight.highlighted]);
+
+  useEffect(() => {
+    const highlightedQuestionData = highlight.highlighted.find(
+      ({ id }) => id === currentQuestion?.id
+    );
+    if (
+      (!highlight.isHighlight && questionRef.current?.firstChild) ||
+      (highlightedQuestionData && highlightedQuestionData.range.length === 0)
+    )
+      questionRef.current.innerHTML = currentQuestion.question;
+  }, [highlight, currentQuestion]);
+
+  function handleQuestionUp() {
+    if (highlight.isHighlight && questionRef.current) {
+      setCurrentSelection(window.getSelection().toString());
+    }
+  }
+
+  function handleQuestionClick(e) {
+    (e.target.classList.contains('highlighted') ||
+      e.target.classList.contains('highlighted-dark')) &&
+      dispatch(removeHighlighted({ id: currentQuestion.id, idx: Number(e.target.id.slice(4)) }));
+  }
+
   function handleSelection(e) {
     if (!quiz.submittedAnswers[currentPosition - 1]) {
       setSelectedAnswer(Number(e.currentTarget.attributes.id.value));
@@ -122,12 +213,16 @@ export function QuizPage() {
   }
 
   function handleBtnForward() {
-    currentPosition === quiz.questions.length && updateQuiz(false, false);
+    currentPosition === quiz.questions.length &&
+      currentPosition !== quiz.filters.quantity &&
+      updateQuiz(false, false);
     showNextQuestion(true, false);
   }
 
   function handleBtnSkip() {
-    currentPosition === quiz.questions.length && updateQuiz(false, false);
+    currentPosition === quiz.questions.length &&
+      currentPosition !== quiz.filters.quantity &&
+      updateQuiz(false, false);
     showNextQuestion(true, false);
   }
 
@@ -166,7 +261,10 @@ export function QuizPage() {
             });
       } else {
         answeredQuestions[quiz.filters.quizBank] = [
-          { id: currentQuestion.id, answer: selectedAnswer },
+          {
+            id: currentQuestion.id,
+            answer: selectedAnswer,
+          },
         ];
       }
 
@@ -247,11 +345,15 @@ export function QuizPage() {
           : currentPosition
         : currentPosition - 2;
 
-      dispatch(getQuestionById({ token, filters: quiz.filters, id: quiz.questions[index] })).then(
-        () => {
-          setSelectedAnswer(quiz.submittedAnswers[index]);
-        }
-      );
+      dispatch(
+        getQuestionById({
+          token,
+          filters: quiz.filters,
+          id: quiz.questions[index],
+        })
+      ).then(() => {
+        setSelectedAnswer(quiz.submittedAnswers[index]);
+      });
 
       setCurrentPosition((prev) =>
         isForward ? (isNextUnsubmited ? index + 1 : prev + 1) : prev - 1
@@ -309,7 +411,9 @@ export function QuizPage() {
             </ArrowButton>
           </ProcessStatus>
         </Header>
-        <QuestionText>{currentQuestion.question}</QuestionText>
+        <QuestionText ref={questionRef} onClick={handleQuestionClick} onMouseUp={handleQuestionUp}>
+          {currentQuestion.question}
+        </QuestionText>
         <Form>
           {answers.map((el, idx) => (
             <RadioContainer key={el} htmlFor={idx + 1}>
