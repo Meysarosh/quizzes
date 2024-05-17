@@ -19,7 +19,6 @@ import { updateUserData } from '../../../store/actions';
 export function ProfileForm() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  const { token } = useSelector((state) => state.token);
   const {
     register,
     handleSubmit,
@@ -42,11 +41,7 @@ export function ProfileForm() {
   }
 
   function onSubmit({ fullname, username, email, password, dateofbirth }) {
-    const dataToUpdate = {
-      token,
-      user: { ...user, img: file, fullname, username, email, password, dateofbirth },
-    };
-    dispatch(updateUserData(dataToUpdate));
+    dispatch(updateUserData({ fullname, username, email, password, dateofbirth, img: file }));
   }
 
   return (

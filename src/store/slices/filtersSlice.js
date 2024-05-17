@@ -27,52 +27,22 @@ export const filtersSlice = createSlice({
   initialState,
   reducers: {
     setQuizBankFilter(state, action) {
-      state.selectedFilters.quizBank = !action.payload ? null : action.payload;
-      state.selectedFilters.topic = null;
-      state.selectedFilters.difficulty = [];
-      state.selectedFilters.quantity = null;
-      state.selectedFilters.isCorrectlyAnswered = true;
-      state.selectedFilters.isIncorrectlyAnswered = true;
-      state.selectedFilters.isUnanswered = true;
+      state.selectedFilters = {
+        ...initialState.selectedFilters,
+        quizBank: !action.payload ? null : action.payload,
+      };
       state.availableQuestionsQuantity = null;
-    },
-    filterByQuizBank(state) {
-      state.availableTopics = state.selectedFilters.quizBank
-        ? state.quizTopics.filter(({ title }) => state.selectedFilters.quizBank === title)
-        : state.quizTopics;
+      !action.payload && (state.availableTopics = state.quizTopics);
     },
     setQuizTopicFilter(state, action) {
       state.selectedFilters.topic = action.payload;
     },
-    filterByQuizTopic(state) {
-      state.availableTopics = state.selectedFilters.topic
-        ? state.quizTopics.filter(
-            ({ title, topic }) =>
-              state.selectedFilters.quizBank === title && state.selectedFilters.topic === topic
-          )
-        : state.quizTopics.filter(({ title }) => state.selectedFilters.quizBank === title);
-    },
-    setDifficultyFilterAll(state, action) {
-      if (state.selectedFilters.quizBank) state.selectedFilters.difficulty = action.payload;
-    },
-    filterByDifficultyAll(state, action) {
-      state.availableTopics = action.payload
-        ? state.quizTopics.filter(
-            ({ title, topic }) =>
-              state.selectedFilters.quizBank === title && state.selectedFilters.quizTopic === topic
-          )
-        : [];
-      if (!action.payload) state.availableQuestionsQuantity = 0;
-    },
     setDifficultyFilter(state, action) {
-      const idx = state.selectedFilters.difficulty.indexOf(action.payload);
-      if (idx > -1 && state.selectedFilters.difficulty.length === 1) {
+      state.selectedFilters.difficulty = action.payload.length > 0 ? action.payload : [];
+      if (action.payload.length === 0) {
         state.availableTopics = [];
         state.availableQuestionsQuantity = 0;
       }
-      idx < 0
-        ? state.selectedFilters.difficulty.push(action.payload)
-        : state.selectedFilters.difficulty.splice(idx, 1);
     },
     setQuantityFilter(state, action) {
       state.selectedFilters.quantity = action.payload === '' ? null : action.payload;
@@ -94,12 +64,13 @@ export const filtersSlice = createSlice({
       state.availableTopics = processData(action.payload);
     });
     builder.addCase(getAvailableQuestions.fulfilled, (state, action) => {
-      state.availableQuestionsQuantity = action.payload.data.length;
-      if (state.selectedFilters.quizBank)
+      if (state.selectedFilters.quizBank) {
+        state.availableQuestionsQuantity = action.payload.data.length;
         state.availableTopics = readAvailableTopics(
           state.selectedFilters.quizBank,
           action.payload.data
         );
+      }
       state.isAvailableQuestionsByAnswer = action.payload.isAvailableQuestionsByAnswer;
     });
   },
@@ -122,13 +93,10 @@ function readAvailableTopics(bank, data) {
 export default filtersSlice.reducer;
 export const {
   setQuizBankFilter,
-  filterByQuizBank,
-  setDifficultyFilterAll,
+  setQuizTopicFilter,
   setDifficultyFilter,
-  filterByDifficultyAll,
   setQuantityFilter,
   setIsCorrectlyAnswered,
   setIsIncorrectlyAnswered,
   setIsUnanswered,
-  setQuizTopicFilter,
 } = filtersSlice.actions;

@@ -3,8 +3,9 @@ import axios from 'axios';
 
 export const getQuestionById = createAsyncThunk(
   'getQuestionById',
-  async function ({ token, filters, id }, { rejectWithValue }) {
-    const { quizBank } = filters;
+  async function ({ id }, { getState, rejectWithValue }) {
+    const { token } = getState().token;
+    const { quizBank } = getState().quiz.quiz.filters;
 
     const response = await axios
       .get(`http://localhost:4000/${quizBank}?id=${id}`, {

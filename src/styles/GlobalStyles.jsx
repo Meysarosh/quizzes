@@ -77,10 +77,53 @@ export const GlobalStyles = createGlobalStyle`
 
 .highlighted {
   background-color: #ffff00;
-}
-
-.highlighted-dark {
-  background-color: #ffff00;
   color: #000000;
 }
+
+.tooltip-top {
+  bottom: calc(100% + 1rem);
+  right: 50%;
+
+  &::after{
+    top:100%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.tooltip-bottom {
+  top: calc(100% + 1rem);
+  right: 50%;
+
+  &::after{
+    bottom:100%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.tooltip-right{
+  left: calc(100% + 1rem);
+  top: -50%;
+  transform: translateX(0);
+
+  &::after{
+    right:100%;
+    bottom: 50%;
+    transform: translateY(50%);
+  }
+}
+
+.tooltip-left{
+  right: calc(100% + 1rem);
+  top: -50%;
+  transform: translateX(0);
+
+  &::after{
+    left:100%;
+    bottom: 50%;
+    transform: translateY(50%);
+  }
+}
+
 `;

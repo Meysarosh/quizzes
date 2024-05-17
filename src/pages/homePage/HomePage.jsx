@@ -1,3 +1,8 @@
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router';
+import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2';
+import { IoIosArrowDropup } from 'react-icons/io';
 import {
   PageTitle,
   Main,
@@ -7,33 +12,25 @@ import {
   Aside,
   BackToTopButton,
 } from './HomePage.styles';
-import { QuizCard } from '../../components/quizCard/QuizCard';
-import { Filters } from './components/Filters';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2';
-import { IoIosArrowDropup } from 'react-icons/io';
+import { Filters, QuizCard } from './components';
 import { getQuestionsBanksAndTopics } from '../../store/actions';
-import { useLocation } from 'react-router';
 
 export function HomePage() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const filtersRef = useRef(null);
+
   const [filterVisibility, setFilterVisibility] = useState(false);
   const [topVisibility, setTopVisibility] = useState(false);
-  const { token } = useSelector((state) => state.token);
+
   const { history } = useSelector((state) => state.user);
   const { availableTopics, quizBanks } = useSelector((state) => state.filters);
 
   useEffect(() => {
     quizBanks.length === 0 &&
       history.at(-1) === location.pathname &&
-      dispatch(getQuestionsBanksAndTopics({ token }));
-  }, [quizBanks, dispatch, token, history, location]);
-
-  function handleClick() {
-    setFilterVisibility((filterVisibility) => !filterVisibility);
-  }
+      dispatch(getQuestionsBanksAndTopics());
+  }, [quizBanks, dispatch, history, location]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,9 +45,30 @@ export function HomePage() {
     };
   }, [topVisibility]);
 
+  useEffect(() => {
+    function handleClickOutsideFilters({ target }) {
+      filtersRef.current &&
+        !filtersRef.current.contains(target) &&
+        filterVisibility &&
+        setFilterVisibility((prev) => !prev);
+    }
+    document.addEventListener('mousedown', handleClickOutsideFilters);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutsideFilters);
+    };
+  }, [filtersRef, filterVisibility]);
+
+  function handleClick() {
+    setFilterVisibility((filterVisibility) => !filterVisibility);
+  }
+
+  function scroll() {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }
+
   return (
     <Main>
-      <Aside className={filterVisibility ? '' : 'filter-hidden'}>
+      <Aside ref={filtersRef} className={filterVisibility ? '' : 'filter-hidden'}>
         <Filters onClick={handleClick} />
       </Aside>
       <Header>
@@ -69,8 +87,4 @@ export function HomePage() {
       </BackToTopButton>
     </Main>
   );
-}
-
-function scroll() {
-  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 }

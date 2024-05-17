@@ -63,13 +63,6 @@ const Span = styled.span`
   color: #fff;
 `;
 
-const BtnBlock = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  column-gap: 0.5rem;
-`;
-
 const Button = styled.button`
   height: 2.7rem;
   min-width: 8.5rem;
@@ -151,7 +144,6 @@ export {
   GreenBar,
   RedBar,
   Span,
-  BtnBlock,
   Button,
   Icon,
   Section,

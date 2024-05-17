@@ -55,9 +55,6 @@ const Aside = styled.aside`
   width: 25%;
   height: 100%;
   padding: 1.7rem;
-  display: flex;
-  row-gap: 1.875rem;
-  flex-direction: column;
   background-color: ${(props) => props.theme.colors.linen};
   transition: all 0.5s ease-in-out;
 `;

@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useBlocker, useLocation, useNavigate, useParams } from 'react-router';
+import { GoChevronLeft, GoChevronRight } from 'react-icons/go';
 import {
   Main,
   Header,
@@ -15,9 +18,6 @@ import {
   ForvardButtons,
   Button,
 } from './QuizPage.styles';
-import { GoChevronLeft, GoChevronRight } from 'react-icons/go';
-import { useEffect, useRef, useState } from 'react';
-import { Modal } from '../../components/modal';
 import {
   getQuestion,
   updateUserData,
@@ -25,32 +25,25 @@ import {
   getQuestionById,
   getQuizById,
 } from '../../store/actions';
-import {
-  endQuiz,
-  setSelectedOptions,
-  addHighlighted,
-  removeHighlighted,
-} from '../../store/slices/quizSlice';
-import { useBlocker, useLocation, useNavigate, useParams } from 'react-router';
-import { deepCopyOAO } from '../../utils/helperFunctions/deepCopyOAO';
+import { endQuiz, setSelectedOptions } from '../../store/slices/quizSlice';
 import { setUserMessage, setUserError } from '../../store/slices/userSlice';
+import { Modal } from '../../components/modal';
+import { Highlight } from '../../components/highlight/Highlight';
 
 export function QuizPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const questionRef = useRef();
+
   const { id } = useParams();
 
-  const { quiz, currentQuestion, selectedOptions, highlight } = useSelector((state) => state.quiz);
-  const { user, history, error, darkMode } = useSelector((state) => state.user);
-  const { token } = useSelector((state) => state.token);
+  const { quiz, currentQuestion, selectedOptions } = useSelector((state) => state.quiz);
+  const { user, history, error } = useSelector((state) => state.user);
 
   const [answers, setAnswers] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [currentPosition, setCurrentPosition] = useState(1);
   const [isBlocked, setIsBlocked] = useState(true);
-  const [currentSelection, setCurrentSelection] = useState('');
 
   let blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
@@ -58,8 +51,9 @@ export function QuizPage() {
   );
 
   useEffect(() => {
+    !isBlocked && dispatch(endQuiz());
     !isBlocked && navigate(`/summary/${id}`);
-  }, [isBlocked, navigate, id]);
+  }, [isBlocked, navigate, id, dispatch]);
 
   useEffect(() => {
     error === 'Quiz Not Found' && navigate('/*');
@@ -67,48 +61,27 @@ export function QuizPage() {
 
   useEffect(() => {
     if (!quiz.id && history.at(-1) === location.pathname) {
-      dispatch(getQuizById({ token, id }));
+      dispatch(getQuizById({ id }));
     }
-  }, [quiz.id, history, location.pathname, dispatch, token, id]);
+  }, [quiz.id, history, location.pathname, dispatch, id]);
 
   useEffect(() => {
     history.at(-1) === location.pathname &&
       !currentQuestion &&
       quiz.questions.length > 0 &&
       quiz.id &&
-      dispatch(
-        getQuestionById({
-          token,
-          filters: quiz.filters,
-          id: quiz.questions[0],
-        })
-      ).then(() => {
+      dispatch(getQuestionById({ id: quiz.questions[0] })).then(() => {
         setSelectedAnswer(quiz.submittedAnswers[0]);
       });
-  }, [currentQuestion, quiz, dispatch, token, history, location.pathname]);
+  }, [currentQuestion, quiz, dispatch, history, location.pathname]);
 
   useEffect(() => {
     !currentQuestion &&
       quiz.questions.length === 0 &&
       quiz.id &&
       history.at(-1) === location.pathname &&
-      dispatch(
-        getQuestion({
-          answeredQuestions: user.quizzes.answeredQuestions,
-          token,
-          prevQuestions: [],
-          filters: quiz.filters,
-        })
-      );
-  }, [
-    currentQuestion,
-    history,
-    location.pathname,
-    quiz,
-    token,
-    dispatch,
-    user.quizzes.answeredQuestions,
-  ]);
+      dispatch(getQuestion());
+  }, [currentQuestion, history, location.pathname, quiz, dispatch]);
 
   useEffect(() => {
     setSelectedAnswer(null);
@@ -119,86 +92,6 @@ export function QuizPage() {
   useEffect(() => {
     selectedOptions[currentPosition - 1] && setSelectedAnswer(selectedOptions[currentPosition - 1]);
   }, [currentPosition, selectedOptions, selectedAnswer]);
-
-  useEffect(() => {
-    if (highlight.isHighlight && currentSelection.length > 0 && currentSelection != '?') {
-      const start = currentQuestion.question.search(currentSelection);
-      const end = start + currentSelection.length;
-
-      start > -1 &&
-        end > -1 &&
-        dispatch(
-          addHighlighted({
-            id: currentQuestion.id,
-            range: [start, end],
-          })
-        );
-    }
-  }, [currentSelection, currentQuestion, highlight.isHighlight, dispatch]);
-
-  useEffect(() => {
-    const highlightedQuestionData = highlight.highlighted.find(
-      ({ id }) => id === currentQuestion?.id
-    );
-    if (
-      highlight.isHighlight &&
-      highlightedQuestionData &&
-      highlightedQuestionData.range.length > 0
-    ) {
-      const highlightedRanges = highlightedQuestionData.range;
-      const highlightedQuestion = [];
-
-      let position = highlightedRanges.length - 1;
-
-      highlightedQuestion.push(currentQuestion.question.slice(highlightedRanges[position][1]));
-
-      while (position > -1) {
-        highlightedQuestion.unshift(
-          `<span class='highlighted${darkMode ? '-dark' : ''}' id='span${position}'>${currentQuestion.question.slice(highlightedRanges[position][0], highlightedRanges[position][1])}</span>`
-        );
-        position > 0
-          ? highlightedQuestion.unshift(
-              currentQuestion.question.slice(
-                highlightedRanges[position - 1][1],
-                highlightedRanges[position][0]
-              )
-            )
-          : highlightedQuestion.unshift(
-              currentQuestion.question.slice(0, highlightedRanges[position][0])
-            );
-        position -= 1;
-      }
-
-      questionRef.current.innerHTML = highlightedQuestion.join('');
-    }
-  }, [highlight, currentQuestion, darkMode]);
-
-  useEffect(() => {
-    setCurrentSelection('');
-  }, [highlight.highlighted]);
-
-  useEffect(() => {
-    const highlightedQuestionData = highlight.highlighted.find(
-      ({ id }) => id === currentQuestion?.id
-    );
-    if (
-      (!highlight.isHighlight && questionRef.current?.firstChild) ||
-      (highlightedQuestionData && highlightedQuestionData.range.length === 0)
-    )
-      questionRef.current.innerHTML = currentQuestion.question;
-  }, [highlight, currentQuestion]);
-
-  function handleQuestionUp() {
-    if (highlight.isHighlight && questionRef.current) {
-      setCurrentSelection(window.getSelection().toString());
-    }
-  }
-
-  function handleQuestionClick(e) {
-    (e.target.classList.contains('highlighted') ||
-      e.target.classList.contains('highlighted-dark')) &&
-      dispatch(removeHighlighted({ id: currentQuestion.id, idx: Number(e.target.id.slice(4)) }));
-  }
 
   function handleSelection(e) {
     if (!quiz.submittedAnswers[currentPosition - 1]) {
@@ -246,21 +139,19 @@ export function QuizPage() {
 
   function handleBtnSubmit() {
     if (selectedAnswer) {
-      const answeredQuestions = deepCopyOAO(user.quizzes.answeredQuestions);
-
-      if (answeredQuestions[quiz.filters.quizBank]) {
-        const idx = answeredQuestions[quiz.filters.quizBank].findIndex(
-          ({ id }) => id === currentQuestion.id
-        );
+      const answeredQuestions = structuredClone(user.answeredQuestions);
+      const bank = quiz.filters.quizBank;
+      if (answeredQuestions[bank]) {
+        const idx = answeredQuestions[bank].findIndex(({ id }) => id === currentQuestion.id);
 
         idx > -1
-          ? (answeredQuestions[quiz.filters.quizBank][idx].answer = selectedAnswer)
-          : answeredQuestions[quiz.filters.quizBank].push({
+          ? (answeredQuestions[bank][idx].answer = selectedAnswer)
+          : answeredQuestions[bank].push({
               id: currentQuestion.id,
               answer: selectedAnswer,
             });
       } else {
-        answeredQuestions[quiz.filters.quizBank] = [
+        answeredQuestions[bank] = [
           {
             id: currentQuestion.id,
             answer: selectedAnswer,
@@ -268,44 +159,13 @@ export function QuizPage() {
         ];
       }
 
+      dispatch(updateUserData({ answeredQuestions }));
+
       if (currentPosition < quiz.filters.quantity) {
-        dispatch(
-          updateUserData({
-            token,
-            user: {
-              ...user,
-              password: user.username,
-              quizzes: {
-                ...user.quizzes,
-                answeredQuestions,
-              },
-            },
-          })
-        );
         updateQuiz(false, true);
         showNextQuestion(true, true);
       }
       if (currentPosition === quiz.filters.quantity) {
-        const idx = user.quizzes.unfinished.indexOf(quiz.id);
-        const unfinished = [...user.quizzes.unfinished];
-        unfinished.splice(idx, 1);
-        const finished = new Set(user.quizzes.finished).add(quiz.id);
-
-        dispatch(
-          updateUserData({
-            token,
-            user: {
-              ...user,
-              password: user.username,
-              quizzes: {
-                ...user.quizzes,
-                answeredQuestions,
-                finished: [...finished],
-                unfinished,
-              },
-            },
-          })
-        );
         updateQuiz(true, true);
         setIsBlocked(false);
       }
@@ -318,16 +178,7 @@ export function QuizPage() {
       ? selectedAnswer
       : quiz.submittedAnswers[currentPosition - 1] ?? null;
 
-    return dispatch(
-      updateQuizData({
-        token,
-        quiz: {
-          ...quiz,
-          isFinished,
-          submittedAnswers: newAnswers,
-        },
-      })
-    );
+    dispatch(updateQuizData({ isFinished, submittedAnswers: newAnswers }));
   }
 
   function showNextQuestion(isForward, isNextUnsubmited) {
@@ -345,13 +196,7 @@ export function QuizPage() {
           : currentPosition
         : currentPosition - 2;
 
-      dispatch(
-        getQuestionById({
-          token,
-          filters: quiz.filters,
-          id: quiz.questions[index],
-        })
-      ).then(() => {
+      dispatch(getQuestionById({ id: quiz.questions[index] })).then(() => {
         setSelectedAnswer(quiz.submittedAnswers[index]);
       });
 
@@ -365,14 +210,7 @@ export function QuizPage() {
       quiz.questions.length < quiz.filters.quantity
     ) {
       setCurrentPosition((prev) => prev + 1);
-      dispatch(
-        getQuestion({
-          answeredQuestions: user.quizzes.answeredQuestions,
-          token,
-          prevQuestions: [...quiz.questions, currentQuestion.id],
-          filters: quiz.filters,
-        })
-      );
+      dispatch(getQuestion());
     }
   }
 
@@ -411,9 +249,11 @@ export function QuizPage() {
             </ArrowButton>
           </ProcessStatus>
         </Header>
-        <QuestionText ref={questionRef} onClick={handleQuestionClick} onMouseUp={handleQuestionUp}>
-          {currentQuestion.question}
-        </QuestionText>
+        <Highlight>
+          <QuestionText className="question" key={currentQuestion.id}>
+            {currentQuestion.question}
+          </QuestionText>
+        </Highlight>
         <Form>
           {answers.map((el, idx) => (
             <RadioContainer key={el} htmlFor={idx + 1}>

@@ -1,9 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { TableContainer, Table, Th, Td, Button } from './QuizzesTable.styles';
+import { TableContainer, Table, Th, Td, Button, ButtonsContainer } from './QuizzesTable.styles';
 import { useEffect } from 'react';
 import { getUserQuizzes } from '../../../store/actions/getUserQuizzes';
 import { prepairQuizForCopy } from '../../../store/slices/quizSlice';
-import { updateUserData } from '../../../store/actions';
 import { createNewQuiz, getQuizById } from '../../../store/actions';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -12,14 +11,14 @@ export function QuizzesTable() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { token } = useSelector((state) => state.token);
-  const { user, history } = useSelector((state) => state.user);
+
+  const { history } = useSelector((state) => state.user);
   const { quizzes } = useSelector((state) => state.userQuizzes);
   const { quiz } = useSelector((state) => state.quiz);
 
   useEffect(() => {
-    location.pathname === history.at(-1) && dispatch(getUserQuizzes({ token, id: user.id }));
-  }, [dispatch, token, user.id, location.pathname, history]);
+    location.pathname === history.at(-1) && dispatch(getUserQuizzes());
+  }, [dispatch, location.pathname, history]);
 
   useEffect(() => {
     quiz.id && !quiz.isFinished && navigate(`/quiz/${quiz.id}`);
@@ -32,26 +31,14 @@ export function QuizzesTable() {
   useEffect(() => {
     !quiz.date &&
       quiz.questions.length > 0 &&
-      dispatch(createNewQuiz({ token, quiz: { ...quiz, date: Date.now() } })).then((res) => {
-        dispatch(
-          updateUserData({
-            token,
-            user: {
-              ...user,
-              password: 'Yahyahyah-1',
-              quizzes: {
-                ...user.quizzes,
-                unfinished: [...user.quizzes.unfinished, res.payload.id],
-              },
-            },
-          })
-        );
+      dispatch(createNewQuiz()).then((res) => {
         navigate(`/quiz/${res.payload.id}`);
       });
-  }, [quiz, dispatch, navigate, token, user]);
+  }, [quiz, dispatch, navigate]);
 
-  function handleActionBtn(id) {
-    dispatch(getQuizById({ token, id }));
+  function handleActionBtn(action, id) {
+    action === 'quiz' && dispatch(getQuizById({ id }));
+    action === 'summary' && navigate(`/summary/${id}`);
   }
 
   return (
@@ -89,9 +76,14 @@ export function QuizzesTable() {
                 <Td>{new Date(date).toUTCString()}</Td>
                 <Td>{isFinished ? 'Finished' : 'Unfinished'}</Td>
                 <Td>
-                  <Button onClick={() => handleActionBtn(quizId)}>
-                    {isFinished ? 'Retake' : 'Resume'}
-                  </Button>
+                  <ButtonsContainer>
+                    <Button onClick={() => handleActionBtn('quiz', quizId)}>
+                      {isFinished ? 'Retake' : 'Resume'}
+                    </Button>
+                    {isFinished && (
+                      <Button onClick={() => handleActionBtn('summary', quizId)}>Summary</Button>
+                    )}
+                  </ButtonsContainer>
                 </Td>
               </tr>
             )

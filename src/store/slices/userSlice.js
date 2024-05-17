@@ -43,18 +43,18 @@ export const userSlice = createSlice({
     });
     builder.addCase(updateUserData.fulfilled, (state, action) => {
       state.user = { ...action.payload, password: 'try to guess' };
-      if (state.history.at(-1).includes('profile'))
-        state.message = 'Your data updated successfully!';
+      state.history.at(-1).includes('profile') &&
+        (state.message = 'Your data updated successfully!');
     });
     builder.addCase(updateUserData.rejected, (state, action) => {
       state.error = action.payload;
     });
     builder.addCase(updateQuizData.fulfilled, (state, action) => {
-      if (action.payload.isFinished)
-        state.message = 'Congratulation! You have successfully finished the quiz!';
+      action.payload.isFinished &&
+        (state.message = 'Congratulation! You have successfully finished the quiz!');
     });
     builder.addCase(getQuizById.fulfilled, (state, action) => {
-      if (!action.payload) state.error = 'Quiz Not Found';
+      !action.payload && (state.error = 'Quiz Not Found');
     });
   },
 });

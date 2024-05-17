@@ -17,6 +17,9 @@ export const selectStyles = {
     ...baseStyles,
     color: state.isDisabled ? '#a7a7a7' : '#dab49d',
     transform: state.selectProps.menuIsOpen ? 'rotate(180deg)' : null,
+    '&:hover': {
+      color: '#dab49d',
+    },
   }),
   menu: (baseStyles) => ({
     ...baseStyles,

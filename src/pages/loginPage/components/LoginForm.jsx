@@ -25,8 +25,7 @@ export function LoginForm() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    const data = { email: emailValue, password: passValue };
-    dispatch(login(data));
+    dispatch(login({ email: emailValue, password: passValue }));
   }
 
   return (
