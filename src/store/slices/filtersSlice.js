@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getAvailableQuestions, getQuestionsBanksAndTopics } from '../actions/';
+import { getAvailableQuestions, getQuestionsBanksAndTopics, getPaginatedTopics } from '../actions/';
 
 const initialState = {
   quizBanks: [],
@@ -35,11 +35,7 @@ export const filtersSlice = createSlice({
       state.selectedFilters.isIncorrectlyAnswered = true;
       state.selectedFilters.isUnanswered = true;
       state.availableQuestionsQuantity = null;
-    },
-    filterByQuizBank(state) {
-      state.availableTopics = state.selectedFilters.quizBank
-        ? state.quizTopics.filter(({ title }) => state.selectedFilters.quizBank === title)
-        : state.quizTopics;
+      !action.payload && (state.availableTopics = []);
     },
     setQuizTopicFilter(state, action) {
       state.selectedFilters.topic = action.payload;
@@ -91,7 +87,13 @@ export const filtersSlice = createSlice({
     builder.addCase(getQuestionsBanksAndTopics.fulfilled, (state, action) => {
       state.quizBanks = Object.keys(action.payload);
       state.quizTopics = processData(action.payload);
-      state.availableTopics = processData(action.payload);
+    });
+    builder.addCase(getPaginatedTopics.fulfilled, (state, action) => {
+      state.availableTopics = state.availableTopics.find(
+        ({ topic }) => topic === action.payload.data[0].topic
+      )
+        ? state.availableTopics
+        : state.availableTopics.concat(action.payload.data);
     });
     builder.addCase(getAvailableQuestions.fulfilled, (state, action) => {
       state.availableQuestionsQuantity = action.payload.data.length;

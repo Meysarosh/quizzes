@@ -1,5 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createNewUser, login, updateUserData, updateQuizData, getQuizById } from '../actions';
+import {
+  createNewUser,
+  login,
+  updateUserData,
+  updateQuizData,
+  getQuizById,
+  getPaginatedTopics,
+} from '../actions';
 
 const initialState = { user: {}, error: null, message: null, history: [], darkMode: false };
 
@@ -53,8 +60,14 @@ export const userSlice = createSlice({
       if (action.payload.isFinished)
         state.message = 'Congratulation! You have successfully finished the quiz!';
     });
+    builder.addCase(updateQuizData.rejected, (state, action) => {
+      state.error = action.payload;
+    });
     builder.addCase(getQuizById.fulfilled, (state, action) => {
       if (!action.payload) state.error = 'Quiz Not Found';
+    });
+    builder.addCase(getPaginatedTopics.rejected, (state, action) => {
+      state.error = action.payload;
     });
   },
 });

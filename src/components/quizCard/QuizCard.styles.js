@@ -3,9 +3,9 @@ import styled from 'styled-components';
 const Card = styled.div`
   box-sizing: border-box;
   position: relative;
-  max-height: 18.75rem;
+  height: 18.75rem;
   aspect-ratio: 1/1;
-
+  margin-bottom: 2rem;
   padding: 1.25rem 0.75rem 0.75rem 0.75rem;
   border-radius: 0.65rem;
   background-color: ${(props) => props.theme.colors.cardBackgroundColor};

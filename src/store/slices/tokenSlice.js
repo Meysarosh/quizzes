@@ -12,6 +12,7 @@ import {
   getQuestionsBanksAndTopics,
   getUserQuizzes,
   getQuestionsForSummary,
+  getPaginatedTopics,
 } from '../actions';
 
 const initialState = { token: null };
@@ -62,6 +63,9 @@ export const tokenSlice = createSlice({
     });
     builder.addCase(getQuestionsForSummary.rejected, (state, action) => {
       if (action.payload === 'jwt expired') state.token = null;
+    });
+    builder.addCase(getPaginatedTopics.rejected, (state, action) => {
+      action.payload === 'Unauthorized' && (state.token = null);
     });
   },
 });

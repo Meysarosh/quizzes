@@ -41,10 +41,13 @@ const FilterButton = styled.button`
 `;
 
 const Content = styled.section`
-  margin: 4.625rem 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 2.5rem;
+  margin: 4.625rem 0 2rem 0;
+  display: flex;
+  justify-content: space-between;
+  column-gap: 1rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
 `;
 
 const Aside = styled.aside`
@@ -80,10 +83,56 @@ const BackToTopButton = styled.button`
   background-color: ${(props) => props.theme.colors.caramel};
   outline: #ffffff66 solid 1rem;
 
+  transition: all 0.3s;
+
   &:hover {
     cursor: pointer;
-    transform: scale(1.2);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(1);
   }
 `;
 
-export { Main, PageTitle, Content, Header, FilterButton, Aside, BackToTopButton };
+const PaginateContainer = styled.div`
+  margin-bottom: 3rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
+const PaginateBtn = styled.button`
+  width: max-content;
+  position: relative;
+  font-size: 5rem;
+  color: ${(props) => props.theme.colors.caramel};
+  opacity: 0.3;
+  background-color: transparent;
+  border: none;
+
+  transition: all 0.3s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+
+const PaginateBtnText = styled.p`
+  font-size: 3rem;
+  color: ${(props) => props.theme.colors.caramel};
+  transform: translateY(-50%);
+`;
+
+export {
+  Main,
+  PageTitle,
+  Content,
+  Header,
+  FilterButton,
+  Aside,
+  BackToTopButton,
+  PaginateContainer,
+  PaginateBtn,
+  PaginateBtnText,
+};

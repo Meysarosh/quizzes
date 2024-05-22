@@ -10,3 +10,4 @@ export * from './getQuestionsBanksAndTopics';
 export * from './getAvailableQuestions';
 export * from './getQuestionsForSummary';
 export * from './getUserQuizzes';
+export * from './getPaginatedTopics';
