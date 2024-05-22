@@ -4,7 +4,10 @@ import { filterByIds } from '../../utils/helperFunctions/filterById';
 
 export const getQuestion = createAsyncThunk(
   'getQuestion',
-  async function ({ token, filters, answeredQuestions, prevQuestions }, { rejectWithValue }) {
+  async function (_, { getState, rejectWithValue }) {
+    const { token } = getState().token;
+    const { answeredQuestions } = getState().user.user;
+    const { filters, questions } = getState().quiz.quiz;
     const {
       quizBank,
       topic,
@@ -15,7 +18,7 @@ export const getQuestion = createAsyncThunk(
     } = filters;
 
     const difficultiesQueryString = difficulty.map((el) => `&level=${el}`).join('');
-    const prevQuestionsFilterQueryString = prevQuestions.map((id) => `&id_ne=${id}`).join('');
+    const prevQuestionsFilterQueryString = questions.map((id) => `&id_ne=${id}`).join('');
 
     const response = await axios
       .get(

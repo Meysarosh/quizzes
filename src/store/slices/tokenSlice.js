@@ -29,7 +29,7 @@ export const tokenSlice = createSlice({
       state.token = null;
     });
     builder.addCase(updateUserData.rejected, (state, action) => {
-      if (action.payload === 'jwt expired') state.token = null;
+      action.payload === 'jwt expired' && (state.token = null);
     });
     builder.addCase(login.fulfilled, (state, action) => {
       state.token = action.payload.accessToken;
@@ -38,31 +38,31 @@ export const tokenSlice = createSlice({
       state.token = null;
     });
     builder.addCase(createNewQuiz.rejected, (state, action) => {
-      if (action.payload === 'jwt expired') state.token = null;
+      action.payload === 'jwt expired' && (state.token = null);
     });
     builder.addCase(updateQuizData.rejected, (state, action) => {
-      if (action.payload === 'jwt expired') state.token = null;
+      action.payload === 'jwt expired' && (state.token = null);
     });
     builder.addCase(getQuizById.rejected, (state, action) => {
-      if (action.payload === 'jwt expired') state.token = null;
+      action.payload === 'jwt expired' && (state.token = null);
     });
     builder.addCase(getQuestion.rejected, (state, action) => {
-      if (action.payload === 'jwt expired') state.token = null;
+      action.payload === 'jwt expired' && (state.token = null);
     });
     builder.addCase(getQuestionById.rejected, (state, action) => {
-      if (action.payload === 'jwt expired') state.token = null;
+      action.payload === 'jwt expired' && (state.token = null);
     });
     builder.addCase(getAvailableQuestions.rejected, (state, action) => {
-      if (action.payload === 'jwt expired') state.token = null;
+      action.payload === 'jwt expired' && (state.token = null);
     });
     builder.addCase(getQuestionsBanksAndTopics.rejected, (state, action) => {
-      if (action.payload === 'jwt expired') state.token = null;
+      action.payload === 'jwt expired' && (state.token = null);
     });
     builder.addCase(getUserQuizzes.rejected, (state, action) => {
-      if (action.payload === 'jwt expired') state.token = null;
+      action.payload === 'jwt expired' && (state.token = null);
     });
     builder.addCase(getQuestionsForSummary.rejected, (state, action) => {
-      if (action.payload === 'jwt expired') state.token = null;
+      action.payload === 'jwt expired' && (state.token = null);
     });
     builder.addCase(getPaginatedTopics.rejected, (state, action) => {
       action.payload === 'Unauthorized' && (state.token = null);

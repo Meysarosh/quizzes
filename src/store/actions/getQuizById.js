@@ -3,7 +3,9 @@ import axios from 'axios';
 
 export const getQuizById = createAsyncThunk(
   'getQuizById',
-  async function ({ token, id }, { rejectWithValue }) {
+  async function ({ id }, { getState, rejectWithValue }) {
+    const { token } = getState().token;
+
     const response = await axios
       .get(`http://localhost:3000/quizzes?id=${id}`, {
         headers: {

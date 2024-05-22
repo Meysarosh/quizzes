@@ -36,6 +36,16 @@ export function Authorized({ children }) {
   }, [location.pathname, dispatch]);
 
   useEffect(() => {
+    if (!token) {
+      navigate('/');
+    }
+  }, [token, navigate]);
+
+  useEffect(() => {
+    history.at(-1) !== history.at(-2) && dispatch(resetHighlight());
+  }, [history, dispatch]);
+
+  useEffect(() => {
     history.length > 1 &&
       quiz.id &&
       !history.at(-1).includes('summary') &&
@@ -59,12 +69,6 @@ export function Authorized({ children }) {
     navigate('/home');
   }
 
-  useEffect(() => {
-    if (!token) {
-      navigate('/');
-    }
-  });
-
   function handleSwitchHighlight() {
     dispatch(switchHighlight());
   }
@@ -81,7 +85,7 @@ export function Authorized({ children }) {
             <Logo />
           </LogoContainer>
           <Tooltip text={`switch to ${darkMode ? 'light' : 'dark'} mode`} position="right">
-            <Switch className="theme_switch" onClick={handleThemeChange}>
+            <Switch onClick={handleThemeChange}>
               <BsMoonStars />
               <BsSun />
               <SwitchBtn $nightMode={darkMode} />

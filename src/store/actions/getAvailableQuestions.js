@@ -4,16 +4,11 @@ import { filterByIds } from '../../utils/helperFunctions/filterById';
 
 export const getAvailableQuestions = createAsyncThunk(
   'getAvailableQuestions',
-  async function ({ token, filters, answeredQuestions }, { rejectWithValue }) {
-    const {
-      quizBank,
-      topic,
-      difficulty,
-      isCorrectlyAnswered,
-      isIncorrectlyAnswered,
-      isUnanswered,
-    } = filters;
-
+  async function ({ quizBank, topic }, { getState, rejectWithValue }) {
+    const { token } = getState().token;
+    const { answeredQuestions } = getState().user.user;
+    const { difficulty, isCorrectlyAnswered, isIncorrectlyAnswered, isUnanswered } =
+      getState().filters.selectedFilters;
     const difficultiesQuerryString = difficulty.map((el) => `&level=${el}`).join('');
 
     const response = await axios
@@ -31,29 +26,19 @@ export const getAvailableQuestions = createAsyncThunk(
         else throw rejectWithValue(error.message);
       });
 
-    const filteredData = filterByIds(
-      response.data,
-      answeredQuestions[quizBank],
-      isCorrectlyAnswered,
-      isIncorrectlyAnswered,
-      isUnanswered
-    );
-
-    return isCorrectlyAnswered && isIncorrectlyAnswered && isUnanswered
-      ? {
-          data: response.data,
-          isAvailableQuestionsByAnswer: checkAvailability(
-            response.data,
-            answeredQuestions[quizBank]
-          ),
-        }
-      : {
-          data: filteredData,
-          isAvailableQuestionsByAnswer: checkAvailability(
-            response.data,
-            answeredQuestions[quizBank]
-          ),
-        };
+    return {
+      data:
+        isCorrectlyAnswered && isIncorrectlyAnswered && isUnanswered
+          ? response.data
+          : filterByIds(
+              response.data,
+              answeredQuestions[quizBank],
+              isCorrectlyAnswered,
+              isIncorrectlyAnswered,
+              isUnanswered
+            ),
+      isAvailableQuestionsByAnswer: checkAvailability(response.data, answeredQuestions[quizBank]),
+    };
   }
 );
 

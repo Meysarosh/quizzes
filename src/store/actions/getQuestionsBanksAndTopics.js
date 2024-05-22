@@ -3,7 +3,9 @@ import axios from 'axios';
 
 export const getQuestionsBanksAndTopics = createAsyncThunk(
   'getQuestionsBanksAndTopics',
-  async function ({ token }, { rejectWithValue }) {
+  async function (_, { getState, rejectWithValue }) {
+    const { token } = getState().token;
+
     const response = await axios
       .get(`http://localhost:4000/structure`, {
         headers: {

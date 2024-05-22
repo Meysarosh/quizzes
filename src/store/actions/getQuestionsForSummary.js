@@ -3,11 +3,13 @@ import axios from 'axios';
 
 export const getQuestionsForSummary = createAsyncThunk(
   'getQuestionsForSummary',
-  async function ({ token, questions, quizBank }, { rejectWithValue }) {
+  async function (_, { getState, rejectWithValue }) {
+    const { token } = getState().token;
+    const { questions, filters } = getState().quiz.quiz;
     const questionsQuerryString = questions.map((q) => `&id=${q}`).join('');
 
     const response = await axios
-      .get(`http://localhost:4000/${quizBank}?${questionsQuerryString}`, {
+      .get(`http://localhost:4000/${filters.quizBank}?${questionsQuerryString}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,

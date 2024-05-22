@@ -1,5 +1,11 @@
 import styled from 'styled-components';
 
+const SidebarContent = styled.div`
+  display: flex;
+  row-gap: 1.875rem;
+  flex-direction: column;
+`;
+
 const Header = styled.header`
   display: flex;
   justify-content: space-between;
@@ -47,7 +53,7 @@ const Paragraph = styled.p`
   color: ${(props) => props.theme.colors.rawUmber};
 `;
 
-const DifficultyContainer = styled.div`
+const FilterContainer = styled.div`
   width: 100%;
   min-height: fit-content;
   display: flex;
@@ -55,7 +61,7 @@ const DifficultyContainer = styled.div`
   row-gap: 0.5rem;
 `;
 
-const DifficultyControll = styled.div`
+const FilterControll = styled.div`
   width: 100%;
   min-height: 2.7rem;
   padding: 0.3rem 0.6rem;
@@ -144,35 +150,16 @@ const CustomCheckboxChecked = styled.div`
   transform: rotate(45deg);
 `;
 
-const ExcludeContainer = styled.div`
-  width: 100%;
-  min-height: fit-content;
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.5rem;
-`;
-
-const ExcludeControll = styled.div`
-  width: 100%;
-  min-height: 2.7rem;
-  padding: 0.3rem 0.6rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 0.3rem;
-  background-color: ${(props) => props.theme.colors.cardBackgroundColor};
-  cursor: pointer;
-`;
-
 export {
+  SidebarContent,
   Title,
   Header,
   ButtonClose,
   Container,
   Label,
   Paragraph,
-  DifficultyContainer,
-  DifficultyControll,
+  FilterContainer,
+  FilterControll,
   SelectedList,
   ArrowContainer,
   Menu,
@@ -180,6 +167,4 @@ export {
   CheckboxInput,
   CustomCheckbox,
   CustomCheckboxChecked,
-  ExcludeContainer,
-  ExcludeControll,
 };

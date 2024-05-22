@@ -24,13 +24,14 @@ const TableContainer = styled.div`
 
 const Table = styled.table`
   width: 100%;
-  table-layout: fixed;
+  /* table-layout: fixed; */
   color: ${(props) => props.theme.colors.text};
   border: 2px solid ${(props) => props.theme.colors.caramel};
   border-collapse: collapse;
 `;
 
 const Th = styled.th`
+  padding: 0.3rem;
   font-size: 1.25rem;
   font-weight: 400;
   border: 1px solid ${(props) => props.theme.colors.caramel};
@@ -38,9 +39,15 @@ const Th = styled.th`
 
 const Td = styled.td`
   height: 2rem;
+  padding: 0.3rem;
   text-align: center;
   font-size: 1.25rem;
   border: 1px solid ${(props) => props.theme.colors.caramel};
+`;
+
+const ButtonsContainer = styled.div`
+  display: flex;
+  column-gap: 0.5rem;
 `;
 
 const Button = styled.button`
@@ -68,4 +75,4 @@ const Button = styled.button`
   }
 `;
 
-export { TableContainer, Table, Th, Td, Button };
+export { TableContainer, Table, Th, Td, ButtonsContainer, Button };

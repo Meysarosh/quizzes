@@ -27,6 +27,7 @@ export function HomePage() {
   const filtersRef = useRef(null);
   const [filterVisibility, setFilterVisibility] = useState(false);
   const [topVisibility, setTopVisibility] = useState(false);
+
   const [nextLoad, setNextLoad] = useState(`&_page=1&_limit=${PaginationRange}`);
   const [loadPermit, setLoadPermit] = useState(true);
   const [localPagination, setLocalPagination] = useState(0);

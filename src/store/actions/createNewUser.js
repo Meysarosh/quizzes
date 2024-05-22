@@ -4,18 +4,10 @@ import axios from 'axios';
 export const createNewUser = createAsyncThunk(
   'createNewUser',
   async function (data, { rejectWithValue }) {
-    const { fullname, email, username, password } = data;
     const response = await axios
       .post('http://localhost:3000/users', {
-        fullname,
-        email,
-        username,
-        password,
-        quizzes: {
-          finished: [],
-          unfinished: [],
-          answeredQuestions: [],
-        },
+        ...data,
+        answeredQuestions: [],
       })
       .catch(function (error) {
         if (error.response) throw rejectWithValue(error.response.data);

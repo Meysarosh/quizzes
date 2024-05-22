@@ -1,7 +1,7 @@
 import { ThemeProvider as ScThemeProvider } from 'styled-components';
 import { PropTypes } from 'prop-types';
-import { createContext, useState } from 'react';
-import { theme } from '../utils/const/selectStyles';
+import { theme } from './selectStyles';
+import { useSelector } from 'react-redux';
 
 const dayTheme = {
   colors: {
@@ -25,8 +25,8 @@ const dayTheme = {
 
 const nigthTheme = {
   colors: {
-    backgroundColorMedium: '#faf0e6',
-    backgroundColorDark: '#00000030',
+    backgroundColorMedium: '#2d2d2d',
+    backgroundColorDark: '#695651',
     cardBackgroundColor: '#4b4b4b',
     inputFieldColor: ' #4b4b4b',
     textColorBrown: '#f3e9dc',
@@ -45,19 +45,13 @@ const nigthTheme = {
 
 theme.colors = { ...dayTheme.colors };
 
-export const ThemeContext = createContext(false);
-
 export const ThemeProvider = ({ children }) => {
-  const [isNightMode, setIsNightMode] = useState(false);
+  const { darkMode } = useSelector((state) => state.user);
 
-  if (isNightMode) theme.colors = { ...nigthTheme.colors };
+  if (darkMode) theme.colors = { ...nigthTheme.colors };
   else theme.colors = { ...dayTheme.colors };
 
-  return (
-    <ThemeContext.Provider value={{ isNightMode, setIsNightMode }}>
-      <ScThemeProvider theme={isNightMode ? nigthTheme : dayTheme}>{children}</ScThemeProvider>
-    </ThemeContext.Provider>
-  );
+  return <ScThemeProvider theme={darkMode ? nigthTheme : dayTheme}>{children}</ScThemeProvider>;
 };
 
 ThemeProvider.propTypes = {

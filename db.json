@@ -4,11 +4,7 @@
       "email": "roman.meszaros@nixs.com",
       "fullname": "Roman Roman",
       "username": "Yahyahyah-1",
-      "quizzes": {
-        "finished": [],
-        "unfinished": [],
-        "answeredQuestions": {}
-      },
+      "answeredQuestions": {},
       "id": 1,
       "img": "default.png",
       "dateofbirth": "2024-03-18",

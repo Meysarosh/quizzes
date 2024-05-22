@@ -3,16 +3,16 @@ import axios from 'axios';
 
 export const updateQuizData = createAsyncThunk(
   'updateQuizData',
-  async function (data, { rejectWithValue }) {
+  async function (data, { getState, rejectWithValue }) {
+    const { token } = getState().token;
+    const { quiz } = getState().quiz;
     const headers = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${data.token}`,
+      Authorization: `Bearer ${token}`,
     };
 
     const response = await axios
-      .put(`http://localhost:3000/quizzes/${data.quiz.id}`, data.quiz, {
-        headers: headers,
-      })
+      .put(`http://localhost:3000/quizzes/${quiz.id}`, { ...quiz, ...data }, { headers })
       .catch(function (error) {
         if (error.response) throw rejectWithValue(error.response.data);
         else throw rejectWithValue(error.message);
