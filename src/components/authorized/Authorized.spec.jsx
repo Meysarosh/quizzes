@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../utils/test-utils';
 import userEvent from '@testing-library/user-event';
+import { waitFor, screen } from '@testing-library/react';
 import { Authorized } from './Authorized';
 import { MemoryRouter } from 'react-router-dom';
 import * as reactRouter from 'react-router';
@@ -190,21 +191,18 @@ const stateWithSummary = {
       email: 'test@email.com',
       fullname: 'Test Test',
       username: 'Testuser',
-      quizzes: {
-        finished: [],
-        unfinished: [],
-        answeredQuestions: {
-          React: [
-            { id: 1, answer: 1 },
-            { id: 2, answer: 2 },
-          ],
-        },
+      answeredQuestions: {
+        React: [
+          { id: 1, answer: 1 },
+          { id: 2, answer: 2 },
+        ],
       },
       id: 1,
     },
     error: null,
     message: null,
     history: ['summary', '/home'],
+    darkMode: false,
   },
 
   summary: {
@@ -250,6 +248,12 @@ const stateWithSummary = {
     ],
     correctlyAnsweredQid: [1, 49],
     incorrectlyAnsweredQid: [],
+  },
+  highlight: {
+    highlight: {
+      isHighlight: false,
+      highlighted: [],
+    },
   },
 };
 
@@ -322,7 +326,7 @@ describe('Authorized HOC', () => {
     expect(profile).toBeInTheDocument();
   });
 
-  it('should navigate to profile page if when click on avatar', async () => {
+  it('should navigate to profile page when click on avatar', async () => {
     const user = userEvent.setup();
 
     const navigate = vi.fn();
@@ -375,6 +379,49 @@ describe('Authorized HOC', () => {
     expect(store.getState().quiz.quiz).toStrictEqual(inititalQuizState);
   });
 
+  it('should change state highlight.isHighligh when clicked on highlight switch', async () => {
+    const user = userEvent.setup();
+    const { store, getByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/summary']}>
+        <Authorized />
+      </MemoryRouter>,
+      {
+        preloadedState: stateWithSummary,
+      }
+    );
+
+    const switchBtn = getByText('highlight off');
+    expect(switchBtn).toBeInTheDocument();
+
+    expect(store.getState().highlight.highlight.isHighlight === false).toBe(true);
+
+    await user.click(switchBtn);
+
+    await waitFor(() =>
+      expect(store.getState().highlight.highlight.isHighlight === true).toBe(true)
+    );
+  });
+
+  it('should change theme when click on theme switch', async () => {
+    const user = userEvent.setup();
+    const { container, store, getByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/summary']}>
+        <Authorized />
+      </MemoryRouter>,
+      {
+        preloadedState: stateWithSummary,
+      }
+    );
+
+    const switchBtn = container.getElementsByClassName('theme_switch')[0];
+
+    expect(store.getState().user.darkMode === false).toBe(true);
+
+    await user.click(switchBtn);
+
+    await waitFor(() => expect(store.getState().user.darkMode === true).toBe(true));
+  });
+
   it('should set quiz state to its initial state when leave summary page', async () => {
     const { store } = renderWithProviders(
       <MemoryRouter initialEntries={['/home']}>
@@ -388,7 +435,7 @@ describe('Authorized HOC', () => {
     expect(store.getState().quiz.quiz).toStrictEqual(inititalQuizState);
   });
 
-  it('should reset summary strate after summary page was left', () => {
+  it('should reset summary state after summary page was left', () => {
     const { store } = renderWithProviders(
       <MemoryRouter initialEntries={['/home']}>
         <Authorized />

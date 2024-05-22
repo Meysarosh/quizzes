@@ -17,21 +17,18 @@ const initialState = {
       email: 'test@email.com',
       fullname: 'Test Test',
       username: 'Testuser',
-      quizzes: {
-        finished: [],
-        unfinished: [],
-        answeredQuestions: {
-          React: [
-            { id: 1, answer: 1 },
-            { id: 2, answer: 2 },
-          ],
-        },
+      answeredQuestions: {
+        React: [
+          { id: 1, answer: 1 },
+          { id: 2, answer: 2 },
+        ],
       },
       id: 1,
     },
     error: null,
     message: null,
     history: ['/home'],
+    darkMode: false,
   },
   filters: {
     quizBanks: [],
@@ -45,7 +42,7 @@ const initialState = {
       quizBank: null,
       topic: null,
       difficulty: [],
-      quantity: null,
+      quantity: 1,
       isCorrectlyAnswered: true,
       isIncorrectlyAnswered: true,
       isUnanswered: true,
@@ -268,8 +265,14 @@ describe('Filters', () => {
   });
 
   it('available options for topic bank select menu should be only related to selected quiz bank', async () => {
-    const { getByText, findByLabelText, getAllByText, getByLabelText, queryAllByText } =
-      renderFunction();
+    const {
+      getByText,
+      findByLabelText,
+      getAllByText,
+      getByLabelText,
+      queryAllByText,
+      findAllByText,
+    } = renderFunction();
     const user = userEvent.setup();
     const openFiltersBtn = getByText('Quizzes').nextSibling;
     const bankSelect = await findByLabelText('Quiz bank');
@@ -285,7 +288,8 @@ describe('Filters', () => {
 
     selectEvent.openMenu(getByLabelText('Topic bank'));
 
-    expect(getAllByText(/React Basics/i).length).toBe(2);
+    const textOccurencies = await findAllByText(/React Basics/i);
+    expect(textOccurencies.length).toBe(2);
     expect(getAllByText(/React Components/i).length).toBe(2);
     expect(getAllByText(/State and Props/i).length).toBe(2);
     expect(queryAllByText(/HTML/).length).toBe(0);
@@ -418,10 +422,10 @@ describe('Filters', () => {
     await selectEvent.select(bankSelect, 'React');
     await user.click(userAnswerControll);
 
-    const unanswered = getByRole('checkbox', { name: 'Unanswered' });
-    const answered = getByRole('checkbox', { name: 'Answered' });
-    const correctly = getByRole('checkbox', { name: 'Correctly' });
-    const incorrectly = getByRole('checkbox', { name: 'Incorrectly' });
+    const unanswered = getByRole('checkbox', { name: 'unanswered' });
+    const answered = getByRole('checkbox', { name: 'answered' });
+    const correctly = getByRole('checkbox', { name: 'correct' });
+    const incorrectly = getByRole('checkbox', { name: 'incorrect' });
 
     expect(getByText('React Basics')).toBeInTheDocument();
     expect(getByText('React Components')).toBeInTheDocument();

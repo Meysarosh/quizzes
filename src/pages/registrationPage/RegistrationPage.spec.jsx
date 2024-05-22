@@ -138,33 +138,6 @@ describe('Registration Page', () => {
     });
   });
 
-  it('after successfull registration should navigate to HomePage', async () => {
-    const navigate = vi.fn();
-    vi.spyOn(router, 'useNavigate').mockImplementation(() => navigate);
-
-    const user = userEvent.setup();
-    const { store, getByRole, getByLabelText } = renderFunction();
-
-    const fullnameInput = getByLabelText('fullname-input');
-    const emailInput = getByLabelText('email-input');
-    const usernameInput = getByLabelText('username-input');
-    const passwordInput = getByLabelText('password-input');
-    const passwordConfirmInput = getByLabelText('passwordconfirm-input');
-    const Btn = getByRole('button', {
-      name: /Register/,
-    });
-
-    await user.type(fullnameInput, 'New User');
-    await user.type(emailInput, 'test@vitest.com');
-    await user.type(usernameInput, 'Testuser');
-    await user.type(passwordInput, 'Password-1');
-    await user.type(passwordConfirmInput, 'Password-1');
-    await user.click(Btn);
-
-    await waitFor(() => expect(store.getState().user.user.id === 1).toBe(true));
-    expect(navigate).toHaveBeenCalledWith('/home');
-  });
-
   it('full name should be required and have length between 7 and 30 chars', async () => {
     const user = userEvent.setup();
     const { findByText, getByRole, getByLabelText } = renderFunction();

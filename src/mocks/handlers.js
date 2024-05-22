@@ -126,6 +126,8 @@ export const handlers = [
   }),
   http.get('http://localhost:4000/React', ({ request }) => {
     // console.log(request.url);
+    if (request.url === 'http://localhost:4000/React?topic=React%20Components')
+      return HttpResponse.json(questions.filter((q) => q.topic === 'React Components'));
     if (
       request.url ===
       'http://localhost:4000/React?topic=React%20Components&level=Beginner&level=Easy&level=Intermediate&level=Advanced'
@@ -134,6 +136,7 @@ export const handlers = [
 
     if (request.url === 'http://localhost:4000/React?&level=Easy&level=Intermediate&level=Advanced')
       return HttpResponse.json(questions.filter((q) => q.level !== 'Beginner'));
+
     return HttpResponse.json(questions);
   }),
   http.get('http://localhost:4000/HTML', () => {

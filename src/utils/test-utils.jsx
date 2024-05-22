@@ -12,9 +12,9 @@ export function renderWithProviders(ui, extendedRenderOptions = {}) {
   } = extendedRenderOptions;
 
   const Wrapper = ({ children }) => (
-    <ThemeProvider>
-      <Provider store={store}>{children}</Provider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>{children}</ThemeProvider>
+    </Provider>
   );
 
   Wrapper.propTypes = {
