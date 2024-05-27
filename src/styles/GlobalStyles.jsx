@@ -88,6 +88,7 @@ export const GlobalStyles = createGlobalStyle`
     top:100%;
     left: 50%;
     transform: translateX(-50%);
+    border-color: #dab49d transparent transparent transparent;
   }
 }
 
@@ -99,6 +100,7 @@ export const GlobalStyles = createGlobalStyle`
     bottom:100%;
     left: 50%;
     transform: translateX(-50%);
+    border-color:  transparent transparent #dab49d transparent;
   }
 }
 
@@ -111,6 +113,7 @@ export const GlobalStyles = createGlobalStyle`
     right:100%;
     bottom: 50%;
     transform: translateY(50%);
+    border-color:  transparent #dab49d transparent  transparent;
   }
 }
 
@@ -123,6 +126,7 @@ export const GlobalStyles = createGlobalStyle`
     left:100%;
     bottom: 50%;
     transform: translateY(50%);
+    border-color:  transparent transparent  transparent #dab49d ;
   }
 }
 

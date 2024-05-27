@@ -1,13 +1,13 @@
 import { waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '../../utils/test-utils';
+import { describe, expect, it } from 'vitest';
+import { renderWithProviders, initialState } from '../../utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import { RegistrationPage } from './RegistrationPage';
 import { server } from '../../mocks/server';
 import { MemoryRouter } from 'react-router-dom';
-import * as router from 'react-router';
 
-const initialState = {
+const notRegisteredInitialState = {
+  ...initialState,
   token: {
     token: null,
   },
@@ -15,57 +15,7 @@ const initialState = {
     user: {},
     error: null,
     message: null,
-    history: ['/home'],
-  },
-  filters: {
-    quizBanks: [],
-    quizTopics: [],
-    availableTopics: [],
-    difficulties: {
-      React: ['Beginner', 'Easy', 'Intermediate', 'Advanced'],
-      Other: ['Easy', 'Medium', 'Hard'],
-    },
-    selectedFilters: {
-      quizBank: null,
-      topic: null,
-      difficulty: [],
-      quantity: null,
-      isCorrectlyAnswered: true,
-      isIncorrectlyAnswered: true,
-      isUnanswered: true,
-    },
-    availableQuestionsQuantity: null,
-    isAvailableQuestionsByAnswer: {
-      unanswered: true,
-      correct: true,
-      incorrect: true,
-    },
-  },
-  quiz: {
-    quiz: {
-      userId: null,
-      isFinished: false,
-      filters: {
-        quizBank: null,
-        topic: null,
-        difficulty: [],
-        quantity: null,
-      },
-      questions: [],
-      submittedAnswers: [],
-      correctAnswers: [],
-      date: null,
-    },
-    currentQuestion: null,
-    selectedOptions: [],
-  },
-  userQuizzes: {
-    quizzes: [],
-  },
-  summary: {
-    questions: [],
-    correctlyAnsweredQid: [],
-    incorrectlyAnsweredQid: [],
+    history: [],
   },
 };
 
@@ -75,7 +25,7 @@ const renderFunction = () =>
       <RegistrationPage />
     </MemoryRouter>,
     {
-      preloadedState: initialState,
+      preloadedState: notRegisteredInitialState,
     }
   );
 

@@ -1,114 +1,14 @@
 import { describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '../../utils/test-utils';
+import { renderWithProviders, initialState } from '../../utils/test-utils';
 import userEvent from '@testing-library/user-event';
-import { waitFor, screen } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import { Authorized } from './Authorized';
 import { MemoryRouter } from 'react-router-dom';
 import * as reactRouter from 'react-router';
 
-const initialState = {
-  token: {
-    token: 'EncryptedJSONWebToken',
-  },
-  user: {
-    user: {
-      email: 'test@email.com',
-      fullname: 'Test Test',
-      username: 'Testuser',
-      quizzes: {
-        finished: [],
-        unfinished: [],
-        answeredQuestions: {
-          React: [
-            { id: 1, answer: 1 },
-            { id: 2, answer: 2 },
-          ],
-        },
-      },
-      img: 'user.img',
-      id: 1,
-    },
-    error: null,
-    message: null,
-    history: ['/home'],
-  },
-  filters: {
-    quizBanks: [],
-    quizTopics: [],
-    availableTopics: [],
-    difficulties: {
-      React: ['Beginner', 'Easy', 'Intermediate', 'Advanced'],
-      Other: ['Easy', 'Medium', 'Hard'],
-    },
-    selectedFilters: {
-      quizBank: null,
-      topic: null,
-      difficulty: [],
-      quantity: null,
-      isCorrectlyAnswered: true,
-      isIncorrectlyAnswered: true,
-      isUnanswered: true,
-    },
-    availableQuestionsQuantity: null,
-    isAvailableQuestionsByAnswer: {
-      unanswered: true,
-      correct: true,
-      incorrect: true,
-    },
-  },
-  quiz: {
-    quiz: {
-      userId: null,
-      isFinished: false,
-      filters: {
-        quizBank: null,
-        topic: null,
-        difficulty: [],
-        quantity: null,
-      },
-      questions: [],
-      submittedAnswers: [],
-      correctAnswers: [],
-      date: null,
-    },
-    currentQuestion: null,
-    selectedOptions: [],
-  },
-  userQuizzes: {
-    quizzes: [],
-  },
-  summary: {
-    questions: [],
-    correctlyAnsweredQid: [],
-    incorrectlyAnsweredQid: [],
-  },
-};
-
 const notFinishedQuizState = {
-  token: {
-    token: 'EncryptedJSONWebToken',
-  },
-  user: {
-    user: {
-      email: 'test@email.com',
-      fullname: 'Test Test',
-      username: 'Testuser',
-      quizzes: {
-        finished: [],
-        unfinished: [],
-        answeredQuestions: {
-          React: [
-            { id: 1, answer: 1 },
-            { id: 2, answer: 2 },
-          ],
-        },
-      },
-      id: 1,
-    },
-    error: null,
-    message: null,
-    history: ['/home', '/quiz/1', '/home'],
-  },
+  ...initialState,
+  user: { ...initialState.user, history: ['/home', '/quiz/1', '/home'] },
   quiz: {
     quiz: {
       userId: 1,
@@ -134,30 +34,8 @@ const notFinishedQuizState = {
 };
 
 const finishedQuizStateAfterSummary = {
-  token: {
-    token: 'EncryptedJSONWebToken',
-  },
-  user: {
-    user: {
-      email: 'test@email.com',
-      fullname: 'Test Test',
-      username: 'Testuser',
-      quizzes: {
-        finished: [],
-        unfinished: [],
-        answeredQuestions: {
-          React: [
-            { id: 1, answer: 1 },
-            { id: 2, answer: 2 },
-          ],
-        },
-      },
-      id: 1,
-    },
-    error: null,
-    message: null,
-    history: ['/home', '/quiz/1', '/summary/1', '/home'],
-  },
+  ...initialState,
+  user: { ...initialState.user, history: ['/home', '/quiz/1', '/summary/1', '/home'] },
   quiz: {
     quiz: {
       userId: 1,
@@ -183,28 +61,8 @@ const finishedQuizStateAfterSummary = {
 };
 
 const stateWithSummary = {
-  token: {
-    token: 'EncryptedJSONWebToken',
-  },
-  user: {
-    user: {
-      email: 'test@email.com',
-      fullname: 'Test Test',
-      username: 'Testuser',
-      answeredQuestions: {
-        React: [
-          { id: 1, answer: 1 },
-          { id: 2, answer: 2 },
-        ],
-      },
-      id: 1,
-    },
-    error: null,
-    message: null,
-    history: ['summary', '/home'],
-    darkMode: false,
-  },
-
+  ...initialState,
+  user: { ...initialState.user, history: ['/home', '/quiz/1', '/summary/1', '/home'] },
   summary: {
     questions: [
       {
@@ -249,38 +107,12 @@ const stateWithSummary = {
     correctlyAnsweredQid: [1, 49],
     incorrectlyAnsweredQid: [],
   },
-  highlight: {
-    highlight: {
-      isHighlight: false,
-      highlighted: [],
-    },
-  },
 };
 
 const stateWithoutToken = {
+  ...initialState,
   token: {
     token: null,
-  },
-  user: {
-    user: {
-      email: 'test@email.com',
-      fullname: 'Test Test',
-      username: 'Testuser',
-      quizzes: {
-        finished: [],
-        unfinished: [],
-        answeredQuestions: {
-          React: [
-            { id: 1, answer: 1 },
-            { id: 2, answer: 2 },
-          ],
-        },
-      },
-      id: 1,
-    },
-    error: null,
-    message: null,
-    history: ['/home'],
   },
 };
 
@@ -404,7 +236,7 @@ describe('Authorized HOC', () => {
 
   it('should change theme when click on theme switch', async () => {
     const user = userEvent.setup();
-    const { container, store, getByText } = renderWithProviders(
+    const { container, store } = renderWithProviders(
       <MemoryRouter initialEntries={['/summary']}>
         <Authorized />
       </MemoryRouter>,

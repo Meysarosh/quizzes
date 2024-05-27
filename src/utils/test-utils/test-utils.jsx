@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { setupStore } from '../store/store';
-import { ThemeProvider } from '../styles/ThemeProvider';
+import { setupStore } from '../../store/store';
+import { ThemeProvider } from '../../styles/ThemeProvider';
 import { PropTypes } from 'prop-types';
 
 export function renderWithProviders(ui, extendedRenderOptions = {}) {

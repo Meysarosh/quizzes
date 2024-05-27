@@ -109,6 +109,11 @@ export function HomePage() {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }
 
+  const classPaginateBtn =
+    (nextLoad || selectedFilters.quizBank) && !(localPagination > availableTopics.length)
+      ? ''
+      : 'hidden';
+
   return (
     <Main onMouseDown={handleClickOutsideFilters}>
       <Aside ref={filtersRef} className={filterVisibility ? '' : 'filter-hidden'}>
@@ -126,12 +131,10 @@ export function HomePage() {
         ))}
       </Content>
       <PaginateContainer>
-        {(nextLoad || selectedFilters.quizBank) && !(localPagination > availableTopics.length) && (
-          <PaginateBtn onClick={handlePaginate}>
-            <FaArrowsRotate />
-            <PaginateBtnText>Load more...</PaginateBtnText>
-          </PaginateBtn>
-        )}
+        <PaginateBtn onClick={handlePaginate} className={classPaginateBtn}>
+          <FaArrowsRotate />
+          <PaginateBtnText>Load more...</PaginateBtnText>
+        </PaginateBtn>
       </PaginateContainer>
       <BackToTopButton $isVisible={topVisibility} onClick={scroll}>
         <IoIosArrowDropup />

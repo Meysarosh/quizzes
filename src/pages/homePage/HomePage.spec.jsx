@@ -1,86 +1,12 @@
 import { waitFor, fireEvent, createEvent } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '../../utils/test-utils';
+import { renderWithProviders, initialState } from '../../utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import { HomePage } from './HomePage';
 import React from 'react';
 import { server } from '../../mocks/server';
 import selectEvent from 'react-select-event';
 import { MemoryRouter } from 'react-router-dom';
-
-const initialState = {
-  token: {
-    token: 'EncryptedJSONWebToken',
-  },
-  user: {
-    user: {
-      email: 'test@email.com',
-      fullname: 'Test Test',
-      username: 'Testuser',
-      answeredQuestions: {
-        React: [
-          { id: 1, answer: 1 },
-          { id: 2, answer: 2 },
-        ],
-      },
-      id: 1,
-    },
-    error: null,
-    message: null,
-    history: ['/home'],
-    darkMode: false,
-  },
-  filters: {
-    quizBanks: [],
-    quizTopics: [],
-    availableTopics: [],
-    difficulties: {
-      React: ['Beginner', 'Easy', 'Intermediate', 'Advanced'],
-      Other: ['Easy', 'Medium', 'Hard'],
-    },
-    selectedFilters: {
-      quizBank: null,
-      topic: null,
-      difficulty: [],
-      quantity: 1,
-      isCorrectlyAnswered: true,
-      isIncorrectlyAnswered: true,
-      isUnanswered: true,
-    },
-    availableQuestionsQuantity: null,
-    isAvailableQuestionsByAnswer: {
-      unanswered: true,
-      correct: true,
-      incorrect: true,
-    },
-  },
-  quiz: {
-    quiz: {
-      userId: null,
-      isFinished: false,
-      filters: {
-        quizBank: null,
-        topic: null,
-        difficulty: [],
-        quantity: null,
-      },
-      questions: [],
-      submittedAnswers: [],
-      correctAnswers: [],
-      date: null,
-    },
-    currentQuestion: null,
-    selectedOptions: [],
-  },
-  userQuizzes: {
-    quizzes: [],
-  },
-  summary: {
-    questions: [],
-    correctlyAnsweredQid: [],
-    incorrectlyAnsweredQid: [],
-  },
-};
 
 const renderFunction = () =>
   renderWithProviders(
@@ -176,6 +102,104 @@ describe('Home Page', () => {
 
     expect(spy).toHaveBeenCalledTimes(1);
     expect(sidebar).not.toHaveClass('filter-hidden');
+  });
+
+  it('After clicking outside filters, sidebar should close', async () => {
+    const user = userEvent.setup();
+
+    const { getByRole, getByText } = renderFunction();
+
+    const sidebar = getByRole('complementary');
+    expect(sidebar).toHaveClass('filter-hidden');
+
+    const filterBtn = getByText('Quizzes').nextSibling;
+    expect(filterBtn).toHaveRole('button');
+
+    await user.click(filterBtn);
+
+    expect(sidebar).not.toHaveClass('filter-hidden');
+
+    const title = getByText('Quizzes');
+    await user.click(title);
+
+    expect(sidebar).toHaveClass('filter-hidden');
+  });
+
+  it('After clicking load more should request next portion on content', async () => {
+    let call;
+    server.events.on('request:start', ({ request }) => {
+      request.method === 'GET' && request.url === 'http://localhost:4000/topics?&_page=2&_limit=8'
+        ? (call = 'GET topics')
+        : '';
+    });
+
+    const user = userEvent.setup();
+
+    const { container, getByText, findByText } = renderFunction();
+
+    expect(await findByText(/Components/i)).toBeInTheDocument();
+    const cards = container.getElementsByClassName('card');
+
+    expect(cards.length).toBe(8);
+
+    const paginateBtn = getByText('Load more...');
+    expect(paginateBtn).toBeInTheDocument();
+
+    await user.click(paginateBtn);
+
+    await waitFor(() => expect(call === 'GET topics').toBe(true));
+
+    expect(await findByText(/React Testing/i)).toBeInTheDocument();
+    const cards2 = container.getElementsByClassName('card');
+
+    expect(cards2.length).toBe(16);
+  });
+
+  it('After selecting quiz bank, local pagination should work', async () => {
+    const { container, getByText, findByLabelText, findByText } = renderFunction();
+    const user = userEvent.setup();
+    const openFiltersBtn = getByText('Quizzes').nextSibling;
+    const bankSelect = await findByLabelText('Quiz bank');
+
+    await user.click(openFiltersBtn);
+
+    await selectEvent.select(bankSelect, 'React');
+
+    expect(await findByText(/Components/i)).toBeInTheDocument();
+    const cards = container.getElementsByClassName('card');
+
+    expect(cards.length).toBe(8);
+
+    const paginateBtn = getByText('Load more...');
+    expect(paginateBtn).toBeInTheDocument();
+
+    await user.click(paginateBtn);
+
+    expect(await findByText(/Test topic 9/i)).toBeInTheDocument();
+    const cards2 = container.getElementsByClassName('card');
+
+    expect(cards2.length).toBe(9);
+  });
+
+  it('If all available topics are displayed, pagination button should be hidden', async () => {
+    const { getByText, findByLabelText, findByText } = renderFunction();
+    const user = userEvent.setup();
+    const openFiltersBtn = getByText('Quizzes').nextSibling;
+    const bankSelect = await findByLabelText('Quiz bank');
+
+    await user.click(openFiltersBtn);
+
+    await selectEvent.select(bankSelect, 'React');
+
+    expect(await findByText(/Components/i)).toBeInTheDocument();
+
+    const paginateBtn = getByText('Load more...');
+    expect(paginateBtn).toBeInTheDocument();
+
+    await user.click(paginateBtn);
+
+    expect(await findByText(/Test topic 9/i)).toBeInTheDocument();
+    expect(paginateBtn.parentElement).toHaveClass('hidden');
   });
 
   it('When scrolling down button BackToTopButton should be visible, after scroll back to top it shold be hidden', async () => {

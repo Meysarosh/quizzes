@@ -25,16 +25,6 @@ const TooltipContainer = styled.div`
     position: absolute;
     border-width: 1rem;
     border-style: solid;
-    border-color: ${(props) =>
-      props.$position === 'top'
-        ? `${props.theme.colors.desertSand} transparent transparent transparent`
-        : props.$position === 'bottom'
-          ? ` transparent transparent ${props.theme.colors.desertSand} transparent`
-          : props.$position === 'left'
-            ? ` transparent transparent  transparent ${props.theme.colors.desertSand}`
-            : props.$position === 'right'
-              ? ` transparent ${props.theme.colors.desertSand} transparent  transparent `
-              : 'transparent'};
   }
 `;
 

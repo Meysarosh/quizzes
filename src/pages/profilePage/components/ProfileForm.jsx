@@ -53,11 +53,17 @@ export function ProfileForm() {
             alt="profile photo"
           ></Img>
         </ImgContainer>
-        <PlusButton onClick={addUserImage}>
+        <PlusButton onClick={addUserImage} data-testid="PlusButton">
           <MdAdd />
         </PlusButton>
       </Avatar>
-      <input type="file" onChange={handleChange} style={{ display: 'none' }} ref={addFileRef} />
+      <input
+        type="file"
+        onChange={handleChange}
+        style={{ display: 'none' }}
+        ref={addFileRef}
+        data-testid="fileUpload"
+      />
       <UserName>{user.fullname}</UserName>
       <Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
         <FormField
@@ -83,11 +89,7 @@ export function ProfileForm() {
         <FormField register={register} error={errors.passwordconfirm?.message}>
           password confirm
         </FormField>
-        <FormField
-          register={register}
-          defaultValue={user.dateofbirth ? user.dateofbirth : null}
-          error={errors.passwordconfirm?.message}
-        >
+        <FormField register={register} defaultValue={user.dateofbirth ? user.dateofbirth : null}>
           date of birth
         </FormField>
         <Button type="submit">Submit</Button>

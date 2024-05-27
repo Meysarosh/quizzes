@@ -85,7 +85,7 @@ export function Authorized({ children }) {
             <Logo />
           </LogoContainer>
           <Tooltip text={`switch to ${darkMode ? 'light' : 'dark'} mode`} position="right">
-            <Switch onClick={handleThemeChange}>
+            <Switch onClick={handleThemeChange} className="theme_switch">
               <BsMoonStars />
               <BsSun />
               <SwitchBtn $nightMode={darkMode} />
