@@ -145,7 +145,6 @@ const htmlQuestion = [
     correct_answer: 1,
   },
 ];
-const quizzes = [];
 
 const headers = {
   Link: 'http://localhost:4000/660/Topics?&_page=1&_limit=8>; rel="first", <http://localhost:4000/660/Topics?&_page=2&_limit=8>; rel="next", <http://localhost:4000/660/Topics?&_page=5&_limit=8>; rel="last"',
