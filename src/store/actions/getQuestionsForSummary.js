@@ -20,6 +20,12 @@ export const getQuestionsForSummary = createAsyncThunk(
         else throw rejectWithValue(error.message);
       });
 
-    return response.data;
+    return placeInOrder(questions, response.data);
   }
 );
+
+function placeInOrder(order, questions) {
+  const newOrder = [];
+  order.forEach((id) => newOrder.push(questions.find((q) => q.id === id)));
+  return newOrder;
+}

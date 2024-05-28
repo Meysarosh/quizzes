@@ -21,7 +21,7 @@ const AuthTitle = styled.h1`
 const FormContainer = styled.aside`
   width: 30%;
   min-height: 100%;
-  padding: 2rem 5rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -32,6 +32,7 @@ import {
   setIsCorrectlyAnswered,
   setIsIncorrectlyAnswered,
   setIsUnanswered,
+  setMultiAnswer,
 } from '../../../../store/slices/filtersSlice';
 import { getAvailableQuestions } from '../../../../store/actions';
 
@@ -64,6 +65,11 @@ export function Filters({ onClick }) {
     { value: '', label: 'All' },
     { value: 5, label: '5' },
     { value: 10, label: '10' },
+  ];
+  const multiOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'multi', label: 'Multi' },
+    { value: 'single', label: 'Single' },
   ];
 
   useEffect(() => {
@@ -173,6 +179,10 @@ export function Filters({ onClick }) {
 
   function handleQuantityChange({ value }) {
     dispatch(setQuantityFilter(value));
+  }
+
+  function handleMultiChange(e) {
+    e && dispatch(setMultiAnswer(e.value));
   }
 
   function isCheckedDifficulty(name) {
@@ -335,6 +345,22 @@ export function Filters({ onClick }) {
           ))}
         </Menu>
       </FilterContainer>
+
+      <Container>
+        <Label htmlFor="multiAnswer" className={classIsDisabled()}>
+          Multi answer
+        </Label>
+        <Select
+          inputId="multiAnswer"
+          onChange={handleMultiChange}
+          options={multiOptions}
+          styles={darkMode ? selectStyles : selectStyles}
+          components={{ DropdownIndicator }}
+          hideSelectedOptions={true}
+          isDisabled={!selectedFilters.quizBank}
+        />
+      </Container>
+
       <Container>
         <Label htmlFor="quantity">Questions quantity:</Label>
         <Select

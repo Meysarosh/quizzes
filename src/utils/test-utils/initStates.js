@@ -37,6 +37,7 @@ export const initialState = {
       isCorrectlyAnswered: true,
       isIncorrectlyAnswered: true,
       isUnanswered: true,
+      multiAnswer: 'all',
     },
     availableQuestionsQuantity: null,
     isAvailableQuestionsByAnswer: {

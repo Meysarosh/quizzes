@@ -82,6 +82,34 @@ const Checked = styled.div`
   background-color: ${(props) => props.theme.colors.caramel};
 `;
 
+const CheckboxContainer = styled.label`
+  position: relative;
+  padding-left: 3rem;
+  font-family: InterReg, sans-serif;
+  font-size: 1.25rem;
+`;
+
+const CheckboxInput = styled(RadioInput)``;
+
+const CustomCheckbox = styled.span`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2.5rem;
+  width: 2.5rem;
+  display: flex;
+  justify-content: center;
+  border: 0.3rem solid ${(props) => props.theme.colors.caramel};
+`;
+
+const CustomCheckboxChecked = styled.div`
+  width: 0.95rem;
+  height: 1.5rem;
+  transform: rotate(45deg);
+  border: 0.4rem solid ${(props) => props.theme.colors.caramel};
+  border-width: 0 0.4rem 0.4rem 0;
+`;
+
 const Nav = styled.nav`
   margin-top: auto;
   display: flex;
@@ -141,4 +169,8 @@ export {
   Nav,
   ForvardButtons,
   Button,
+  CheckboxContainer,
+  CheckboxInput,
+  CustomCheckbox,
+  CustomCheckboxChecked,
 };

@@ -254,6 +254,9 @@ export const handlers = [
   http.put('http://localhost:3000/users/:id', () => {
     return HttpResponse.json(user);
   }),
+  http.put('http://localhost:3000/quizzes/:id', () => {
+    return HttpResponse.json(quiz);
+  }),
   http.post('http://localhost:3000/quizzes', () => {
     return HttpResponse.json(quiz);
   }),
@@ -264,6 +267,8 @@ export const handlers = [
     return HttpResponse.json({ user, accessToken: 'EncryptedJSONWebToken' });
   }),
   http.get('http://localhost:3000/quizzes', ({ request }) => {
-    if (request.url === 'http://localhost:3000/quizzes?id=13') return HttpResponse.json(quiz13);
+    if (request.url === 'http://localhost:3000/quizzes?id=13') {
+      return HttpResponse.json([quiz13]);
+    }
   }),
 ];

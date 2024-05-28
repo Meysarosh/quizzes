@@ -135,6 +135,7 @@ const inititalSummaryState = {
   questions: [],
   correctlyAnsweredQid: [],
   incorrectlyAnsweredQid: [],
+  partialyAnsweredQ: [],
 };
 
 const renderFunction = () =>
@@ -267,7 +268,7 @@ describe('Authorized HOC', () => {
     expect(store.getState().quiz.quiz).toStrictEqual(inititalQuizState);
   });
 
-  it('should reset summary state after summary page was left', () => {
+  it('should reset summary state after summary page was left', async () => {
     const { store } = renderWithProviders(
       <MemoryRouter initialEntries={['/home']}>
         <Authorized />
@@ -277,7 +278,7 @@ describe('Authorized HOC', () => {
       }
     );
 
-    expect(store.getState().summary).toStrictEqual(inititalSummaryState);
+    await waitFor(() => expect(store.getState().summary).toStrictEqual(inititalSummaryState));
   });
 
   it('should navigate to login page if no token', async () => {

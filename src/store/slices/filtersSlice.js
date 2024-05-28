@@ -17,6 +17,7 @@ const initialState = {
     isCorrectlyAnswered: true,
     isIncorrectlyAnswered: true,
     isUnanswered: true,
+    multiAnswer: 'all',
   },
   availableQuestionsQuantity: null,
   isAvailableQuestionsByAnswer: { unanswered: true, correct: true, incorrect: true },
@@ -43,6 +44,9 @@ export const filtersSlice = createSlice({
         state.availableTopics = [];
         state.availableQuestionsQuantity = 0;
       }
+    },
+    setMultiAnswer(state, action) {
+      state.selectedFilters.multiAnswer = action.payload;
     },
     setQuantityFilter(state, action) {
       state.selectedFilters.quantity = action.payload === '' ? null : action.payload;
@@ -105,4 +109,5 @@ export const {
   setIsCorrectlyAnswered,
   setIsIncorrectlyAnswered,
   setIsUnanswered,
+  setMultiAnswer,
 } = filtersSlice.actions;

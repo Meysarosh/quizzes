@@ -7,13 +7,19 @@ export const getAvailableQuestions = createAsyncThunk(
   async function ({ quizBank, topic }, { getState, rejectWithValue }) {
     const { token } = getState().token;
     const { answeredQuestions } = getState().user.user;
-    const { difficulty, isCorrectlyAnswered, isIncorrectlyAnswered, isUnanswered } =
+    const { difficulty, isCorrectlyAnswered, isIncorrectlyAnswered, isUnanswered, multiAnswer } =
       getState().filters.selectedFilters;
     const difficultiesQuerryString = difficulty.map((el) => `&level=${el}`).join('');
+    const multi =
+      multiAnswer !== 'all'
+        ? multiAnswer === 'multi'
+          ? `&isMulti=true`
+          : `&correct_answer=1&correct_answer=2&correct_answer=3`
+        : '';
 
     const response = await axios
       .get(
-        `http://localhost:4000/${quizBank}?${topic ? `topic=${topic}` : ''}${difficultiesQuerryString ?? ''}`,
+        `http://localhost:4000/${quizBank}?${topic ? `topic=${topic}` : ''}${difficultiesQuerryString ?? ''}${multi ?? ''}`,
         {
           headers: {
             'Content-Type': 'application/json',

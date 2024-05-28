@@ -50,6 +50,7 @@ export function Authorized({ children }) {
       quiz.id &&
       !history.at(-1).includes('summary') &&
       (history.at(-2) === `/quiz/${quiz.id}` || history.at(-2) === `/summary/${quiz.id}`) &&
+      !history.at(-1).includes('quiz') &&
       dispatch(endQuiz());
   }, [history, quiz.id, dispatch]);
 

@@ -75,6 +75,551 @@
   ],
   "React": [
     {
+      "id": 400,
+      "topic": "React Router",
+      "level": "Easy",
+      "question": "Which of the following hooks are used for navigation in React Router?",
+      "answers": {
+        "1": { "text": "useHistory" },
+        "2": { "text": "useLocation" },
+        "3": { "text": "useNavigate" },
+        "4": { "text": "useRouteMatch" }
+      },
+      "correct_answer": [1, 3],
+      "isMulti": true
+    },
+    {
+      "id": 401,
+      "topic": "React Context",
+      "level": "Intermediate",
+      "question": "Which of the following are valid ways to provide a context in React?",
+      "answers": {
+        "1": { "text": "Using Context.Provider" },
+        "2": { "text": "Using Context.Consumer" },
+        "3": { "text": "Using useContext" },
+        "4": { "text": "Using createContext" }
+      },
+      "correct_answer": [1, 4],
+      "isMulti": true
+    },
+    {
+      "id": 402,
+      "topic": "React Hooks",
+      "level": "Advanced",
+      "question": "Which of the following hooks can cause side effects in a React component?",
+      "answers": {
+        "1": { "text": "useEffect" },
+        "2": { "text": "useState" },
+        "3": { "text": "useReducer" },
+        "4": { "text": "useLayoutEffect" }
+      },
+      "correct_answer": [1, 4],
+      "isMulti": true
+    },
+    {
+      "id": 403,
+      "topic": "React Router",
+      "level": "Intermediate",
+      "question": "Which hooks can be used to access route parameters in React Router?",
+      "answers": {
+        "1": { "text": "useParams" },
+        "2": { "text": "useRouteMatch" },
+        "3": { "text": "useLocation" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 404,
+      "topic": "React Context",
+      "level": "Easy",
+      "question": "Which of the following is used to create a new context?",
+      "answers": {
+        "1": { "text": "createContext" },
+        "2": { "text": "useContext" },
+        "3": { "text": "Context.Provider" }
+      },
+      "correct_answer": [1, 3],
+      "isMulti": true
+    },
+    {
+      "id": 405,
+      "topic": "React Hooks",
+      "level": "Intermediate",
+      "question": "Which hooks are used for managing state in functional components?",
+      "answers": {
+        "1": { "text": "useState" },
+        "2": { "text": "useEffect" },
+        "3": { "text": "useReducer" }
+      },
+      "correct_answer": [1, 3],
+      "isMulti": true
+    },
+    {
+      "id": 406,
+      "topic": "React Router",
+      "level": "Advanced",
+      "question": "Which of the following hooks would you use to get the current URL path in a React Router application?",
+      "answers": {
+        "1": { "text": "useRouteMatch" },
+        "2": { "text": "useParams" },
+        "3": { "text": "useLocation" }
+      },
+      "correct_answer": [1, 3],
+      "isMulti": true
+    },
+    {
+      "id": 407,
+      "topic": "React Context",
+      "level": "Advanced",
+      "question": "Which methods are correct for consuming a context in a functional component?",
+      "answers": {
+        "1": { "text": "Context.Consumer" },
+        "2": { "text": "useContext" },
+        "3": { "text": "Context.Provider" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 408,
+      "topic": "React Hooks",
+      "level": "Easy",
+      "question": "Which hook is used to manage side effects in a functional component?",
+      "answers": {
+        "1": { "text": "useState" },
+        "2": { "text": "useEffect" },
+        "3": { "text": "useReducer" }
+      },
+      "correct_answer": [2, 3],
+      "isMulti": true
+    },
+    {
+      "id": 409,
+      "topic": "React Router",
+      "level": "Intermediate",
+      "question": "Which hooks provide access to the history object in React Router?",
+      "answers": {
+        "1": { "text": "useHistory" },
+        "2": { "text": "useLocation" },
+        "3": { "text": "useNavigate" }
+      },
+      "correct_answer": [1, 3],
+      "isMulti": true
+    },
+    {
+      "id": 410,
+      "topic": "React Context",
+      "level": "Easy",
+      "question": "Which hook is used to consume a context in a functional component?",
+      "answers": {
+        "1": { "text": "useContext" },
+        "2": { "text": "useState" },
+        "3": { "text": "useReducer" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 411,
+      "topic": "React Hooks",
+      "level": "Advanced",
+      "question": "Which hooks can be used for performance optimization in React components?",
+      "answers": {
+        "1": { "text": "useMemo" },
+        "2": { "text": "useCallback" },
+        "3": { "text": "useEffect" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 412,
+      "topic": "React Router",
+      "level": "Advanced",
+      "question": "Which hooks can be used to manage dynamic routing in React Router?",
+      "answers": {
+        "1": { "text": "useParams" },
+        "2": { "text": "useRouteMatch" },
+        "3": { "text": "useNavigate" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 413,
+      "topic": "React Context",
+      "level": "Intermediate",
+      "question": "Which of the following are correct about Context API in React?",
+      "answers": {
+        "1": { "text": "It allows passing data through the component tree" },
+        "2": { "text": "It helps in avoiding prop drilling" },
+        "3": { "text": "It can only be used with class components" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 414,
+      "topic": "React Hooks",
+      "level": "Intermediate",
+      "question": "Which hooks are typically used together for fetching data in a functional component?",
+      "answers": {
+        "1": { "text": "useState" },
+        "2": { "text": "useEffect" },
+        "3": { "text": "useContext" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 415,
+      "topic": "React Router",
+      "level": "Easy",
+      "question": "Which hook replaces useHistory in React Router v6?",
+      "answers": {
+        "1": { "text": "useNavigate" },
+        "2": { "text": "useLocation" },
+        "3": { "text": "useParams" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 416,
+      "topic": "React Context",
+      "level": "Advanced",
+      "question": "Which of the following is true about useContext?",
+      "answers": {
+        "1": { "text": "It subscribes to the nearest matching context value" },
+        "2": { "text": "It requires a Provider higher in the tree" },
+        "3": { "text": "It can be used with multiple contexts" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 417,
+      "topic": "React Router",
+      "level": "Intermediate",
+      "question": "Which hooks are used to detect changes in the URL in a React Router application?",
+      "answers": {
+        "1": { "text": "useParams" },
+        "2": { "text": "useLocation" },
+        "3": { "text": "useRouteMatch" }
+      },
+      "correct_answer": [2, 3],
+      "isMulti": true
+    },
+    {
+      "id": 418,
+      "topic": "React Hooks",
+      "level": "Advanced",
+      "question": "Which hooks can be used to handle complex state logic in functional components?",
+      "answers": {
+        "1": { "text": "useReducer" },
+        "2": { "text": "useState" },
+        "3": { "text": "useContext" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 419,
+      "topic": "React Context",
+      "level": "Intermediate",
+      "question": "Which of the following hooks can be used to consume multiple contexts?",
+      "answers": {
+        "1": { "text": "useContext" },
+        "2": { "text": "useState" },
+        "3": { "text": "useReducer" }
+      },
+      "correct_answer": [1, 3],
+      "isMulti": true
+    },
+    {
+      "id": 420,
+      "topic": "React Redux",
+      "level": "Easy",
+      "question": "Which of the following are commonly used hooks in React Redux?",
+      "answers": {
+        "1": { "text": "useState" },
+        "2": { "text": "useSelector" },
+        "3": { "text": "useDispatch" },
+        "4": { "text": "useEffect" }
+      },
+      "correct_answer": [2, 3],
+      "isMulti": true
+    },
+    {
+      "id": 421,
+      "topic": "React State",
+      "level": "Intermediate",
+      "question": "Which of the following hooks can be used to manage local state in a functional component?",
+      "answers": {
+        "1": { "text": "useState" },
+        "2": { "text": "useEffect" },
+        "3": { "text": "useReducer" },
+        "4": { "text": "useMemo" }
+      },
+      "correct_answer": [1, 3],
+      "isMulti": true
+    },
+    {
+      "id": 422,
+      "topic": "React Props",
+      "level": "Advanced",
+      "question": "Which of the following are valid ways to pass props to a child component?",
+      "answers": {
+        "1": { "text": "Using the component's attribute" },
+        "2": { "text": "Using context" },
+        "3": { "text": "Using Redux" },
+        "4": { "text": "Using URL parameters" }
+      },
+      "correct_answer": [1, 3],
+      "isMulti": true
+    },
+    {
+      "id": 423,
+      "topic": "React Redux",
+      "level": "Intermediate",
+      "question": "Which of the following statements are true about the Redux store?",
+      "answers": {
+        "1": { "text": "The store holds the whole state of the application" },
+        "2": { "text": "The store is created using createStore function" },
+        "3": { "text": "There can be multiple stores in a single Redux application" },
+        "4": { "text": "The store can directly modify the state" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 424,
+      "topic": "React State",
+      "level": "Easy",
+      "question": "Which hook is primarily used to handle state in a functional component?",
+      "answers": {
+        "1": { "text": "useState" },
+        "2": { "text": "useEffect" },
+        "3": { "text": "useReducer" },
+        "4": { "text": "useRef" }
+      },
+      "correct_answer": [1, 3],
+      "isMulti": true
+    },
+    {
+      "id": 425,
+      "topic": "React Props",
+      "level": "Intermediate",
+      "question": "Which methods are used to ensure a child component receives the right type of props?",
+      "answers": {
+        "1": { "text": "PropTypes" },
+        "2": { "text": "defaultProps" },
+        "3": { "text": "propCheck" },
+        "4": { "text": "typeProps" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 426,
+      "topic": "React Redux",
+      "level": "Advanced",
+      "question": "Which of the following are valid ways to connect a React component to the Redux store?",
+      "answers": {
+        "1": { "text": "Using connect() function" },
+        "2": { "text": "Using useSelector hook" },
+        "3": { "text": "Using useDispatch hook" },
+        "4": { "text": "Using useContext hook" }
+      },
+      "correct_answer": [1, 2, 3],
+      "isMulti": true
+    },
+    {
+      "id": 427,
+      "topic": "React State",
+      "level": "Advanced",
+      "question": "Which hooks are used to optimize the performance of state updates?",
+      "answers": {
+        "1": { "text": "useMemo" },
+        "2": { "text": "useCallback" },
+        "3": { "text": "useEffect" },
+        "4": { "text": "useState" }
+      },
+      "correct_answer": [1, 2],
+      "isMulti": true
+    },
+    {
+      "id": 428,
+      "topic": "React Props",
+      "level": "Easy",
+      "question": "Which of the following statements are true about props in React?",
+      "answers": {
+        "1": { "text": "Props are immutable" },
+        "2": { "text": "Props can be modified within a child component" },
+        "3": { "text": "Props are used to pass data from parent to child component" },
+        "4": { "text": "Props can be used to share state between components" }
+      },
+      "correct_answer": [1, 3],
+      "isMulti": true
+    },
+    {
+      "id": 429,
+      "topic": "React Redux",
+      "level": "Intermediate",
+      "question": "Which of the following are true about actions in Redux?",
+      "answers": {
+        "1": { "text": "Actions are plain JavaScript objects" },
+        "2": { "text": "Actions must have a 'type' property" },
+        "3": { "text": "Actions describe changes to the Redux store" },
+        "4": { "text": "Actions can be asynchronous by default" }
+      },
+      "correct_answer": [1, 2, 3],
+      "isMulti": true
+    },
+    {
+      "id": 430,
+      "topic": "React State",
+      "level": "Intermediate",
+      "question": "Which of the following hooks can be used to manage state in a class component?",
+      "answers": {
+        "1": { "text": "useState" },
+        "2": { "text": "this.state" },
+        "3": { "text": "setState" },
+        "4": { "text": "useReducer" }
+      },
+      "correct_answer": [2, 3],
+      "isMulti": true
+    },
+    {
+      "id": 431,
+      "topic": "React Props",
+      "level": "Advanced",
+      "question": "Which of the following are true about default props in React?",
+      "answers": {
+        "1": { "text": "defaultProps can be defined as a static property on the component" },
+        "2": { "text": "defaultProps are used to ensure a prop has a value if it is not provided" },
+        "3": { "text": "defaultProps can be defined using propTypes" },
+        "4": { "text": "defaultProps can be overridden by actual props" }
+      },
+      "correct_answer": [1, 2, 4],
+      "isMulti": true
+    },
+    {
+      "id": 432,
+      "topic": "React Redux",
+      "level": "Easy",
+      "question": "Which function is used to create a Redux store?",
+      "answers": {
+        "1": { "text": "createStore" },
+        "2": { "text": "applyMiddleware" },
+        "3": { "text": "combineReducers" },
+        "4": { "text": "compose" }
+      },
+      "correct_answer": [1, 3],
+      "isMulti": true
+    },
+    {
+      "id": 433,
+      "topic": "React State",
+      "level": "Easy",
+      "question": "Which of the following is true about useState?",
+      "answers": {
+        "1": { "text": "It returns an array with two elements" },
+        "2": { "text": "The first element is the current state" },
+        "3": { "text": "The second element is a function to update the state" },
+        "4": { "text": "It can only be used in class components" }
+      },
+      "correct_answer": [1, 2, 3],
+      "isMulti": true
+    },
+    {
+      "id": 434,
+      "topic": "React Props",
+      "level": "Intermediate",
+      "question": "Which of the following are true about prop drilling?",
+      "answers": {
+        "1": {
+          "text": "Prop drilling is passing data from a parent component to a deeply nested child component"
+        },
+        "2": { "text": "Prop drilling can be avoided using context API" },
+        "3": { "text": "Prop drilling is a recommended practice in React" },
+        "4": { "text": "Prop drilling can make code harder to maintain" }
+      },
+      "correct_answer": [1, 2, 4],
+      "isMulti": true
+    },
+    {
+      "id": 435,
+      "topic": "React Redux",
+      "level": "Advanced",
+      "question": "Which of the following are valid middleware for Redux?",
+      "answers": {
+        "1": { "text": "redux-thunk" },
+        "2": { "text": "redux-saga" },
+        "3": { "text": "redux-logger" },
+        "4": { "text": "redux-middleware" }
+      },
+      "correct_answer": [1, 2, 3],
+      "isMulti": true
+    },
+    {
+      "id": 436,
+      "topic": "React State",
+      "level": "Advanced",
+      "question": "Which of the following can cause re-renders in a React component?",
+      "answers": {
+        "1": { "text": "Updating the state using useState" },
+        "2": { "text": "Updating the props of the component" },
+        "3": { "text": "Using useEffect with a dependency array" },
+        "4": { "text": "Updating the component's context" }
+      },
+      "correct_answer": [1, 2, 4],
+      "isMulti": true
+    },
+    {
+      "id": 437,
+      "topic": "React Props",
+      "level": "Easy",
+      "question": "Which of the following are correct ways to pass functions as props?",
+      "answers": {
+        "1": { "text": "Passing the function directly as a prop" },
+        "2": { "text": "Binding the function in the constructor and passing it as a prop" },
+        "3": { "text": "Using arrow functions to pass functions as props" },
+        "4": { "text": "Defining the function inside the child component" }
+      },
+      "correct_answer": [1, 2, 3],
+      "isMulti": true
+    },
+    {
+      "id": 438,
+      "topic": "React Redux",
+      "level": "Intermediate",
+      "question": "Which of the following are correct about the connect function in Redux?",
+      "answers": {
+        "1": { "text": "connect is used to connect a React component to the Redux store" },
+        "2": { "text": "connect accepts mapStateToProps and mapDispatchToProps as arguments" },
+        "3": { "text": "connect returns a higher-order component" },
+        "4": { "text": "connect is a hook provided by React Redux" }
+      },
+      "correct_answer": [1, 2, 3],
+      "isMulti": true
+    },
+    {
+      "id": 439,
+      "topic": "React State",
+      "level": "Intermediate",
+      "question": "Which hooks can be used to replace lifecycle methods in a functional component?",
+      "answers": {
+        "1": { "text": "useState" },
+        "2": { "text": "useEffect" },
+        "3": { "text": "useContext" },
+        "4": { "text": "useReducer" }
+      },
+      "correct_answer": [2, 4],
+      "isMulti": true
+    },
+    {
       "id": 1,
       "topic": "React Basics",
       "level": "Beginner",

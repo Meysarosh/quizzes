@@ -75,6 +75,10 @@ export const GlobalStyles = createGlobalStyle`
   color: #ff0000;
 }
 
+.yellow {
+  color: #ffcc00
+}
+
 .highlighted {
   background-color: #ffff00;
   color: #000000;

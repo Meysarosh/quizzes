@@ -33,18 +33,44 @@ export function SummaryPage() {
 
   const { history } = useSelector((state) => state.user);
   const { quiz } = useSelector((state) => state.quiz);
-  const { questions, correctlyAnsweredQid, incorrectlyAnsweredQid } = useSelector(
-    (state) => state.summary
-  );
+  const { questions, correctlyAnsweredQid, incorrectlyAnsweredQid, partialyAnsweredQ } =
+    useSelector((state) => state.summary);
 
   const [isUserAction, setIsUserAction] = useState(false);
   const [correctCount, setCorrectCount] = useState(null);
   const [incorrectCount, setIncorrectCount] = useState(null);
 
+  function partialCorrectCount(arr) {
+    return arr.reduce((acc, curr) => {
+      return acc + curr.result;
+    }, 0);
+  }
+
+  function partialIncorerctCount(arr) {
+    return arr.reduce((acc, curr) => {
+      return acc + (1 - curr.result);
+    }, 0);
+  }
+
   useEffect(() => {
-    setCorrectCount((correctlyAnsweredQid.length / questions.length) * 100);
-    setIncorrectCount((incorrectlyAnsweredQid.length / questions.length) * 100);
-  }, [correctlyAnsweredQid.length, incorrectlyAnsweredQid.length, questions.length]);
+    setCorrectCount(
+      ((correctlyAnsweredQid.length +
+        (partialyAnsweredQ ? partialCorrectCount(partialyAnsweredQ) : 0)) /
+        questions.length) *
+        100
+    );
+    setIncorrectCount(
+      ((incorrectlyAnsweredQid.length +
+        (partialyAnsweredQ ? partialIncorerctCount(partialyAnsweredQ) : 0)) /
+        questions.length) *
+        100
+    );
+  }, [
+    correctlyAnsweredQid.length,
+    incorrectlyAnsweredQid.length,
+    questions.length,
+    partialyAnsweredQ,
+  ]);
 
   useEffect(() => {
     !isUserAction &&
@@ -74,7 +100,7 @@ export function SummaryPage() {
   }, [quiz, isUserAction, navigate, dispatch]);
 
   function handleBtnRetake() {
-    incorrectlyAnsweredQid.length > 0 && retake(false);
+    incorrectlyAnsweredQid.length + partialyAnsweredQ.length > 0 && retake(false);
   }
 
   function handleBtnRetakeAll() {
@@ -86,17 +112,46 @@ export function SummaryPage() {
   }
 
   function retake(isAll) {
-    const payload = isAll ? null : incorrectlyAnsweredQid;
+    const payload = isAll
+      ? null
+      : [...incorrectlyAnsweredQid, ...partialyAnsweredQ.map(({ id }) => id)];
     setIsUserAction(true);
     dispatch(prepairQuizForCopy(payload));
   }
 
   const isAnswered = (questionId, answerId) => {
-    return quiz.submittedAnswers[questionId] === answerId + 1;
+    return questions[questionId].isMulti
+      ? quiz.submittedAnswers[questionId]
+        ? quiz.submittedAnswers[questionId].includes(answerId + 1)
+        : false
+      : quiz.submittedAnswers[questionId] === answerId + 1;
+  };
+
+  const shouldBeAnswered = (questionId, answerId) => {
+    return questions[questionId].isMulti
+      ? quiz.correctAnswers[questionId]
+        ? quiz.correctAnswers[questionId].includes(answerId + 1)
+        : false
+      : quiz.correctAnswers[questionId] === answerId + 1;
   };
 
   const isCorrect = (questionId, answerId) => {
-    return quiz.correctAnswers[questionId] === answerId + 1;
+    return questions[questionId].isMulti
+      ? quiz.correctAnswers[questionId]
+        ? quiz.correctAnswers[questionId].includes(answerId + 1)
+        : false
+      : quiz.correctAnswers[questionId] === answerId + 1;
+  };
+
+  const classAnswer = (qId, aId) => {
+    if (quiz.id)
+      return isAnswered(qId, aId)
+        ? isCorrect(qId, aId)
+          ? 'green'
+          : 'red'
+        : shouldBeAnswered(qId, aId)
+          ? 'yellow'
+          : '';
   };
 
   return (
@@ -157,10 +212,7 @@ export function SummaryPage() {
             <Ul>
               {Object.values(q.answers).map((el, aId) => (
                 <Highlight key={aId}>
-                  <Li
-                    className={isAnswered(qId, aId) ? (isCorrect(qId, aId) ? 'green' : 'red') : ''}
-                    key={el.text}
-                  >
+                  <Li className={classAnswer(qId, aId)} key={el.text}>
                     {el.text}
                   </Li>
                 </Highlight>

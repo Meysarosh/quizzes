@@ -17,6 +17,10 @@ import {
   Nav,
   ForvardButtons,
   Button,
+  CheckboxContainer,
+  CheckboxInput,
+  CustomCheckbox,
+  CustomCheckboxChecked,
 } from './QuizPage.styles';
 import {
   getQuestion,
@@ -94,14 +98,26 @@ export function QuizPage() {
   }, [currentPosition, selectedOptions, selectedAnswer]);
 
   function handleSelection(e) {
+    const currAnswerId = Number(e.currentTarget.attributes.id.value);
+
     if (!quiz.submittedAnswers[currentPosition - 1]) {
-      setSelectedAnswer(Number(e.currentTarget.attributes.id.value));
-      dispatch(
-        setSelectedOptions({
-          idx: currentPosition - 1,
-          value: Number(e.currentTarget.attributes.id.value),
-        })
-      );
+      let newSelectedAnswer;
+
+      if (currentQuestion.isMulti) {
+        !selectedAnswer && (newSelectedAnswer = [currAnswerId]);
+        if (selectedAnswer) {
+          const idx = selectedAnswer.indexOf(currAnswerId);
+          idx === -1 && (newSelectedAnswer = [...selectedAnswer, currAnswerId]);
+          if (idx > -1) {
+            const newArr = [...selectedAnswer];
+            newArr.splice(idx, 1);
+            newSelectedAnswer = newArr;
+          }
+        }
+      } else newSelectedAnswer = currAnswerId;
+
+      setSelectedAnswer(newSelectedAnswer);
+      dispatch(setSelectedOptions({ idx: currentPosition - 1, value: newSelectedAnswer }));
     }
   }
 
@@ -226,12 +242,26 @@ export function QuizPage() {
     return quiz.submittedAnswers[currentPosition - 1] ? 'border-disabled' : '';
   };
 
+  const classCustomCheckbox = () => {
+    return quiz.submittedAnswers[currentPosition - 1] ? 'border-disabled' : '';
+  };
+
   const classChecked = (idx) => {
     return selectedAnswer === idx + 1
       ? quiz.submittedAnswers[currentPosition - 1]
         ? 'background-disabled'
         : ''
       : 'hidden';
+  };
+
+  const classMultiChecked = (idx) => {
+    if (selectedAnswer && selectedAnswer.length > 0)
+      return selectedAnswer.includes(idx + 1)
+        ? quiz.submittedAnswers[currentPosition - 1]
+          ? 'border-disabled'
+          : ''
+        : 'hidden';
+    return 'hidden';
   };
 
   return (
@@ -255,21 +285,46 @@ export function QuizPage() {
           </QuestionText>
         </Highlight>
         <Form>
-          {answers.map((el, idx) => (
-            <RadioContainer key={el} htmlFor={idx + 1}>
-              <RadioInput
-                type="radio"
-                name="answer"
-                id={idx + 1}
-                onChange={handleSelection}
-                checked={selectedAnswer === idx + 1 ? true : false}
-              />
-              <CustomRadio className={classCustomRadio()}>
-                <Checked className={classChecked(idx)} />
-              </CustomRadio>
-              {el}
-            </RadioContainer>
-          ))}
+          {answers.map((el, idx) => {
+            if (!currentQuestion.isMulti)
+              return (
+                <RadioContainer key={el} htmlFor={idx + 1}>
+                  <RadioInput
+                    type="radio"
+                    name="answer"
+                    id={idx + 1}
+                    onChange={handleSelection}
+                    checked={selectedAnswer === idx + 1 ? true : false}
+                  />
+                  <CustomRadio className={classCustomRadio()}>
+                    <Checked className={classChecked(idx)} />
+                  </CustomRadio>
+                  {el}
+                </RadioContainer>
+              );
+            else
+              return (
+                <CheckboxContainer key={el} htmlFor={idx + 1}>
+                  <CheckboxInput
+                    type="checkbox"
+                    name="answer"
+                    id={idx + 1}
+                    onChange={handleSelection}
+                    checked={
+                      selectedAnswer && selectedAnswer.length > 0
+                        ? selectedAnswer.includes(idx + 1)
+                          ? true
+                          : false
+                        : false
+                    }
+                  />
+                  <CustomCheckbox className={classCustomCheckbox()}>
+                    <CustomCheckboxChecked className={classMultiChecked(idx)} />
+                  </CustomCheckbox>
+                  {el}
+                </CheckboxContainer>
+              );
+          })}
         </Form>
         <Nav>
           <Button $warning={true} onClick={handleBtnDiscard}>

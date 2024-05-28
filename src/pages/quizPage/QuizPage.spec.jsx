@@ -28,6 +28,7 @@ const initialStateForQuizPage = {
         isCorrectlyAnswered: true,
         isIncorrectlyAnswered: true,
         isUnanswered: true,
+        multiAnswer: 'all',
       },
       questions: [1],
       submittedAnswers: [],
