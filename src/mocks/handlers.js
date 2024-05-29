@@ -90,6 +90,20 @@ const questions = [
     level: 'Intermediate',
   },
 ];
+const questionMulti = {
+  id: 433,
+  topic: 'React Components',
+  level: 'Easy',
+  question: 'Which of the following is true about useState?',
+  answers: {
+    1: { text: 'It returns an array with two elements' },
+    2: { text: 'The first element is the current state' },
+    3: { text: 'The second element is a function to update the state' },
+    4: { text: 'It can only be used in class components' },
+  },
+  correct_answer: [1, 2, 3],
+  isMulti: true,
+};
 const user = {
   email: 'test@email.com',
   fullname: 'Test Test',
@@ -117,6 +131,7 @@ const quiz = {
     isCorrectlyAnswered: true,
     isIncorrectlyAnswered: true,
     isUnanswered: true,
+    multiAnswer: 'all',
   },
   questions: [],
   submittedAnswers: [],
@@ -144,6 +159,25 @@ const htmlQuestion = [
     },
     correct_answer: 1,
   },
+  {
+    id: 78,
+    topic: 'HTML',
+    level: 'Medium',
+    question: 'What is the purpose of the <div> element in HTML?',
+    answers: {
+      1: {
+        text: 'To group and style content.',
+        correct: true,
+      },
+      2: {
+        text: 'To create links to other documents.',
+      },
+      3: {
+        text: 'To define a list of items.',
+      },
+    },
+    correct_answer: 1,
+  },
 ];
 
 const headers = {
@@ -165,8 +199,9 @@ const quiz13 = {
     isCorrectlyAnswered: true,
     isIncorrectlyAnswered: true,
     isUnanswered: true,
+    multiAnswer: 'all',
   },
-  questions: [],
+  questions: [2],
   submittedAnswers: [],
   correctAnswers: [],
   date: 1714666494894,
@@ -246,9 +281,18 @@ export const handlers = [
         },
       ]);
 
+    if (request.url === 'http://localhost:4000/React?topic=React%20Basics&isMulti=true')
+      return HttpResponse.json([questionMulti]);
+
     return HttpResponse.json(questions);
   }),
-  http.get('http://localhost:4000/HTML', () => {
+  http.get('http://localhost:4000/HTML', ({ request }) => {
+    if (
+      request.url ===
+      'http://localhost:4000/HTML?topic=HTML&level=Easy&level=Medium&level=Hard&id_ne=77'
+    )
+      return HttpResponse.json([htmlQuestion[1]]);
+
     return HttpResponse.json(htmlQuestion);
   }),
   http.put('http://localhost:3000/users/:id', () => {

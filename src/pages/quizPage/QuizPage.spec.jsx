@@ -59,8 +59,89 @@ const initialStateForQuizPage = {
   },
 };
 
+const initialStateNewQuiz = {
+  ...initialState,
+  quiz: {
+    quiz: {
+      userId: 1,
+      isFinished: false,
+      filters: {
+        quizBank: 'React',
+        topic: 'React Basics',
+        difficulty: [],
+        quantity: 2,
+        isCorrectlyAnswered: true,
+        isIncorrectlyAnswered: true,
+        isUnanswered: true,
+        multiAnswer: 'multi',
+      },
+      questions: [],
+      submittedAnswers: [],
+      correctAnswers: [],
+      date: 1716558957755,
+      id: 1,
+    },
+    currentQuestion: null,
+    selectedOptions: [],
+  },
+  user: {
+    ...initialState.user,
+    history: ['/home', '/quiz/1'],
+  },
+};
+
+const initialStateForHTMLQuiz = {
+  ...initialState,
+  quiz: {
+    quiz: {
+      userId: 1,
+      isFinished: false,
+      filters: {
+        quizBank: 'HTML',
+        topic: 'HTML',
+        difficulty: ['Easy', 'Medium', 'Hard'],
+        quantity: 40,
+        isCorrectlyAnswered: true,
+        isIncorrectlyAnswered: true,
+        isUnanswered: true,
+        multiAnswer: 'all',
+      },
+      questions: [77],
+      submittedAnswers: [],
+      correctAnswers: [1],
+      date: 1716973831640,
+      id: 1,
+    },
+    currentQuestion: {
+      id: 77,
+      topic: 'HTML',
+      level: 'Easy',
+      question: 'What does HTML stand for?',
+      answers: {
+        1: {
+          text: 'Hypertext Markup Language',
+          correct: true,
+        },
+        2: {
+          text: 'Hyperlink and Text Markup Language',
+        },
+        3: {
+          text: 'High Text Markup Language',
+        },
+      },
+      correct_answer: 1,
+    },
+    selectedOptions: [],
+  },
+};
+
 const router = createMemoryRouter([{ path: '/quiz/:id', element: <QuizPage /> }], {
   initialEntries: ['/', '/quiz/13'],
+  initialIndex: 1,
+});
+
+const router2 = createMemoryRouter([{ path: '/quiz/:id', element: <QuizPage /> }], {
+  initialEntries: ['/', '/quiz/1'],
   initialIndex: 1,
 });
 
@@ -196,5 +277,126 @@ describe('Quiz Page', () => {
     });
 
     await waitFor(() => expect(call === 'GET quiz by id').toBe(true));
+  });
+
+  it('should request first question when opening existing quiz', async () => {
+    let call;
+    server.events.on('request:start', ({ request }) => {
+      request.method === 'GET' && request.url === 'http://localhost:4000/React?id=2'
+        ? (call = 'GET question by id')
+        : '';
+    });
+
+    renderWithProviders(<RouterProvider router={router} />, {
+      preloadedState: initialStateQuizById,
+    });
+
+    await waitFor(() => expect(call === 'GET question by id').toBe(true));
+  });
+
+  it('should request a question when the quiz is just created', async () => {
+    let call;
+    server.events.on('request:start', ({ request }) => {
+      request.method === 'GET' &&
+      request.url === 'http://localhost:4000/React?topic=React%20Basics&isMulti=true'
+        ? (call = 'GET question by filters')
+        : '';
+    });
+
+    renderWithProviders(<RouterProvider router={router2} />, {
+      preloadedState: initialStateNewQuiz,
+    });
+
+    await waitFor(() => expect(call === 'GET question by filters').toBe(true));
+  });
+
+  it('should allow multi answers for multi-answer question', async () => {
+    const user = userEvent.setup();
+    const { store, findByText } = renderWithProviders(<RouterProvider router={router2} />, {
+      preloadedState: initialStateNewQuiz,
+    });
+
+    const answer1 = await findByText('It returns an array with two elements');
+    const answer2 = await findByText('The first element is the current state');
+
+    expect(answer1).toBeInTheDocument();
+    expect(answer2).toBeInTheDocument();
+
+    await user.click(answer1);
+    await user.click(answer2);
+
+    await waitFor(() => expect(store.getState().quiz.selectedOptions[0]).toStrictEqual([1, 2]));
+
+    await user.click(answer2);
+
+    await waitFor(() => expect(store.getState().quiz.selectedOptions[0]).toStrictEqual([1]));
+  });
+
+  it('clicking cancel on rendered modal window should reset blocker', async () => {
+    const user = userEvent.setup();
+
+    const { findByText, findByRole } = renderWithProviders(<RouterProvider router={router2} />, {
+      preloadedState: initialStateNewQuiz,
+    });
+
+    const answer1 = await findByText('It returns an array with two elements');
+    const answer2 = await findByText('The first element is the current state');
+
+    expect(answer1).toBeInTheDocument();
+    expect(answer2).toBeInTheDocument();
+
+    const discardBtn = await findByRole('button', { name: /Discard/ });
+    await user.click(discardBtn);
+
+    const cancelBtn = await findByRole('button', { name: /Cancel/ });
+    await user.click(cancelBtn);
+
+    expect(cancelBtn).not.toBeInTheDocument();
+  });
+
+  it('creates and updates answeredQuestion object for user', async () => {
+    const user = userEvent.setup();
+
+    const { findByText, findByRole } = renderWithProviders(<RouterProvider router={router2} />, {
+      preloadedState: initialStateForHTMLQuiz,
+    });
+
+    const answer1 = await findByText('Hypertext Markup Language');
+
+    await user.click(answer1);
+
+    const submitBtn = await findByRole('button', { name: /Submit/ });
+    await user.click(submitBtn);
+
+    const answer2 = await findByText('To group and style content.');
+    expect(answer2).toBeInTheDocument();
+    await user.click(answer2);
+  });
+
+  it('clicking discard on rendered modal window should end quiz', async () => {
+    const user = userEvent.setup();
+
+    const { store, findByText, findByRole } = renderWithProviders(
+      <RouterProvider router={router2} />,
+      {
+        preloadedState: initialStateNewQuiz,
+      }
+    );
+
+    const answer1 = await findByText('It returns an array with two elements');
+    const answer2 = await findByText('The first element is the current state');
+
+    expect(answer1).toBeInTheDocument();
+    expect(answer2).toBeInTheDocument();
+
+    const discardBtn = await findByRole('button', { name: /Discard/ });
+    await user.click(discardBtn);
+
+    const discardBtn2 = (await findByRole('button', { name: /Cancel/ })).nextSibling;
+    expect(discardBtn2).toBeInTheDocument();
+
+    await user.click(discardBtn2);
+
+    await waitFor(() => expect(store.getState().quiz.quiz.id).toStrictEqual(undefined));
   });
 });

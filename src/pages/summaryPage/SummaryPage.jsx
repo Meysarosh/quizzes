@@ -70,6 +70,7 @@ export function SummaryPage() {
     incorrectlyAnsweredQid.length,
     questions.length,
     partialyAnsweredQ,
+    history,
   ]);
 
   useEffect(() => {
@@ -87,8 +88,15 @@ export function SummaryPage() {
   }, [dispatch, quiz, id, history, location.pathname]);
 
   useEffect(() => {
+    quiz.id === Number(id) &&
+      location.pathname === history.at(-1) &&
+      !quiz.isFinished &&
+      navigate('/*');
+  }, [dispatch, navigate, quiz, id, history, location.pathname]);
+
+  useEffect(() => {
     quiz.id && questions.length > 0 && dispatch(createSummaryResults(quiz.submittedAnswers));
-  }, [questions, quiz.submittedAnswers, dispatch, quiz.id]);
+  }, [questions, quiz, dispatch]);
 
   useEffect(() => {
     isUserAction &&
@@ -154,73 +162,77 @@ export function SummaryPage() {
           : '';
   };
 
-  return (
-    <Main>
-      <Header>
-        <Heading>
-          Quiz #{`${id}`} Summary: <i>{quiz.filters.topic}</i>
-        </Heading>
-        <ActionsContainer>
-          <Tooltip
-            text="Select this option to retake the quiz with unanswered and incorrectly answered
+  if (quiz.isFinished)
+    return (
+      <Main>
+        <Header>
+          <Heading>
+            Quiz #{`${id}`} Summary: <i>{quiz.filters.topic}</i>
+          </Heading>
+          <ActionsContainer>
+            <Tooltip
+              text="Select this option to retake the quiz with unanswered and incorrectly answered
               questions."
-            position="top"
-          >
-            <Button
-              onClick={handleBtnRetake}
-              className={incorrectCount === 0 ? 'background-disabled' : ''}
+              position="top"
             >
-              Retake
-            </Button>
-            <Icon>
-              <AiTwotoneQuestionCircle />
-            </Icon>
-          </Tooltip>
+              <Button
+                onClick={handleBtnRetake}
+                className={incorrectCount === 0 ? 'background-disabled' : ''}
+              >
+                Retake
+              </Button>
+              <Icon>
+                <AiTwotoneQuestionCircle />
+              </Icon>
+            </Tooltip>
+            <Tooltip
+              text="Select this option to retake the quiz with all questions."
+              position="right"
+            >
+              <Button onClick={handleBtnRetakeAll}>Retake All</Button>
+              <Icon>
+                <AiTwotoneQuestionCircle />
+              </Icon>
+            </Tooltip>
+            <Tooltip
+              text="Press this button if you want to leave the summary page."
+              position="left"
+            >
+              <Button onClick={handleBtnLeave}>Leave</Button>
+            </Tooltip>
+          </ActionsContainer>
           <Tooltip
-            text="Select this option to retake the quiz with all questions."
-            position="right"
+            text={`Your correct answers score is ${Math.round(correctCount)}%`}
+            position="bottom"
           >
-            <Button onClick={handleBtnRetakeAll}>Retake All</Button>
-            <Icon>
-              <AiTwotoneQuestionCircle />
-            </Icon>
+            <SuccessBar>
+              <GreenBar $width={`${correctCount}%`}>
+                {correctCount > 0 && <Span>{Math.round(correctCount)}%</Span>}
+              </GreenBar>
+              <RedBar $width={`${incorrectCount}%`}>
+                {incorrectCount > 0 && <Span>{Math.round(incorrectCount)}%</Span>}
+              </RedBar>
+            </SuccessBar>
           </Tooltip>
-          <Tooltip text="Press this button if you want to leave the summary page." position="left">
-            <Button onClick={handleBtnLeave}>Leave</Button>
-          </Tooltip>
-        </ActionsContainer>
-        <Tooltip
-          text={`Your correct answers score is ${Math.round(correctCount)}%`}
-          position="bottom"
-        >
-          <SuccessBar>
-            <GreenBar $width={`${correctCount}%`}>
-              {correctCount > 0 && <Span>{Math.round(correctCount)}%</Span>}
-            </GreenBar>
-            <RedBar $width={`${incorrectCount}%`}>
-              {incorrectCount > 0 && <Span>{Math.round(incorrectCount)}%</Span>}
-            </RedBar>
-          </SuccessBar>
-        </Tooltip>
-      </Header>
-      <Section>
-        {questions?.map((q, qId) => (
-          <QuestionContainer key={q.id}>
-            <Highlight>
-              <QuestionTitle>{q.question}</QuestionTitle>
-            </Highlight>
-            <Ul>
-              {Object.values(q.answers).map((el, aId) => (
-                <Highlight key={aId}>
-                  <Li className={classAnswer(qId, aId)} key={el.text}>
-                    {el.text}
-                  </Li>
-                </Highlight>
-              ))}
-            </Ul>
-          </QuestionContainer>
-        ))}
-      </Section>
-    </Main>
-  );
+        </Header>
+        <Section>
+          {questions?.map((q, qId) => (
+            <QuestionContainer key={q.id}>
+              <Highlight>
+                <QuestionTitle>{q.question}</QuestionTitle>
+              </Highlight>
+              <Ul>
+                {Object.values(q.answers).map((el, aId) => (
+                  <Highlight key={aId}>
+                    <Li className={classAnswer(qId, aId)} key={el.text}>
+                      {el.text}
+                    </Li>
+                  </Highlight>
+                ))}
+              </Ul>
+            </QuestionContainer>
+          ))}
+        </Section>
+      </Main>
+    );
 }

@@ -55,6 +55,14 @@ export function Authorized({ children }) {
   }, [history, quiz.id, dispatch]);
 
   useEffect(() => {
+    history.length > 2 &&
+      history.at(-1).includes('quiz') &&
+      history.at(-2).includes('quiz') &&
+      history.at(-1) !== history.at(-2) &&
+      dispatch(endQuiz());
+  }, [history, dispatch]);
+
+  useEffect(() => {
     history.length > 1 &&
       history.at(-2).includes('summary') &&
       !history.at(-1).includes('summary') &&
