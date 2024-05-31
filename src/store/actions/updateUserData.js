@@ -22,10 +22,10 @@ export const updateUserData = createAsyncThunk(
         }
       )
       .catch(function (error) {
-        if (error.response) throw rejectWithValue(error.response.data);
-        throw rejectWithValue(error.message);
+        if (error.response && typeof error.response.data == 'string')
+          throw rejectWithValue(error.response.data);
+        else throw rejectWithValue(error.code);
       });
-
     return response.data;
   }
 );

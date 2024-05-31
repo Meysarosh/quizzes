@@ -5,12 +5,22 @@ import userEvent from '@testing-library/user-event';
 import { server } from '../../mocks/server';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { QuizPage } from './QuizPage';
+import { HomePage } from '../homePage/HomePage';
+import { act } from 'react-dom/test-utils';
 
 const initialStateQuizById = {
   ...initialState,
   user: {
     ...initialState.user,
     history: ['/home', '/quiz/13'],
+  },
+};
+
+const initialStateQuizByIdError = {
+  ...initialState,
+  user: {
+    ...initialState.user,
+    history: ['/home', '/quiz/14'],
   },
 };
 
@@ -28,7 +38,7 @@ const initialStateForQuizPage = {
         isCorrectlyAnswered: true,
         isIncorrectlyAnswered: true,
         isUnanswered: true,
-        multiAnswer: 'all',
+        multiAnswer: 'single',
       },
       questions: [1],
       submittedAnswers: [],
@@ -70,8 +80,8 @@ const initialStateNewQuiz = {
         topic: 'React Basics',
         difficulty: [],
         quantity: 2,
-        isCorrectlyAnswered: true,
-        isIncorrectlyAnswered: true,
+        isCorrectlyAnswered: false,
+        isIncorrectlyAnswered: false,
         isUnanswered: true,
         multiAnswer: 'multi',
       },
@@ -135,13 +145,38 @@ const initialStateForHTMLQuiz = {
   },
 };
 
+const initialStateForProducingError = {
+  ...initialStateForQuizPage,
+  quiz: {
+    ...initialStateForQuizPage.quiz,
+    quiz: {
+      ...initialStateForQuizPage.quiz.quiz,
+      filters: {
+        ...initialStateForQuizPage.quiz.quiz.filters,
+        quantity: 3,
+      },
+    },
+  },
+};
+
 const router = createMemoryRouter([{ path: '/quiz/:id', element: <QuizPage /> }], {
   initialEntries: ['/', '/quiz/13'],
   initialIndex: 1,
 });
 
-const router2 = createMemoryRouter([{ path: '/quiz/:id', element: <QuizPage /> }], {
-  initialEntries: ['/', '/quiz/1'],
+const router2 = createMemoryRouter(
+  [
+    { path: '/quiz/:id', element: <QuizPage /> },
+    { path: '/home', element: <HomePage /> },
+  ],
+  {
+    initialEntries: ['/', '/quiz/1'],
+    initialIndex: 1,
+  }
+);
+
+const router3 = createMemoryRouter([{ path: '/quiz/:id', element: <QuizPage /> }], {
+  initialEntries: ['/', '/quiz/14'],
   initialIndex: 1,
 });
 
@@ -187,15 +222,22 @@ describe('Quiz Page', () => {
     let call;
     server.events.on('request:start', ({ request }) => {
       request.method === 'GET' &&
-      request.url === 'http://localhost:4000/React?topic=React%20Basics&id_ne=1'
+      request.url ===
+        'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1'
         ? (call = 'GET next question')
         : '';
     });
-    const { getByText, getByRole } = renderFunction();
+    const { getByText, getByRole, store } = renderFunction();
     const user = userEvent.setup();
 
     const answer1Text = getByText('A JavaScript library for building user interfaces');
     const submitBtn = getByRole('button', { name: /Submit/ });
+
+    await user.click(submitBtn);
+
+    vi.waitFor(() =>
+      expect(store.getState().user.error).toStrictEqual('Select an answer before proceed!')
+    );
 
     await user.click(answer1Text);
     await user.click(submitBtn);
@@ -207,7 +249,8 @@ describe('Quiz Page', () => {
     let call;
     server.events.on('request:start', ({ request }) => {
       request.method === 'GET' &&
-      request.url === 'http://localhost:4000/React?topic=React%20Basics&id_ne=1'
+      request.url ===
+        'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1'
         ? (call = 'GET next question')
         : '';
     });
@@ -225,7 +268,8 @@ describe('Quiz Page', () => {
     let call;
     server.events.on('request:start', ({ request }) => {
       request.method === 'GET' &&
-      request.url === 'http://localhost:4000/React?topic=React%20Basics&id_ne=1'
+      request.url ===
+        'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1'
         ? (call = 'GET next question')
         : '';
     });
@@ -249,6 +293,21 @@ describe('Quiz Page', () => {
 
     await user.click(arrowLeft);
     expect(answer2).not.toBeInTheDocument();
+  });
+
+  it('rejected request for new question creates error message', async () => {
+    const { store, getByText } = renderWithProviders(<RouterProvider router={router} />, {
+      preloadedState: initialStateForProducingError,
+    });
+
+    const user = userEvent.setup();
+
+    const arrowRight = getByText('React Basics').nextSibling.lastChild;
+
+    await user.click(arrowRight);
+    await user.click(arrowRight);
+
+    await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('An error occured!'));
   });
 
   it('clicking on discard button should render modal window', async () => {
@@ -277,6 +336,19 @@ describe('Quiz Page', () => {
     });
 
     await waitFor(() => expect(call === 'GET quiz by id').toBe(true));
+  });
+
+  it('if request quiz by id rejected should produce error', async () => {
+    const { store } = renderWithProviders(<RouterProvider router={router3} />, {
+      preloadedState: initialStateQuizByIdError,
+    });
+
+    await act(
+      async () =>
+        await vi.waitFor(() =>
+          expect(store.getState().user.error).toStrictEqual('An error occured!')
+        )
+    );
   });
 
   it('should request first question when opening existing quiz', async () => {

@@ -11,14 +11,14 @@ export const userQuizzes = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getUserQuizzes.fulfilled, (state, action) => {
-      state.quizzes = processData(action.payload);
+      state.quizzes = processUserQuizzes(action.payload);
     });
   },
 });
 
 export default userQuizzes.reducer;
 
-function processData(data) {
+function processUserQuizzes(data) {
   return data.reduce((acc, curr) => {
     const count = curr.submittedAnswers.reduce((acc, num, idx) => {
       if (num === curr.correctAnswers[idx]) acc += 1;

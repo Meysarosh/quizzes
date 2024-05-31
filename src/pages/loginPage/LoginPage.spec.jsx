@@ -69,7 +69,7 @@ describe('Login Page', () => {
       name: /Login/,
     });
 
-    await user.type(emailInput, 'roman.meszaros@nixs.com');
+    await user.type(emailInput, 'email@gmail.com');
     await user.type(passwordInput, 'password');
     await user.click(Btn);
 
@@ -91,7 +91,7 @@ describe('Login Page', () => {
       name: /Login/,
     });
 
-    await user.type(emailInput, 'roman.meszaros@nixs.com');
+    await user.type(emailInput, 'email@gmail.com');
     await user.type(passwordInput, 'password');
     await user.click(Btn);
 
@@ -111,10 +111,28 @@ describe('Login Page', () => {
       name: /Login/,
     });
 
-    await user.type(emailInput, 'roman.meszaros@nixs.com');
+    await user.type(emailInput, 'email@gmail.com');
     await user.type(passwordInput, 'password');
     await user.click(Btn);
 
     await waitFor(() => expect(passwordInput.value === '').toBe(true));
+  });
+
+  it('when request for login is rejected should create an error message', async () => {
+    const user = userEvent.setup();
+
+    const { store, getByRole, getByLabelText } = renderFunction();
+
+    const emailInput = getByLabelText('email-input');
+    const passwordInput = getByLabelText('password-input');
+    const Btn = getByRole('button', {
+      name: /Login/,
+    });
+
+    await user.type(emailInput, 'email@gmail.com');
+    await user.type(passwordInput, 'error');
+    await user.click(Btn);
+
+    await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('An error occured!'));
   });
 });

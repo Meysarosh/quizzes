@@ -155,6 +155,22 @@ describe('Home Page', () => {
     expect(cards2.length).toBe(16);
   });
 
+  it('Rejected request on getPaginatedTopics creates an error', async () => {
+    const user = userEvent.setup();
+
+    const { store, getByText, findByText } = renderFunction();
+
+    expect(await findByText(/Components/i)).toBeInTheDocument();
+
+    const paginateBtn = getByText('Load more...');
+    expect(paginateBtn).toBeInTheDocument();
+
+    await user.click(paginateBtn);
+    await user.click(paginateBtn);
+
+    await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('An error occured!'));
+  });
+
   it('After selecting quiz bank, local pagination should work', async () => {
     const { container, getByText, findByLabelText, findByText } = renderFunction();
     const user = userEvent.setup();
@@ -230,7 +246,6 @@ describe('Filters', () => {
   it('Filters should close after button close was clicked', async () => {
     const { getByText, getByRole } = renderFunction();
     const user = userEvent.setup();
-
     const openFiltersBtn = getByText('Quizzes').nextSibling;
     const closeFiltersBtn = getByText('Filters').nextSibling;
     const sidebar = getByRole('complementary');
@@ -249,8 +264,8 @@ describe('Filters', () => {
   it('after selecting quiz bank - questions only related to selected quiz bank should be visible', async () => {
     const { queryByText, getByText, findByText, findByLabelText } = renderFunction();
     const user = userEvent.setup();
-
     const openFiltersBtn = getByText('Quizzes').nextSibling;
+
     await user.click(openFiltersBtn);
 
     const bankSelect = await findByLabelText('Quiz bank');
@@ -307,12 +322,11 @@ describe('Filters', () => {
     expect(getAllByText(/HTML/).length).toBe(1);
 
     await user.click(openFiltersBtn);
-
     await selectEvent.select(bankSelect, 'React');
 
     selectEvent.openMenu(getByLabelText('Topic bank'));
-
     const textOccurencies = await findAllByText(/React Basics/i);
+
     expect(textOccurencies.length).toBe(2);
     expect(getAllByText(/React Components/i).length).toBe(2);
     expect(getAllByText(/State and Props/i).length).toBe(2);
@@ -334,6 +348,7 @@ describe('Filters', () => {
 
     await selectEvent.select(topicSelect, 'React Components');
     const searchedText = await findAllByText('React Components');
+
     expect(searchedText.length).toBe(2);
     expect(queryByText('React Basics')).not.toBeInTheDocument();
   });
@@ -393,7 +408,6 @@ describe('Filters', () => {
 
     await user.click(openFiltersBtn);
     await selectEvent.select(bankSelect, 'React');
-
     await user.click(difficultyControll);
 
     const checkboxAll = await findByRole('checkbox', { name: 'All' });
@@ -484,14 +498,17 @@ describe('Filters', () => {
     await user.click(incorrectly);
     await user.click(correctly);
     await user.click(answered);
+
     expect(store.getState().filters.selectedFilters.isCorrectlyAnswered === true).toBe(true);
     expect(store.getState().filters.selectedFilters.isIncorrectlyAnswered === true).toBe(true);
 
     await user.click(incorrectly);
+
     expect(store.getState().filters.selectedFilters.isCorrectlyAnswered === true).toBe(true);
     expect(store.getState().filters.selectedFilters.isIncorrectlyAnswered === false).toBe(true);
 
     await user.click(answered);
+
     expect(store.getState().filters.selectedFilters.isCorrectlyAnswered === true).toBe(true);
     expect(store.getState().filters.selectedFilters.isIncorrectlyAnswered === true).toBe(true);
   });
@@ -501,14 +518,13 @@ describe('Filters', () => {
     const { store, getByText, findByLabelText } = renderFunction();
     const openFiltersBtn = getByText('Quizzes').nextSibling;
     const quantitySelect = await findByLabelText('Questions quantity:');
-
     const state = store.getState();
+
     expect(state.filters.selectedFilters.quantity === null).toBe(true);
 
     await user.click(openFiltersBtn);
     await selectEvent.select(quantitySelect, '5');
 
-    const newState = store.getState();
-    expect(newState.filters.selectedFilters.quantity === 5).toBe(true);
+    expect(store.getState().filters.selectedFilters.quantity === 5).toBe(true);
   });
 });

@@ -3,7 +3,7 @@ import { PropTypes } from 'prop-types';
 
 export function Modal({ isModal, title, text, children }) {
   return (
-    <ModalBack className={isModal ? '' : 'hidden'}>
+    <ModalBack className={isModal ? '' : 'hidden'} data-testid="modal">
       <ModalWindow>
         <ModalTitle>{title}</ModalTitle>
         <ModalText>{text}</ModalText>
@@ -16,6 +16,6 @@ export function Modal({ isModal, title, text, children }) {
 Modal.propTypes = {
   isModal: PropTypes.bool,
   title: PropTypes.string,
-  text: PropTypes.object,
+  text: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   children: PropTypes.arrayOf(PropTypes.element),
 };

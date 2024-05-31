@@ -216,22 +216,23 @@ export function SummaryPage() {
           </Tooltip>
         </Header>
         <Section>
-          {questions?.map((q, qId) => (
-            <QuestionContainer key={q.id}>
-              <Highlight>
-                <QuestionTitle>{q.question}</QuestionTitle>
-              </Highlight>
-              <Ul>
-                {Object.values(q.answers).map((el, aId) => (
-                  <Highlight key={aId}>
-                    <Li className={classAnswer(qId, aId)} key={el.text}>
-                      {el.text}
-                    </Li>
-                  </Highlight>
-                ))}
-              </Ul>
-            </QuestionContainer>
-          ))}
+          {questions.length > 0 &&
+            questions.map((q, qId) => (
+              <QuestionContainer key={q.id}>
+                <Highlight>
+                  <QuestionTitle>{q.question}</QuestionTitle>
+                </Highlight>
+                <Ul>
+                  {Object.values(q.answers).map((el, aId) => (
+                    <Highlight key={aId}>
+                      <Li className={classAnswer(qId, aId)} key={el.text}>
+                        {el.text}
+                      </Li>
+                    </Highlight>
+                  ))}
+                </Ul>
+              </QuestionContainer>
+            ))}
         </Section>
       </Main>
     );

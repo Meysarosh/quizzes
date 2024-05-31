@@ -6,6 +6,8 @@ import {
   updateQuizData,
   getQuizById,
   getPaginatedTopics,
+  getQuestion,
+  getUserQuizzes,
 } from '../actions';
 
 const initialState = { user: {}, error: null, message: null, history: [], darkMode: false };
@@ -66,7 +68,16 @@ export const userSlice = createSlice({
     builder.addCase(getQuizById.fulfilled, (state, action) => {
       !action.payload && (state.error = 'Quiz Not Found');
     });
+    builder.addCase(getQuizById.rejected, (state, action) => {
+      state.error = action.payload;
+    });
+    builder.addCase(getQuestion.rejected, (state, action) => {
+      state.error = action.payload;
+    });
     builder.addCase(getPaginatedTopics.rejected, (state, action) => {
+      state.error = action.payload;
+    });
+    builder.addCase(getUserQuizzes.rejected, (state, action) => {
       state.error = action.payload;
     });
   },

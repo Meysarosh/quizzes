@@ -6,6 +6,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { server } from '../../mocks/server';
 import userEvent from '@testing-library/user-event';
 import * as reactRouter from 'react-router';
+import { act } from 'react-dom/test-utils';
+import { http } from 'msw';
 
 const initialStateWithoutUserData = {
   ...initialState,
@@ -134,6 +136,40 @@ describe('Profile form', () => {
     });
   });
 
+  it('After submitting changes, should request an update but if token expires recieves an error', async () => {
+    const { store, getByRole, getByLabelText } = renderFunction();
+    const user = userEvent.setup();
+
+    const passwordInput = getByLabelText('password-input');
+    const passwordConfirmInput = getByLabelText('passwordconfirm-input');
+    const Btn = getByRole('button', {
+      name: /Submit/,
+    });
+
+    await user.type(passwordInput, 'Expired-404');
+    await user.type(passwordConfirmInput, 'Expired-404');
+    await user.click(Btn);
+
+    await vi.waitFor(() => expect(store.getState().token.token).toStrictEqual(null));
+  });
+
+  it('Network error should produce an error message', async () => {
+    server.use(http.put('/users/1', (res) => res.networkError()));
+    const { store, getByRole, getByLabelText } = renderFunction();
+    const user = userEvent.setup();
+    const passwordInput = getByLabelText('password-input');
+    const passwordConfirmInput = getByLabelText('passwordconfirm-input');
+    const Btn = getByRole('button', {
+      name: /Submit/,
+    });
+
+    await user.type(passwordInput, 'Password-1');
+    await user.type(passwordConfirmInput, 'Password-1');
+    await user.click(Btn);
+
+    await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('ERR_BAD_RESPONSE'));
+  });
+
   it('Upload new image should work', async () => {
     const { getByTestId } = renderFunction();
     const testImg = new File(['test'], 'test.jpg', { type: 'image/img' });
@@ -230,6 +266,58 @@ describe('QuizzesTable', () => {
     );
 
     await waitFor(() => expect(call === 'GET quizzes').toBe(true));
+  });
+
+  it('should create na error message if request is rejected', async () => {
+    const { store } = renderWithProviders(
+      <MemoryRouter initialEntries={['/profile']}>
+        <ProfilePage />
+      </MemoryRouter>,
+      {
+        preloadedState: {
+          ...initialState,
+          user: {
+            ...initialState.user,
+            user: { ...initialState.user.user, id: 2 },
+            history: ['/profile'],
+          },
+        },
+      }
+    );
+
+    await act(
+      async () =>
+        await vi.waitFor(() =>
+          expect(store.getState().user.error).toStrictEqual('An error occured!')
+        )
+    );
+  });
+
+  it('should create an error message on network error', async () => {
+    server.use(http.get('/quizzes', (res) => res.networkError()));
+
+    const { store } = renderWithProviders(
+      <MemoryRouter initialEntries={['/profile']}>
+        <ProfilePage />
+      </MemoryRouter>,
+      {
+        preloadedState: {
+          ...initialState,
+          user: {
+            ...initialState.user,
+            user: { ...initialState.user.user, id: 2 },
+            history: ['/profile'],
+          },
+        },
+      }
+    );
+
+    await act(
+      async () =>
+        await vi.waitFor(() =>
+          expect(store.getState().user.error).toStrictEqual('ERR_BAD_RESPONSE')
+        )
+    );
   });
 
   it('Should display data about user quizzes', () => {
