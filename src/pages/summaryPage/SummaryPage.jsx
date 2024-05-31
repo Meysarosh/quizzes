@@ -7,6 +7,7 @@ import {
   SuccessBar,
   GreenBar,
   RedBar,
+  GreyBar,
   Span,
   Button,
   Icon,
@@ -33,12 +34,18 @@ export function SummaryPage() {
 
   const { history } = useSelector((state) => state.user);
   const { quiz } = useSelector((state) => state.quiz);
-  const { questions, correctlyAnsweredQid, incorrectlyAnsweredQid, partialyAnsweredQ } =
-    useSelector((state) => state.summary);
+  const {
+    questions,
+    correctlyAnsweredQid,
+    incorrectlyAnsweredQid,
+    partialyAnsweredQ,
+    unansweredQid,
+  } = useSelector((state) => state.summary);
 
   const [isUserAction, setIsUserAction] = useState(false);
   const [correctCount, setCorrectCount] = useState(null);
   const [incorrectCount, setIncorrectCount] = useState(null);
+  const [unansweredCount, setUnansweredCount] = useState(null);
 
   function partialCorrectCount(arr) {
     return arr.reduce((acc, curr) => {
@@ -65,9 +72,11 @@ export function SummaryPage() {
         questions.length) *
         100
     );
+    setUnansweredCount((unansweredQid.length / questions.length) * 100);
   }, [
     correctlyAnsweredQid.length,
     incorrectlyAnsweredQid.length,
+    unansweredQid.length,
     questions.length,
     partialyAnsweredQ,
     history,
@@ -162,6 +171,24 @@ export function SummaryPage() {
           : '';
   };
 
+  const isUnanswered = (qId) => {
+    return unansweredQid.includes(qId)
+      ? 'background-disabled question_container'
+      : 'question_container';
+  };
+
+  function checkWidth(id) {
+    if (document.getElementById(id)) {
+      const answerWidth = document.getElementById(id).parentElement.offsetWidth;
+      const questionContainerWidth = document
+        .getElementById(id)
+        .closest('.question_container').offsetWidth;
+
+      if ((answerWidth / questionContainerWidth) * 100 > 80) return 'top';
+    }
+    return 'right';
+  }
+
   if (quiz.isFinished)
     return (
       <Main>
@@ -212,13 +239,18 @@ export function SummaryPage() {
               <RedBar $width={`${incorrectCount}%`}>
                 {incorrectCount > 0 && <Span>{Math.round(incorrectCount)}%</Span>}
               </RedBar>
+              <GreyBar $width={`${unansweredCount}%`}>
+                {unansweredCount > 0 && (
+                  <Span>{100 - Math.round(correctCount) - Math.round(incorrectCount)}%</Span>
+                )}
+              </GreyBar>
             </SuccessBar>
           </Tooltip>
         </Header>
         <Section>
           {questions.length > 0 &&
             questions.map((q, qId) => (
-              <QuestionContainer key={q.id}>
+              <QuestionContainer key={q.id} className={isUnanswered(q.id)}>
                 <Highlight>
                   <QuestionTitle>{q.question}</QuestionTitle>
                 </Highlight>
@@ -226,7 +258,21 @@ export function SummaryPage() {
                   {Object.values(q.answers).map((el, aId) => (
                     <Highlight key={aId}>
                       <Li className={classAnswer(qId, aId)} key={el.text}>
-                        {el.text}
+                        {classAnswer(qId, aId) === 'yellow' ? (
+                          <Tooltip
+                            key={aId}
+                            position={checkWidth(`tooltip${q.id}${aId}`)}
+                            // position="rigth"
+                            text="Yellow colored is the correct answer that wasn't checked"
+                          >
+                            {<p className={classAnswer(qId, aId)}>{el.text}</p>}
+                            <Icon id={`tooltip${q.id}${aId}`}>
+                              <AiTwotoneQuestionCircle />
+                            </Icon>
+                          </Tooltip>
+                        ) : (
+                          el.text
+                        )}
                       </Li>
                     </Highlight>
                   ))}

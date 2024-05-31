@@ -15,6 +15,7 @@ const TooltipContainer = styled.div`
   min-width: 15rem;
   min-height: 5rem;
   padding: 0.5rem;
+  font-size: 1rem;
   color: ${(props) => props.theme.colors.caputMortuum};
   background-color: ${(props) => props.theme.colors.linen};
   border: 0.3rem solid ${(props) => props.theme.colors.desertSand};

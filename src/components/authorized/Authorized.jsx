@@ -42,7 +42,9 @@ export function Authorized({ children }) {
   }, [token, navigate]);
 
   useEffect(() => {
-    history.at(-1) !== history.at(-2) && dispatch(resetHighlight());
+    history.at(-1) !== history.at(-2) &&
+      !history.at(-1).includes('summary') &&
+      dispatch(resetHighlight());
   }, [history, dispatch]);
 
   useEffect(() => {
@@ -72,6 +74,7 @@ export function Authorized({ children }) {
 
   function handleClickAvatar() {
     !history.at(-1).includes('summary') && navigate('/profile');
+    history.at(-1).includes('summary') && dispatch(endQuiz()) && navigate('/profile');
   }
 
   function handleClickLogo() {

@@ -29,7 +29,11 @@ export function Tooltip({ children, text, direction, position }) {
 }
 
 Tooltip.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element)]),
+  children: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.arrayOf(PropTypes.element),
+    PropTypes.any,
+  ]),
   text: PropTypes.string,
   direction: PropTypes.string,
   position: PropTypes.string,

@@ -71,6 +71,8 @@ export const initialState = {
     questions: [],
     correctlyAnsweredQid: [],
     incorrectlyAnsweredQid: [],
+    unansweredQid: [],
+    partialyAnsweredQ: [],
   },
   highlight: {
     highlight: {

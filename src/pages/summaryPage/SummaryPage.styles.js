@@ -59,6 +59,14 @@ const RedBar = styled.div`
   background-color: red;
 `;
 
+const GreyBar = styled.div`
+  height: 100%;
+  width: ${(props) => props.$width};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const Span = styled.span`
   color: #fff;
 `;
@@ -84,6 +92,7 @@ const Button = styled.button`
 `;
 
 const Icon = styled.div`
+  display: inline;
   height: 2rem;
   width: 2rem;
   font-size: 2rem;
@@ -127,12 +136,13 @@ const QuestionTitle = styled.h3`
 `;
 
 const Ul = styled.ul`
-  font-size: 1.75rem;
+  width: fit-content;
+
   color: ${(props) => props.theme.colors.textColorBrown};
 `;
 
 const Li = styled.li`
-  width: 100%;
+  font-size: 1.75rem;
 `;
 
 export {
@@ -143,6 +153,7 @@ export {
   SuccessBar,
   GreenBar,
   RedBar,
+  GreyBar,
   Span,
   Button,
   Icon,

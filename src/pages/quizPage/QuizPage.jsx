@@ -74,8 +74,16 @@ export function QuizPage() {
       !currentQuestion &&
       quiz.questions.length > 0 &&
       quiz.id &&
-      dispatch(getQuestionById({ id: quiz.questions[0] })).then(() => {
-        setSelectedAnswer(quiz.submittedAnswers[0]);
+      dispatch(
+        getQuestionById({
+          id: quiz.submittedAnswers.includes(null)
+            ? quiz.questions[quiz.submittedAnswers.indexOf(null)]
+            : quiz.questions[0],
+        })
+      ).then(() => {
+        setSelectedAnswer(quiz.submittedAnswers.includes(null) ? null : quiz.submittedAnswers[0]);
+        quiz.submittedAnswers.includes(null) &&
+          setCurrentPosition(quiz.submittedAnswers.indexOf(null) + 1);
       });
   }, [currentQuestion, quiz, dispatch, history, location.pathname]);
 

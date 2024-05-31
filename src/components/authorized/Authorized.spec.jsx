@@ -135,6 +135,7 @@ const inititalSummaryState = {
   questions: [],
   correctlyAnsweredQid: [],
   incorrectlyAnsweredQid: [],
+  unansweredQid: [],
   partialyAnsweredQ: [],
 };
 

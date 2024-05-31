@@ -7,6 +7,7 @@ import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { QuizPage } from './QuizPage';
 import { HomePage } from '../homePage/HomePage';
 import { act } from 'react-dom/test-utils';
+import { http } from 'msw';
 
 const initialStateQuizById = {
   ...initialState,
@@ -308,6 +309,21 @@ describe('Quiz Page', () => {
     await user.click(arrowRight);
 
     await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('An error occured!'));
+  });
+
+  it('network error creaes error message', async () => {
+    server.use(http.get('/quizzes', (res) => res.networkError()));
+
+    const { store } = renderWithProviders(<RouterProvider router={router} />, {
+      preloadedState: initialStateQuizById,
+    });
+
+    await act(
+      async () =>
+        await vi.waitFor(() =>
+          expect(store.getState().user.error).toStrictEqual('ERR_BAD_RESPONSE')
+        )
+    );
   });
 
   it('clicking on discard button should render modal window', async () => {
