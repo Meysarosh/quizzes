@@ -256,25 +256,26 @@ export function SummaryPage() {
                 </Highlight>
                 <Ul>
                   {Object.values(q.answers).map((el, aId) => (
-                    <Highlight key={aId}>
-                      <Li className={classAnswer(qId, aId)} key={el.text}>
-                        {classAnswer(qId, aId) === 'yellow' ? (
-                          <Tooltip
-                            key={aId}
-                            position={checkWidth(`tooltip${q.id}${aId}`)}
-                            // position="rigth"
-                            text="Yellow colored is the correct answer that wasn't checked"
-                          >
+                    <Li className={classAnswer(qId, aId)} key={el.text}>
+                      {classAnswer(qId, aId) === 'yellow' ? (
+                        <Tooltip
+                          key={aId}
+                          position={checkWidth(`tooltip${q.id}${aId}`)}
+                          text="Yellow colored is the correct answer that wasn't checked"
+                        >
+                          <Highlight key={aId}>
                             {<p className={classAnswer(qId, aId)}>{el.text}</p>}
-                            <Icon id={`tooltip${q.id}${aId}`}>
-                              <AiTwotoneQuestionCircle />
-                            </Icon>
-                          </Tooltip>
-                        ) : (
-                          el.text
-                        )}
-                      </Li>
-                    </Highlight>
+                          </Highlight>
+                          <Icon id={`tooltip${q.id}${aId}`}>
+                            <AiTwotoneQuestionCircle />
+                          </Icon>
+                        </Tooltip>
+                      ) : (
+                        <Highlight>
+                          <p>{el.text}</p>
+                        </Highlight>
+                      )}
+                    </Li>
                   ))}
                 </Ul>
               </QuestionContainer>
