@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { addRange } from './addRange';
+import { tokenStringify, tokenParse } from './tokenRefresh';
 
 describe('addRange', () => {
   it('Should add and remove new ranges', async () => {
@@ -17,5 +18,15 @@ describe('addRange', () => {
       [1, 7],
       [10, 11],
     ]);
+  });
+});
+
+describe('tokenRefresh', () => {
+  it('the two functions should code and decode a string', () => {
+    const string = 'SomeString12345';
+
+    const result = tokenParse(tokenStringify(string, 'SomeOutherString98765'));
+
+    expect(result).toStrictEqual(string);
   });
 });

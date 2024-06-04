@@ -12,7 +12,7 @@ export const updateQuizData = createAsyncThunk(
     };
 
     const response = await axios
-      .put(`http://localhost:3000/quizzes/${quiz.id}`, { ...quiz, ...data }, { headers })
+      .put(`${import.meta.env.VITE_URL_DATA}/quizzes/${quiz.id}`, { ...quiz, ...data }, { headers })
       .catch(function (error) {
         if (error.response) throw rejectWithValue(error.response.data);
         else throw rejectWithValue(error.message);

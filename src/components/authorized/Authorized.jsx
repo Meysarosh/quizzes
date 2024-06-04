@@ -1,121 +1,51 @@
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import {
-  Body,
-  Avatar,
-  LogoContainer,
-  Header,
-  Img,
-  Switch,
-  SwitchBtn,
-  SwitchText,
-} from './Authorized.styles';
-import { Logo } from '../logo/Logo';
+import { Body } from './Authorized.styles';
 import { useLocation, useNavigate } from 'react-router';
-import { addLocation, setDarkMode } from '../../store/slices/userSlice';
-import { endQuiz } from '../../store/slices/quizSlice';
-import { resetSummary } from '../../store/slices/summarySlice';
-import { switchHighlight, resetHighlight } from '../../store/slices/highlightSlice';
-import { BsMoonStars, BsSun } from 'react-icons/bs';
-import { isHighlightAvailable } from '../highlight/highlightPages';
-import { Tooltip } from '../tooltip';
-
+import { logout } from '../../store/slices/tokenSlice';
+import { login } from '../../store/actions';
+import { tokenParse } from '../../utils/helperFunctions/tokenRefresh';
 export function Authorized({ children }) {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { token } = useSelector((state) => state.token);
-  const { user, history, darkMode } = useSelector((state) => state.user);
-  const { quiz } = useSelector((state) => state.quiz);
-  const { questions } = useSelector((state) => state.summary);
-  const { highlight } = useSelector((state) => state.highlight);
+  const dispatch = useDispatch();
+  const { token, refreshToken } = useSelector((state) => state.token);
+  const { lastActivity, user } = useSelector((state) => state.user);
+
+  const inactivityTime = 30 * 60 * 1000;
 
   useEffect(() => {
-    dispatch(addLocation(location.pathname));
-  }, [location.pathname, dispatch]);
-
-  useEffect(() => {
-    if (!token) {
+    if (!token && location.pathname !== '/registration') {
       navigate('/');
     }
-  }, [token, navigate]);
+  }, [token, navigate, location.pathname]);
 
   useEffect(() => {
-    history.at(-1) !== history.at(-2) &&
-      !history.at(-1).includes('summary') &&
-      dispatch(resetHighlight());
-  }, [history, dispatch]);
+    (location.pathname === '/' || location.pathname === '/registration') &&
+      token &&
+      navigate('/home');
+  }, [token, navigate, location]);
 
   useEffect(() => {
-    history.length > 1 &&
-      quiz.id &&
-      !history.at(-1).includes('summary') &&
-      (history.at(-2) === `/quiz/${quiz.id}` || history.at(-2) === `/summary/${quiz.id}`) &&
-      !history.at(-1).includes('quiz') &&
-      dispatch(endQuiz());
-  }, [history, quiz.id, dispatch]);
+    const timeout = setTimeout(() => {
+      dispatch(logout());
+    }, inactivityTime);
+
+    return () => clearTimeout(timeout);
+  }, [inactivityTime, dispatch, lastActivity]);
 
   useEffect(() => {
-    history.length > 2 &&
-      history.at(-1).includes('quiz') &&
-      history.at(-2).includes('quiz') &&
-      history.at(-1) !== history.at(-2) &&
-      dispatch(endQuiz());
-  }, [history, dispatch]);
+    if (token) {
+      const refreshTimeout = setTimeout(() => {
+        dispatch(login({ email: user.email, password: tokenParse(refreshToken) }));
+      }, inactivityTime);
 
-  useEffect(() => {
-    history.length > 1 &&
-      history.at(-2).includes('summary') &&
-      !history.at(-1).includes('summary') &&
-      questions.length > 0 &&
-      dispatch(resetSummary());
-  }, [dispatch, history, questions]);
+      return () => clearTimeout(refreshTimeout);
+    }
+  }, [token, dispatch, user.email, refreshToken, inactivityTime]);
 
-  function handleClickAvatar() {
-    !history.at(-1).includes('summary') && navigate('/profile');
-    history.at(-1).includes('summary') && dispatch(endQuiz()) && navigate('/profile');
-  }
-
-  function handleClickLogo() {
-    navigate('/home');
-  }
-
-  function handleSwitchHighlight() {
-    dispatch(switchHighlight());
-  }
-
-  function handleThemeChange() {
-    dispatch(setDarkMode());
-  }
-
-  return (
-    token && (
-      <Body>
-        <Header>
-          <LogoContainer onClick={handleClickLogo}>
-            <Logo />
-          </LogoContainer>
-          <Tooltip text={`switch to ${darkMode ? 'light' : 'dark'} mode`} position="right">
-            <Switch onClick={handleThemeChange} className="theme_switch">
-              <BsMoonStars />
-              <BsSun />
-              <SwitchBtn $nightMode={darkMode} />
-            </Switch>
-          </Tooltip>
-          {isHighlightAvailable(location.pathname) && (
-            <Switch onClick={handleSwitchHighlight}>
-              <SwitchText>highlight {highlight.isHighlight ? 'on' : 'off'}</SwitchText>
-            </Switch>
-          )}
-          <Avatar onClick={handleClickAvatar}>
-            <Img src={user.img ? `/src/assets/img/${user.img}` : '/src/assets/img/default.png'} />
-          </Avatar>
-        </Header>
-        {children}
-      </Body>
-    )
-  );
+  return <Body>{children}</Body>;
 }
 
 Authorized.propTypes = {

@@ -1,12 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { tokenParse } from '../../utils/helperFunctions/tokenRefresh';
 
 export const updateUserData = createAsyncThunk(
   'updateUserData',
   async function (newData, { getState, rejectWithValue }) {
-    const { token } = getState().token;
+    const { token, refreshToken } = getState().token;
     const { user } = getState().user;
-    const password = user.username;
 
     const headers = {
       'Content-Type': 'application/json',
@@ -15,8 +15,8 @@ export const updateUserData = createAsyncThunk(
 
     const response = await axios
       .put(
-        `http://localhost:3000/users/${user.id}`,
-        { ...user, password, ...newData },
+        `${import.meta.env.VITE_URL_DATA}/users/${user.id}`,
+        { ...user, password: tokenParse(refreshToken), ...newData },
         {
           headers: headers,
         }

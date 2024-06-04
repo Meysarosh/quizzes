@@ -256,7 +256,7 @@ export function SummaryPage() {
                 </Highlight>
                 <Ul>
                   {Object.values(q.answers).map((el, aId) => (
-                    <Li className={classAnswer(qId, aId)} key={el.text}>
+                    <Li key={el.text}>
                       {classAnswer(qId, aId) === 'yellow' ? (
                         <Tooltip
                           key={aId}
@@ -272,7 +272,7 @@ export function SummaryPage() {
                         </Tooltip>
                       ) : (
                         <Highlight>
-                          <p>{el.text}</p>
+                          <p className={classAnswer(qId, aId)}>{el.text}</p>
                         </Highlight>
                       )}
                     </Li>

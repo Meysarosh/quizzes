@@ -9,7 +9,7 @@ export const getQuestionsForSummary = createAsyncThunk(
     const questionsQuerryString = questions.map((q) => `&id=${q}`).join('');
 
     const response = await axios
-      .get(`http://localhost:4000/${filters.quizBank}?${questionsQuerryString}`, {
+      .get(`${import.meta.env.VITE_URL_QUESTIONS}/${filters.quizBank}?${questionsQuerryString}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,

@@ -7,7 +7,7 @@ export const getUserQuizzes = createAsyncThunk(
     const { token } = getState().token;
     const { id } = getState().user.user;
     const response = await axios
-      .get(`http://localhost:3000/quizzes?userId=${id}`, {
+      .get(`${import.meta.env.VITE_URL_DATA}/quizzes?userId=${id}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,

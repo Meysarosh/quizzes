@@ -577,8 +577,8 @@ export const handlers = [
   http.put('http://localhost:3000/users/:id', async ({ request }) => {
     const updateUser = await request.json();
 
-    if (updateUser.password === 'Expired-404')
-      return new HttpResponse('jwt expired', { status: 404 });
+    if (updateUser.password === 'Wrongpassword-400')
+      return new HttpResponse('incorrect password', { status: 400 });
 
     return HttpResponse.json(user);
   }),

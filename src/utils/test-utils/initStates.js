@@ -19,6 +19,7 @@ export const initialState = {
     error: null,
     message: null,
     history: ['/home'],
+    lastActivity: null,
     darkMode: false,
   },
   filters: {

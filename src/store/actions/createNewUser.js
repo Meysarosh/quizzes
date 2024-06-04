@@ -1,11 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { tokenStringify } from '../../utils/helperFunctions/tokenRefresh';
 
 export const createNewUser = createAsyncThunk(
   'createNewUser',
   async function (data, { rejectWithValue }) {
     const response = await axios
-      .post('http://localhost:3000/users', {
+      .post(`${import.meta.env.VITE_URL_DATA}/users`, {
         ...data,
         answeredQuestions: [],
       })
@@ -14,6 +15,9 @@ export const createNewUser = createAsyncThunk(
           throw rejectWithValue(error.response.data);
         else throw rejectWithValue(error.code);
       });
-    return response.data;
+    return {
+      ...response.data,
+      refreshToken: tokenStringify(data.password, response.data.accessToken),
+    };
   }
 );

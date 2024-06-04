@@ -37,7 +37,7 @@ const SuccessBar = styled.div`
   margin: 0.5rem 0;
   display: flex;
   border-radius: 1rem;
-  background-color: lightgrey;
+  background-color: #a7a7a7;
   overflow: hidden;
 `;
 

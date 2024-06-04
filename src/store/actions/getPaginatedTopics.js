@@ -5,7 +5,7 @@ export const getPaginatedTopics = createAsyncThunk(
   async function (nextLoad, { getState, rejectWithValue }) {
     const { token } = getState().token;
 
-    const response = await fetch(`http://localhost:4000/topics?${nextLoad}`, {
+    const response = await fetch(`${import.meta.env.VITE_URL_QUESTIONS}/topics?${nextLoad}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

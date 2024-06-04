@@ -19,7 +19,7 @@ export const getAvailableQuestions = createAsyncThunk(
 
     const response = await axios
       .get(
-        `http://localhost:4000/${quizBank}?${topic ? `topic=${topic}` : ''}${difficultiesQuerryString ?? ''}${multi ?? ''}`,
+        `${import.meta.env.VITE_URL_QUESTIONS}/${quizBank}?${topic ? `topic=${topic}` : ''}${difficultiesQuerryString ?? ''}${multi ?? ''}`,
         {
           headers: {
             'Content-Type': 'application/json',

@@ -10,7 +10,14 @@ import {
   getUserQuizzes,
 } from '../actions';
 
-const initialState = { user: {}, error: null, message: null, history: [], darkMode: false };
+const initialState = {
+  user: {},
+  error: null,
+  message: null,
+  history: [],
+  lastActivity: null,
+  darkMode: false,
+};
 
 export const userSlice = createSlice({
   name: 'user',
@@ -19,6 +26,7 @@ export const userSlice = createSlice({
     addLocation(state, action) {
       state.history.length > 10 && state.history.shift();
       state.history.at(-1) != action.payload && state.history.push(action.payload);
+      state.lastActivity = Date.now();
     },
     setUserMessage(state, action) {
       state.message = action.payload;

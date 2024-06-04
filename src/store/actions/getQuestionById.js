@@ -8,7 +8,7 @@ export const getQuestionById = createAsyncThunk(
     const { quizBank } = getState().quiz.quiz.filters;
 
     const response = await axios
-      .get(`http://localhost:4000/${quizBank}?id=${id}`, {
+      .get(`${import.meta.env.VITE_URL_QUESTIONS}/${quizBank}?id=${id}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,

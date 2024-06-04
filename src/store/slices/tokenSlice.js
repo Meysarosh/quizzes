@@ -1,73 +1,36 @@
 import { createSlice } from '@reduxjs/toolkit';
-import {
-  createNewUser,
-  login,
-  updateUserData,
-  createNewQuiz,
-  getQuestion,
-  updateQuizData,
-  getQuestionById,
-  getQuizById,
-  getAvailableQuestions,
-  getQuestionsBanksAndTopics,
-  getUserQuizzes,
-  getQuestionsForSummary,
-  getPaginatedTopics,
-} from '../actions';
+import { createNewUser, login } from '../actions';
 
-const initialState = { token: null };
+const initialState = { token: null, refreshToken: null };
 
 export const tokenSlice = createSlice({
   name: 'token',
   initialState,
-  reducers: {},
+  reducers: {
+    logout(state) {
+      state.token = null;
+      state.refreshToken = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(createNewUser.fulfilled, (state, action) => {
       state.token = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
     });
     builder.addCase(createNewUser.rejected, (state) => {
       state.token = null;
-    });
-    builder.addCase(updateUserData.rejected, (state, action) => {
-      action.payload === 'jwt expired' && (state.token = null);
+      state.refreshToken = null;
     });
     builder.addCase(login.fulfilled, (state, action) => {
       state.token = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
     });
     builder.addCase(login.rejected, (state) => {
       state.token = null;
-    });
-    builder.addCase(createNewQuiz.rejected, (state, action) => {
-      action.payload === 'jwt expired' && (state.token = null);
-    });
-    builder.addCase(updateQuizData.rejected, (state, action) => {
-      action.payload === 'jwt expired' && (state.token = null);
-    });
-    builder.addCase(getQuizById.rejected, (state, action) => {
-      action.payload === 'jwt expired' && (state.token = null);
-    });
-    builder.addCase(getQuestion.rejected, (state, action) => {
-      action.payload === 'jwt expired' && (state.token = null);
-    });
-    builder.addCase(getQuestionById.rejected, (state, action) => {
-      action.payload === 'jwt expired' && (state.token = null);
-    });
-    builder.addCase(getAvailableQuestions.rejected, (state, action) => {
-      action.payload === 'jwt expired' && (state.token = null);
-    });
-    builder.addCase(getQuestionsBanksAndTopics.rejected, (state, action) => {
-      action.payload === 'jwt expired' && (state.token = null);
-    });
-    builder.addCase(getUserQuizzes.rejected, (state, action) => {
-      action.payload === 'jwt expired' && (state.token = null);
-    });
-    builder.addCase(getQuestionsForSummary.rejected, (state, action) => {
-      action.payload === 'jwt expired' && (state.token = null);
-    });
-    builder.addCase(getPaginatedTopics.rejected, (state, action) => {
-      action.payload === 'Unauthorized' && (state.token = null);
+      state.refreshToken = null;
     });
   },
 });
 
 export default tokenSlice.reducer;
+export const { logout } = tokenSlice.actions;

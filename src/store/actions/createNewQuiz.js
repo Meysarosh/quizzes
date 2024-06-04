@@ -15,7 +15,7 @@ export const createNewQuiz = createAsyncThunk(
 
     const response = await axios
       .post(
-        'http://localhost:3000/quizzes',
+        `${import.meta.env.VITE_URL_DATA}/quizzes`,
         {
           ...quiz,
           userId: user.id,

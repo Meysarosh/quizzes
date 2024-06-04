@@ -6,18 +6,20 @@ import { LoginPage } from './LoginPage';
 import { server } from '../../mocks/server';
 import { MemoryRouter } from 'react-router-dom';
 import { http } from 'msw';
-import * as router from 'react-router';
 
 const loggedOutInitialState = {
   ...initialState,
   token: {
     token: null,
+    refreshToken: null,
   },
   user: {
     user: {},
     error: null,
     message: null,
     history: [],
+    lastActivity: null,
+    darkMode: false,
   },
 };
 
@@ -76,27 +78,6 @@ describe('Login Page', () => {
     await waitFor(() => {
       expect(call === 'POST login').toBe(true);
     });
-  });
-
-  it('after successfull login should navigate to HomePage', async () => {
-    const navigate = vi.fn();
-    vi.spyOn(router, 'useNavigate').mockImplementation(() => navigate);
-
-    const user = userEvent.setup();
-    const { store, getByRole, getByLabelText } = renderFunction();
-
-    const emailInput = getByLabelText('email-input');
-    const passwordInput = getByLabelText('password-input');
-    const Btn = getByRole('button', {
-      name: /Login/,
-    });
-
-    await user.type(emailInput, 'email@gmail.com');
-    await user.type(passwordInput, 'password');
-    await user.click(Btn);
-
-    await waitFor(() => expect(store.getState().user.user.id === 1).toBe(true));
-    expect(navigate).toHaveBeenCalledWith('/home');
   });
 
   it('should clear password input value if login rejected', async () => {

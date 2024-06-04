@@ -7,7 +7,7 @@ export const getQuestionsBanksAndTopics = createAsyncThunk(
     const { token } = getState().token;
 
     const response = await axios
-      .get(`http://localhost:4000/structure`, {
+      .get(`${import.meta.env.VITE_URL_QUESTIONS}/structure`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,

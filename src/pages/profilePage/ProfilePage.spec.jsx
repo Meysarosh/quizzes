@@ -136,7 +136,7 @@ describe('Profile form', () => {
     });
   });
 
-  it('After submitting changes, should request an update but if token expires recieves an error', async () => {
+  it('Wrong password should produce an error message', async () => {
     const { store, getByRole, getByLabelText } = renderFunction();
     const user = userEvent.setup();
 
@@ -146,11 +146,11 @@ describe('Profile form', () => {
       name: /Submit/,
     });
 
-    await user.type(passwordInput, 'Expired-404');
-    await user.type(passwordConfirmInput, 'Expired-404');
+    await user.type(passwordInput, 'Wrongpassword-400');
+    await user.type(passwordConfirmInput, 'Wrongpassword-400');
     await user.click(Btn);
 
-    await vi.waitFor(() => expect(store.getState().token.token).toStrictEqual(null));
+    await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('incorrect password'));
   });
 
   it('Network error should produce an error message', async () => {
