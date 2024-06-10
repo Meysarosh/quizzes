@@ -227,6 +227,10 @@ export function SummaryPage() {
             >
               <Button onClick={handleBtnLeave}>Leave</Button>
             </Tooltip>
+            <div>
+              <p>PDF</p>
+              <p>PRINT</p>
+            </div>
           </ActionsContainer>
           <Tooltip
             text={`Your correct answers score is ${Math.round(correctCount)}%`}

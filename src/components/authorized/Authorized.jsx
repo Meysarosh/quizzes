@@ -43,7 +43,7 @@ export function Authorized({ children }) {
 
       return () => clearTimeout(refreshTimeout);
     }
-  }, [token, dispatch, user.email, refreshToken, inactivityTime]);
+  }, [token, dispatch, user, refreshToken, inactivityTime]);
 
   return <Body>{children}</Body>;
 }

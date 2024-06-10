@@ -12,7 +12,6 @@ export const getPaginatedTopics = createAsyncThunk(
         Authorization: `Bearer ${token}`,
       },
     });
-
     if (response?.ok) {
       const headers = response.headers.get('Link');
       const data = await response.json();

@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/react';
 import { Highlight } from './Highlight';
 import { MemoryRouter } from 'react-router-dom';
+import { act } from 'react-dom/test-utils';
 
 const highlightOnInitialState = {
   ...initialState,
@@ -41,7 +42,7 @@ describe('Highlight', () => {
 
     const string = getByText('Test text');
 
-    await user.dblClick(string);
+    await act(() => user.dblClick(string));
 
     const highlightedSpan = container.getElementsByClassName('highlighted')[0];
 

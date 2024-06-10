@@ -39,6 +39,17 @@ export const GlobalStyles = createGlobalStyle`
   display: none;
 }
 
+.invisible {
+  height:0;
+  opacity: 0;
+  overflow: hidden;
+}
+.visible {
+  height:3.5rem;
+  opacity: 1;
+  /* overflow: visible; */
+}
+
 .filter-hidden {
   right: -25%;
 }
@@ -72,7 +83,7 @@ export const GlobalStyles = createGlobalStyle`
 }
 
 .red {
-  color: #ff0000;
+  color: #ff0000 !important;
 }
 
 .yellow {

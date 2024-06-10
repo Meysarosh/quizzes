@@ -6,6 +6,7 @@ import { RegistrationPage } from './RegistrationPage';
 import { server } from '../../mocks/server';
 import { MemoryRouter } from 'react-router-dom';
 import { http } from 'msw';
+import { act } from 'react-dom/test-utils';
 
 const notRegisteredInitialState = {
   ...initialState,
@@ -77,12 +78,12 @@ describe('Registration Page', () => {
       name: /Register/,
     });
 
-    await user.type(fullnameInput, 'New User');
-    await user.type(emailInput, 'test@vitest.com');
-    await user.type(usernameInput, 'Testuser');
-    await user.type(passwordInput, 'Password-1');
-    await user.type(passwordConfirmInput, 'Password-1');
-    await user.click(Btn);
+    await act(() => user.type(fullnameInput, 'New User'));
+    await act(() => user.type(emailInput, 'test@vitest.com'));
+    await act(() => user.type(usernameInput, 'Testuser'));
+    await act(() => user.type(passwordInput, 'Password-1'));
+    await act(() => user.type(passwordConfirmInput, 'Password-1'));
+    await act(() => user.click(Btn));
 
     await waitFor(() => {
       expect(call === 'POST createNewUser').toBe(true);
@@ -102,12 +103,12 @@ describe('Registration Page', () => {
       name: /Register/,
     });
 
-    await user.type(fullnameInput, 'New User');
-    await user.type(emailInput, 'test@vitest.com');
-    await user.type(usernameInput, 'Error');
-    await user.type(passwordInput, 'Password-1');
-    await user.type(passwordConfirmInput, 'Password-1');
-    await user.click(Btn);
+    await act(() => user.type(fullnameInput, 'New User'));
+    await act(() => user.type(emailInput, 'test@vitest.com'));
+    await act(() => user.type(usernameInput, 'Error'));
+    await act(() => user.type(passwordInput, 'Password-1'));
+    await act(() => user.type(passwordConfirmInput, 'Password-1'));
+    await act(() => user.click(Btn));
 
     await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('An error occured!'));
   });
@@ -126,12 +127,12 @@ describe('Registration Page', () => {
       name: /Register/,
     });
 
-    await user.type(fullnameInput, 'New User');
-    await user.type(emailInput, 'test@vitest.com');
-    await user.type(usernameInput, 'Testuser');
-    await user.type(passwordInput, 'Password-1');
-    await user.type(passwordConfirmInput, 'Password-1');
-    await user.click(Btn);
+    await act(() => user.type(fullnameInput, 'New User'));
+    await act(() => user.type(emailInput, 'test@vitest.com'));
+    await act(() => user.type(usernameInput, 'Testuser'));
+    await act(() => user.type(passwordInput, 'Password-1'));
+    await act(() => user.type(passwordConfirmInput, 'Password-1'));
+    await act(() => user.click(Btn));
 
     await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('ERR_BAD_RESPONSE'));
   });
@@ -145,19 +146,19 @@ describe('Registration Page', () => {
       name: /Register/,
     });
 
-    await user.click(Btn);
+    await act(() => user.click(Btn));
     const requiredError = await findByText('* Name is required');
 
     expect(requiredError).toBeInTheDocument();
 
-    await user.type(fullnameInput, 'Short');
-    await user.click(Btn);
+    await act(() => user.type(fullnameInput, 'Short'));
+    await act(() => user.click(Btn));
     const toShortError = await findByText('* Name must be at least 7 characters long');
 
     expect(toShortError).toBeInTheDocument();
 
-    await user.type(fullnameInput, 'Long123456789123456789123456789');
-    await user.click(Btn);
+    await act(() => user.type(fullnameInput, 'Long123456789123456789123456789'));
+    await act(() => user.click(Btn));
     const toLongError = await findByText('* Name must not exceed 30 characters');
 
     expect(toLongError).toBeInTheDocument();
@@ -171,7 +172,7 @@ describe('Registration Page', () => {
       name: /Register/,
     });
 
-    await user.click(Btn);
+    await act(() => user.click(Btn));
     const requiredError = await findByText('* Email is required');
 
     expect(requiredError).toBeInTheDocument();
@@ -185,19 +186,19 @@ describe('Registration Page', () => {
       name: /Register/,
     });
 
-    await user.click(Btn);
+    await act(() => user.click(Btn));
     const requiredError = await findByText('* Username is required');
 
     expect(requiredError).toBeInTheDocument();
 
-    await user.type(usernameInput, 'abc');
-    await user.click(Btn);
+    await act(() => user.type(usernameInput, 'abc'));
+    await act(() => user.click(Btn));
     const shortError = await findByText('* Username must be at least 4 characters long');
 
     expect(shortError).toBeInTheDocument();
 
-    await user.type(usernameInput, 'Long123456789123456789');
-    await user.click(Btn);
+    await act(() => user.type(usernameInput, 'Long123456789123456789'));
+    await act(() => user.click(Btn));
     const longError = await findByText('* Username must not exceed 20 character');
 
     expect(longError).toBeInTheDocument();
@@ -212,38 +213,44 @@ describe('Registration Page', () => {
       name: /Register/,
     });
 
-    await user.click(Btn);
+    await act(() => user.click(Btn));
+
     const requiredError = await findByText('* Password is required');
 
     expect(requiredError).toBeInTheDocument();
 
-    await user.type(passwordInput, '123456789');
-    await user.click(Btn);
+    await act(() => user.type(passwordInput, '123456789'));
+    await act(() => user.click(Btn));
+
     const shortError = await findByText('* Password must be at least 10 character long');
 
     expect(shortError).toBeInTheDocument();
 
-    await user.type(passwordInput, '1');
-    await user.click(Btn);
+    await act(() => user.type(passwordInput, '1'));
+    await act(() => user.click(Btn));
+
     const lowerError = await findByText('* Password must contain at least one lowercase letter');
 
     expect(lowerError).toBeInTheDocument();
 
-    await user.type(passwordInput, 'a');
-    await user.click(Btn);
+    await act(() => user.type(passwordInput, 'a'));
+    await act(() => user.click(Btn));
+
     const upperError = await findByText('* Password must contain at least one uppercase letter');
 
     expect(upperError).toBeInTheDocument();
 
-    await user.type(passwordInput, 'A');
-    await user.click(Btn);
+    await act(() => user.type(passwordInput, 'A'));
+    await act(() => user.click(Btn));
+
     const specError = await findByText('* Password must contain at least one special character');
 
     expect(specError).toBeInTheDocument();
 
-    await user.clear(passwordInput);
-    await user.type(passwordInput, 'Abcdefghij*');
-    await user.click(Btn);
+    await act(() => user.clear(passwordInput));
+    await act(() => user.type(passwordInput, 'Abcdefghij*'));
+    await act(() => user.click(Btn));
+
     const numberError = await findByText('* Password must contain at least one number');
 
     expect(numberError).toBeInTheDocument();
@@ -259,9 +266,9 @@ describe('Registration Page', () => {
       name: /Register/,
     });
 
-    await user.type(passwordInput, 'Password-1');
-    await user.type(passwordConfirmInput, 'Password');
-    await user.click(Btn);
+    await act(() => user.type(passwordInput, 'Password-1'));
+    await act(() => user.type(passwordConfirmInput, 'Password'));
+    await act(() => user.click(Btn));
 
     const matchError = await findByText('* Passwords must match');
     expect(matchError).toBeInTheDocument();

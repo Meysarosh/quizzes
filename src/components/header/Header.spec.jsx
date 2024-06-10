@@ -5,6 +5,7 @@ import { waitFor } from '@testing-library/react';
 import { Header } from './Header';
 import { MemoryRouter } from 'react-router-dom';
 import * as reactRouter from 'react-router';
+import { act } from 'react-dom/test-utils';
 
 const notFinishedQuizState = {
   ...initialState,
@@ -222,7 +223,7 @@ describe('Header', () => {
 
     expect(store.getState().highlight.highlight.isHighlight === false).toBe(true);
 
-    await user.click(switchBtn);
+    await act(async () => await user.click(switchBtn));
 
     await waitFor(() =>
       expect(store.getState().highlight.highlight.isHighlight === true).toBe(true)
@@ -244,7 +245,7 @@ describe('Header', () => {
 
     expect(store.getState().user.darkMode === false).toBe(true);
 
-    await user.click(switchBtn);
+    await act(async () => await user.click(switchBtn));
 
     await waitFor(() => expect(store.getState().user.darkMode === true).toBe(true));
   });

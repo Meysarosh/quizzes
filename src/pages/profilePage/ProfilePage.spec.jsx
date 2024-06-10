@@ -8,6 +8,7 @@ import userEvent from '@testing-library/user-event';
 import * as reactRouter from 'react-router';
 import { act } from 'react-dom/test-utils';
 import { http } from 'msw';
+import selectEvent from 'react-select-event';
 
 const initialStateWithoutUserData = {
   ...initialState,
@@ -34,7 +35,7 @@ const initialStateWithoutUserData = {
       },
       {
         quizId: 3,
-        date: 1716448340169,
+        date: Date.now(),
         quizBank: 'TypeScript',
         topic: 'TypeScript',
         questionsQuantity: 71,
@@ -127,9 +128,9 @@ describe('Profile form', () => {
     expect(passwordConfirmInput).toBeInTheDocument();
     expect(Btn).toBeInTheDocument();
 
-    await user.type(passwordInput, 'Password-1');
-    await user.type(passwordConfirmInput, 'Password-1');
-    await user.click(Btn);
+    await act(() => user.type(passwordInput, 'Password-1'));
+    await act(() => user.type(passwordConfirmInput, 'Password-1'));
+    await act(() => user.click(Btn));
 
     await waitFor(() => {
       expect(call === 'PUT updateUserData').toBe(true);
@@ -146,9 +147,9 @@ describe('Profile form', () => {
       name: /Submit/,
     });
 
-    await user.type(passwordInput, 'Wrongpassword-400');
-    await user.type(passwordConfirmInput, 'Wrongpassword-400');
-    await user.click(Btn);
+    await act(() => user.type(passwordInput, 'Wrongpassword-400'));
+    await act(() => user.type(passwordConfirmInput, 'Wrongpassword-400'));
+    await act(() => user.click(Btn));
 
     await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('incorrect password'));
   });
@@ -163,9 +164,9 @@ describe('Profile form', () => {
       name: /Submit/,
     });
 
-    await user.type(passwordInput, 'Password-1');
-    await user.type(passwordConfirmInput, 'Password-1');
-    await user.click(Btn);
+    await act(() => user.type(passwordInput, 'Password-1'));
+    await act(() => user.type(passwordConfirmInput, 'Password-1'));
+    await act(() => user.click(Btn));
 
     await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('ERR_BAD_RESPONSE'));
   });
@@ -178,7 +179,7 @@ describe('Profile form', () => {
     const inputFile = getByTestId('fileUpload');
     expect(inputFile).toBeInTheDocument();
 
-    await user.upload(inputFile, testImg);
+    await act(() => user.upload(inputFile, testImg));
 
     expect(inputFile.files[0]).toStrictEqual(testImg);
   });
@@ -191,7 +192,7 @@ describe('Profile form', () => {
     const plusButton = getByTestId('PlusButton');
     expect(plusButton).toBeInTheDocument();
 
-    await user.click(plusButton);
+    await act(() => user.click(plusButton));
 
     expect(onClickSpy).toHaveBeenCalled();
   });
@@ -212,7 +213,7 @@ describe('Profile form', () => {
       name: /Submit/,
     });
 
-    await user.click(Btn);
+    await act(() => user.click(Btn));
 
     const fullnameError = await findByText('* Name is required');
     const emailError = await findByText('* Email is required');
@@ -224,8 +225,8 @@ describe('Profile form', () => {
     expect(usernameError).toBeInTheDocument();
     expect(passwordError).toBeInTheDocument();
 
-    await user.type(passwordInput, 'a');
-    await user.click(Btn);
+    await act(() => user.type(passwordInput, 'a'));
+    await act(() => user.click(Btn));
 
     const passwordConfirmError = await findByText('* Passwords must match');
 
@@ -355,6 +356,171 @@ describe('QuizzesTable', () => {
     expect(status2).toBeInTheDocument();
     expect(btn2).toBeInTheDocument();
     expect(btn3).toBeInTheDocument();
+  });
+
+  it('Filtering functionality by search text', async () => {
+    const { getByText, getByPlaceholderText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/profile']}>
+        <ProfilePage />
+      </MemoryRouter>,
+      {
+        preloadedState: initialStateWithoutUserData,
+      }
+    );
+    const user = userEvent.setup();
+
+    const searchInput = getByPlaceholderText('Search for topic:');
+    const topic1 = getByText('TypeScript - TypeScript');
+    const topic2 = getByText('React - React Basics');
+    const topic3 = getByText('React - React Router');
+
+    expect(topic1).toBeInTheDocument();
+    expect(topic2).toBeInTheDocument();
+    expect(topic3).toBeInTheDocument();
+
+    await act(() => user.type(searchInput, 'basics'));
+
+    expect(topic1).not.toBeInTheDocument();
+    expect(topic2).toBeInTheDocument();
+    expect(topic3).not.toBeInTheDocument();
+  });
+
+  it('Filtering functionality of passed quizzes', async () => {
+    const user = userEvent.setup();
+    const { getByText, getAllByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/profile']}>
+        <ProfilePage />
+      </MemoryRouter>,
+      {
+        preloadedState: initialStateWithoutUserData,
+      }
+    );
+    const progress0 = getByText('4/6');
+    const progress1 = getByText('1/71');
+    const progress2 = getByText('1/2');
+    const select = getAllByText('Select...');
+
+    expect(progress0).toBeInTheDocument();
+    expect(progress1).toBeInTheDocument();
+    expect(progress2).toBeInTheDocument();
+
+    await act(() => user.click(select[0]));
+    await act(() => selectEvent.select(select[0], 'passed'));
+
+    expect(progress0).toBeInTheDocument();
+    expect(progress1).not.toBeInTheDocument();
+    expect(progress2).toBeInTheDocument();
+  });
+
+  it('Filtering functionality of failed quizzes', async () => {
+    const user = userEvent.setup();
+    const { getByText, getAllByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/profile']}>
+        <ProfilePage />
+      </MemoryRouter>,
+      {
+        preloadedState: initialStateWithoutUserData,
+      }
+    );
+    const progress0 = getByText('4/6');
+    const progress1 = getByText('1/71');
+    const progress2 = getByText('1/2');
+    const select = getAllByText('Select...');
+
+    expect(progress0).toBeInTheDocument();
+    expect(progress1).toBeInTheDocument();
+    expect(progress2).toBeInTheDocument();
+
+    await act(() => user.click(select[0]));
+    await act(() => selectEvent.select(select[0], 'failed'));
+
+    expect(progress0).not.toBeInTheDocument();
+    expect(progress1).toBeInTheDocument();
+    expect(progress2).not.toBeInTheDocument();
+  });
+
+  it('Filtering functionality by date', async () => {
+    const user = userEvent.setup();
+    const { getByText, getAllByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/profile']}>
+        <ProfilePage />
+      </MemoryRouter>,
+      {
+        preloadedState: initialStateWithoutUserData,
+      }
+    );
+
+    const topic1 = getByText('TypeScript - TypeScript');
+    const topic2 = getByText('React - React Basics');
+    const topic3 = getByText('React - React Router');
+    const select = getAllByText('Select...');
+
+    expect(topic1).toBeInTheDocument();
+    expect(topic2).toBeInTheDocument();
+    expect(topic3).toBeInTheDocument();
+
+    await act(() => user.click(select[1]));
+    await act(() => selectEvent.select(select[1], 'tooday'));
+
+    expect(topic1).toBeInTheDocument();
+    expect(topic2).not.toBeInTheDocument();
+    expect(topic3).not.toBeInTheDocument();
+  });
+
+  it('Filtering functionality by status', async () => {
+    const user = userEvent.setup();
+    const { getByText, getAllByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/profile']}>
+        <ProfilePage />
+      </MemoryRouter>,
+      {
+        preloadedState: initialStateWithoutUserData,
+      }
+    );
+
+    const topic1 = getByText('TypeScript - TypeScript');
+    const topic2 = getByText('React - React Basics');
+    const topic3 = getByText('React - React Router');
+    const select = getAllByText('Select...');
+
+    expect(topic1).toBeInTheDocument();
+    expect(topic2).toBeInTheDocument();
+    expect(topic3).toBeInTheDocument();
+
+    await act(() => user.click(select[2]));
+    await act(() => selectEvent.select(select[2], 'finished'));
+
+    expect(topic1).not.toBeInTheDocument();
+    expect(topic2).toBeInTheDocument();
+    expect(topic3).not.toBeInTheDocument();
+  });
+
+  it('Should sort by progress', async () => {
+    const user = userEvent.setup();
+    const { getByText, getAllColumnCellsByHeaderText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/profile']}>
+        <ProfilePage />
+      </MemoryRouter>,
+      {
+        preloadedState: initialStateWithoutUserData,
+      }
+    );
+    const btnProgress = getByText('Progress').lastChild;
+    const progressCells = getAllColumnCellsByHeaderText('Progress');
+
+    expect(progressCells[1]).toHaveTextContent('4/6');
+
+    await act(() => user.click(btnProgress));
+
+    const sortedProgressCells = getAllColumnCellsByHeaderText('Progress');
+    expect(sortedProgressCells[1]).toHaveTextContent('1/71');
+    expect(sortedProgressCells[3]).toHaveTextContent('4/6');
+
+    await act(() => user.click(btnProgress));
+
+    const newSortedProgressCells = getAllColumnCellsByHeaderText('Progress');
+    expect(newSortedProgressCells[1]).toHaveTextContent('4/6');
+    expect(newSortedProgressCells[3]).toHaveTextContent('1/71');
   });
 
   it('Should navigate to summary page when summary button clicked', async () => {

@@ -6,6 +6,7 @@ import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { SummaryPage } from './SummaryPage';
 import { QuizPage } from '../quizPage/QuizPage';
 import * as reactRouter from 'react-router';
+import { act } from 'react-dom/test-utils';
 
 const initialStateForSummary = {
   ...initialState,
@@ -107,7 +108,7 @@ describe('Summary Page', () => {
 
     expect(buttonLeave).toBeInTheDocument();
 
-    await user.click(buttonLeave);
+    await act(() => user.click(buttonLeave));
 
     expect(navigate).toHaveBeenCalledWith('/home');
   });
@@ -122,7 +123,7 @@ describe('Summary Page', () => {
     expect(store.getState().quiz.quiz.questions).toStrictEqual([1, 49]);
     expect(store.getState().summary.incorrectlyAnsweredQid).toStrictEqual([49]);
 
-    await user.click(buttonRetake);
+    await act(() => user.click(buttonRetake));
 
     await waitFor(() => expect(store.getState().quiz.quiz.questions).toStrictEqual([49]));
   });

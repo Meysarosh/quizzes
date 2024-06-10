@@ -1,4 +1,5 @@
-import { render } from '@testing-library/react';
+import { render, queries } from '@testing-library/react';
+import tableQueries from 'testing-library-table-queries';
 import { Provider } from 'react-redux';
 import { setupStore } from '../../store/store';
 import { ThemeProvider } from '../../styles/ThemeProvider';
@@ -23,6 +24,6 @@ export function renderWithProviders(ui, extendedRenderOptions = {}) {
 
   return {
     store,
-    ...render(ui, { wrapper: Wrapper, ...renderOptions }),
+    ...render(ui, { queries: { ...queries, ...tableQueries }, wrapper: Wrapper, ...renderOptions }),
   };
 }

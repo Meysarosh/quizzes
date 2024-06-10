@@ -7,6 +7,7 @@ import React from 'react';
 import { server } from '../../mocks/server';
 import selectEvent from 'react-select-event';
 import { MemoryRouter } from 'react-router-dom';
+import { act } from 'react-dom/test-utils';
 
 const renderFunction = () =>
   renderWithProviders(
@@ -71,7 +72,7 @@ describe('Home Page', () => {
 
     expect(await findByText(/Components/i)).toBeInTheDocument();
     const card = container.getElementsByClassName('card')[0];
-    await user.click(card.lastChild);
+    await act(() => user.click(card.lastChild));
 
     await waitFor(() => expect(call === 'POST createNewQuiz').toBe(true));
   });
@@ -98,7 +99,7 @@ describe('Home Page', () => {
     const filterBtn = getByText('Quizzes').nextSibling;
     expect(filterBtn).toHaveRole('button');
 
-    await user.click(filterBtn);
+    await act(() => user.click(filterBtn));
 
     expect(spy).toHaveBeenCalledTimes(1);
     expect(sidebar).not.toHaveClass('filter-hidden');
@@ -115,12 +116,12 @@ describe('Home Page', () => {
     const filterBtn = getByText('Quizzes').nextSibling;
     expect(filterBtn).toHaveRole('button');
 
-    await user.click(filterBtn);
+    await act(() => user.click(filterBtn));
 
     expect(sidebar).not.toHaveClass('filter-hidden');
 
     const title = getByText('Quizzes');
-    await user.click(title);
+    await act(() => user.click(title));
 
     expect(sidebar).toHaveClass('filter-hidden');
   });
@@ -145,7 +146,7 @@ describe('Home Page', () => {
     const paginateBtn = getByText('Load more...');
     expect(paginateBtn).toBeInTheDocument();
 
-    await user.click(paginateBtn);
+    await act(() => user.click(paginateBtn));
 
     await waitFor(() => expect(call === 'GET topics').toBe(true));
 
@@ -165,8 +166,8 @@ describe('Home Page', () => {
     const paginateBtn = getByText('Load more...');
     expect(paginateBtn).toBeInTheDocument();
 
-    await user.click(paginateBtn);
-    await user.click(paginateBtn);
+    await act(() => user.click(paginateBtn));
+    await act(() => user.click(paginateBtn));
 
     await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('An error occured!'));
   });
@@ -177,9 +178,9 @@ describe('Home Page', () => {
     const openFiltersBtn = getByText('Quizzes').nextSibling;
     const bankSelect = await findByLabelText('Quiz bank');
 
-    await user.click(openFiltersBtn);
-
-    await selectEvent.select(bankSelect, 'React');
+    await act(() => user.click(openFiltersBtn));
+    await act(() => user.click(bankSelect));
+    await act(() => selectEvent.select(bankSelect, 'React'));
 
     expect(await findByText(/Components/i)).toBeInTheDocument();
     const cards = container.getElementsByClassName('card');
@@ -189,7 +190,7 @@ describe('Home Page', () => {
     const paginateBtn = getByText('Load more...');
     expect(paginateBtn).toBeInTheDocument();
 
-    await user.click(paginateBtn);
+    await act(() => user.click(paginateBtn));
 
     expect(await findByText(/Test topic 9/i)).toBeInTheDocument();
     const cards2 = container.getElementsByClassName('card');
@@ -203,16 +204,17 @@ describe('Home Page', () => {
     const openFiltersBtn = getByText('Quizzes').nextSibling;
     const bankSelect = await findByLabelText('Quiz bank');
 
-    await user.click(openFiltersBtn);
+    await act(() => user.click(openFiltersBtn));
+    await act(() => user.click(bankSelect));
 
-    await selectEvent.select(bankSelect, 'React');
+    await act(() => selectEvent.select(bankSelect, 'React'));
 
     expect(await findByText(/Components/i)).toBeInTheDocument();
 
     const paginateBtn = getByText('Load more...');
     expect(paginateBtn).toBeInTheDocument();
 
-    await user.click(paginateBtn);
+    await act(() => user.click(paginateBtn));
 
     expect(await findByText(/Test topic 9/i)).toBeInTheDocument();
     expect(paginateBtn.parentElement).toHaveClass('hidden');
@@ -236,7 +238,7 @@ describe('Home Page', () => {
 
     expect(button).toHaveStyle('visibility: visible');
 
-    await user.click(button);
+    await act(() => user.click(button));
 
     expect(button).toHaveStyle('visibility: hidden');
   });
@@ -252,11 +254,11 @@ describe('Filters', () => {
 
     expect(sidebar).toHaveClass('filter-hidden');
 
-    await user.click(openFiltersBtn);
+    await act(() => user.click(openFiltersBtn));
 
     expect(sidebar).not.toHaveClass('filter-hidden');
 
-    await user.click(closeFiltersBtn);
+    await act(() => user.click(closeFiltersBtn));
 
     expect(sidebar).toHaveClass('filter-hidden');
   });
@@ -266,16 +268,20 @@ describe('Filters', () => {
     const user = userEvent.setup();
     const openFiltersBtn = getByText('Quizzes').nextSibling;
 
-    await user.click(openFiltersBtn);
+    await act(() => user.click(openFiltersBtn));
 
     const bankSelect = await findByLabelText('Quiz bank');
 
-    await selectEvent.select(bankSelect, 'React');
+    expect(bankSelect).toBeInTheDocument();
+    await act(() => user.click(bankSelect));
+
+    await act(() => selectEvent.select(bankSelect, 'React'));
 
     expect(await findByText(/React Basics/i)).toBeInTheDocument();
     expect(queryByText(/html/)).not.toBeInTheDocument();
 
-    await selectEvent.select(bankSelect, 'HTML');
+    await act(() => user.click(bankSelect));
+    await act(() => selectEvent.select(bankSelect, 'HTML'));
 
     expect(await findByText(/HTML Basics/i)).toBeInTheDocument();
     expect(queryByText(/React Basics/i)).not.toBeInTheDocument();
@@ -290,13 +296,14 @@ describe('Filters', () => {
     const difficultySelect = await findByText('Difficulty');
     const userAnswersSelect = await findByText('User answers');
 
-    await user.click(openFiltersBtn);
+    await act(() => user.click(openFiltersBtn));
 
     expect(topicSelect).toBeDisabled();
     expect(difficultySelect).toHaveClass('menu-disabled');
     expect(userAnswersSelect).toHaveClass('menu-disabled');
 
-    await selectEvent.select(bankSelect, 'React');
+    await act(() => user.click(bankSelect));
+    await act(() => selectEvent.select(bankSelect, 'React'));
 
     expect(topicSelect).not.toBeDisabled();
     expect(difficultySelect).not.toHaveClass('menu-disabled');
@@ -321,10 +328,11 @@ describe('Filters', () => {
     expect(getAllByText(/State and Props/i).length).toBe(1);
     expect(getAllByText(/HTML/).length).toBe(1);
 
-    await user.click(openFiltersBtn);
-    await selectEvent.select(bankSelect, 'React');
+    await act(() => user.click(openFiltersBtn));
+    await act(() => user.click(bankSelect));
+    await act(() => selectEvent.select(bankSelect, 'React'));
 
-    selectEvent.openMenu(getByLabelText('Topic bank'));
+    act(() => selectEvent.openMenu(getByLabelText('Topic bank')));
     const textOccurencies = await findAllByText(/React Basics/i);
 
     expect(textOccurencies.length).toBe(2);
@@ -340,13 +348,15 @@ describe('Filters', () => {
     const bankSelect = await findByLabelText('Quiz bank');
     const topicSelect = await findByLabelText('Topic bank');
 
-    await user.click(openFiltersBtn);
-    await selectEvent.select(bankSelect, 'React');
+    await act(() => user.click(openFiltersBtn));
+    await act(() => user.click(bankSelect));
+    await act(() => selectEvent.select(bankSelect, 'React'));
 
     expect(await findByText('React Basics')).toBeInTheDocument();
     expect(await findByText('React Components')).toBeInTheDocument();
 
-    await selectEvent.select(topicSelect, 'React Components');
+    await act(() => user.click(topicSelect));
+    await act(() => selectEvent.select(topicSelect, 'React Components'));
     const searchedText = await findAllByText('React Components');
 
     expect(searchedText.length).toBe(2);
@@ -361,16 +371,17 @@ describe('Filters', () => {
     const difficultyControll = getByTestId('diff-ctrl');
     const difficultyMenu = difficultyControll.nextSibling;
 
-    await user.click(openFiltersBtn);
-    await selectEvent.select(bankSelect, 'React');
+    await act(() => user.click(openFiltersBtn));
+    await act(() => user.click(bankSelect));
+    await act(() => selectEvent.select(bankSelect, 'React'));
 
     expect(difficultyMenu).toHaveClass('hidden');
 
-    await user.click(difficultyControll);
+    await act(() => user.click(difficultyControll));
 
     expect(difficultyMenu).not.toHaveClass('hidden');
 
-    await user.click(bankSelect);
+    await act(() => user.click(bankSelect));
 
     expect(difficultyMenu).toHaveClass('hidden');
   });
@@ -382,9 +393,10 @@ describe('Filters', () => {
     const bankSelect = await findByLabelText('Quiz bank');
     const difficultyControll = getByTestId('diff-ctrl');
 
-    await user.click(openFiltersBtn);
-    await selectEvent.select(bankSelect, 'React');
-    await user.click(difficultyControll);
+    await act(() => user.click(openFiltersBtn));
+    await act(() => user.click(bankSelect));
+    await act(() => selectEvent.select(bankSelect, 'React'));
+    await act(() => user.click(difficultyControll));
 
     const checkboxAll = await findByRole('checkbox', { name: 'All' });
     const checkboxBeginer = await findByRole('checkbox', { name: 'Beginner' });
@@ -392,7 +404,7 @@ describe('Filters', () => {
     expect(checkboxAll).toBeChecked();
     expect(checkboxBeginer).toBeChecked();
 
-    await user.click(checkboxAll);
+    await act(() => user.click(checkboxAll));
 
     expect(checkboxAll).not.toBeChecked();
     expect(checkboxBeginer).not.toBeChecked();
@@ -406,20 +418,21 @@ describe('Filters', () => {
     const bankSelect = await findByLabelText('Quiz bank');
     const difficultyControll = getByTestId('diff-ctrl');
 
-    await user.click(openFiltersBtn);
-    await selectEvent.select(bankSelect, 'React');
-    await user.click(difficultyControll);
+    await act(() => user.click(openFiltersBtn));
+    await act(() => user.click(bankSelect));
+    await act(() => selectEvent.select(bankSelect, 'React'));
+    await act(() => user.click(difficultyControll));
 
     const checkboxAll = await findByRole('checkbox', { name: 'All' });
     const checkboxBeginer = await findByRole('checkbox', { name: 'Beginner' });
 
-    await user.click(checkboxAll);
+    await act(() => user.click(checkboxAll));
 
     expect(queryByText(/React Basics/i)).not.toBeInTheDocument();
     expect(queryByText(/React Components/i)).not.toBeInTheDocument();
 
-    await user.click(checkboxAll);
-    await user.click(checkboxBeginer);
+    await act(() => user.click(checkboxAll));
+    await act(() => user.click(checkboxBeginer));
 
     expect(queryByText(/React Basics/i)).not.toBeInTheDocument();
     expect(await findByText(/React Components/i)).toBeInTheDocument();
@@ -433,16 +446,17 @@ describe('Filters', () => {
     const userAnswerControll = getByTestId('user_answer-ctrl');
     const userAnswerMenu = userAnswerControll.nextSibling;
 
-    await user.click(openFiltersBtn);
-    await selectEvent.select(bankSelect, 'React');
+    await act(() => user.click(openFiltersBtn));
+    await act(() => user.click(bankSelect));
+    await act(() => selectEvent.select(bankSelect, 'React'));
 
     expect(userAnswerMenu).toHaveClass('hidden');
 
-    await user.click(userAnswerControll);
+    await act(() => user.click(userAnswerControll));
 
     expect(userAnswerMenu).not.toHaveClass('hidden');
 
-    await user.click(bankSelect);
+    await act(() => user.click(bankSelect));
 
     expect(userAnswerMenu).toHaveClass('hidden');
   });
@@ -456,9 +470,10 @@ describe('Filters', () => {
     const bankSelect = await findByLabelText('Quiz bank');
     const userAnswerControll = getByTestId('user_answer-ctrl');
 
-    await user.click(openFiltersBtn);
-    await selectEvent.select(bankSelect, 'React');
-    await user.click(userAnswerControll);
+    await act(() => user.click(openFiltersBtn));
+    await act(() => user.click(bankSelect));
+    await act(() => selectEvent.select(bankSelect, 'React'));
+    await act(() => user.click(userAnswerControll));
 
     const unanswered = getByRole('checkbox', { name: 'unanswered' });
     const answered = getByRole('checkbox', { name: 'answered' });
@@ -469,45 +484,45 @@ describe('Filters', () => {
     expect(getByText('React Components')).toBeInTheDocument();
     expect(getByText('State and Props')).toBeInTheDocument();
 
-    await user.click(answered);
+    await act(() => user.click(answered));
 
     expect(await findByText('State and Props')).toBeInTheDocument();
     expect(queryByText('React Basics')).not.toBeInTheDocument();
     expect(queryByText('React Components')).not.toBeInTheDocument();
 
-    await user.click(answered);
-    await user.click(unanswered);
+    await act(() => user.click(answered));
+    await act(() => user.click(unanswered));
 
     expect(await findByText('React Basics')).toBeInTheDocument();
     expect(await findByText('React Components')).toBeInTheDocument();
     expect(queryByText('State and Props')).not.toBeInTheDocument();
 
-    await user.click(correctly);
+    await act(() => user.click(correctly));
 
     expect(await findByText('React Components')).toBeInTheDocument();
     expect(queryByText('React Basics')).not.toBeInTheDocument();
     expect(queryByText('State and Props')).not.toBeInTheDocument();
 
-    await user.click(correctly);
-    await user.click(incorrectly);
+    await act(() => user.click(correctly));
+    await act(() => user.click(incorrectly));
 
     expect(await findByText('React Basics')).toBeInTheDocument();
     expect(queryByText('React Components')).not.toBeInTheDocument();
     expect(queryByText('State and Props')).not.toBeInTheDocument();
 
-    await user.click(incorrectly);
-    await user.click(correctly);
-    await user.click(answered);
+    await act(() => user.click(incorrectly));
+    await act(() => user.click(correctly));
+    await act(() => user.click(answered));
 
     expect(store.getState().filters.selectedFilters.isCorrectlyAnswered === true).toBe(true);
     expect(store.getState().filters.selectedFilters.isIncorrectlyAnswered === true).toBe(true);
 
-    await user.click(incorrectly);
+    await act(() => user.click(incorrectly));
 
     expect(store.getState().filters.selectedFilters.isCorrectlyAnswered === true).toBe(true);
     expect(store.getState().filters.selectedFilters.isIncorrectlyAnswered === false).toBe(true);
 
-    await user.click(answered);
+    await act(() => user.click(answered));
 
     expect(store.getState().filters.selectedFilters.isCorrectlyAnswered === true).toBe(true);
     expect(store.getState().filters.selectedFilters.isIncorrectlyAnswered === true).toBe(true);
@@ -522,8 +537,9 @@ describe('Filters', () => {
 
     expect(state.filters.selectedFilters.quantity === null).toBe(true);
 
-    await user.click(openFiltersBtn);
-    await selectEvent.select(quantitySelect, '5');
+    await act(() => user.click(openFiltersBtn));
+    await act(() => user.click(quantitySelect));
+    await act(() => selectEvent.select(quantitySelect, '5'));
 
     expect(store.getState().filters.selectedFilters.quantity === 5).toBe(true);
   });

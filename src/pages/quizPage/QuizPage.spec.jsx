@@ -214,7 +214,7 @@ describe('Quiz Page', () => {
 
     const answer1Text = getByText('A JavaScript library for building user interfaces');
 
-    await user.click(answer1Text);
+    await act(() => user.click(answer1Text));
 
     await waitFor(() => expect(store.getState().quiz.selectedOptions[0]).toBe(1));
   });
@@ -234,14 +234,14 @@ describe('Quiz Page', () => {
     const answer1Text = getByText('A JavaScript library for building user interfaces');
     const submitBtn = getByRole('button', { name: /Submit/ });
 
-    await user.click(submitBtn);
+    await act(() => user.click(submitBtn));
 
     vi.waitFor(() =>
       expect(store.getState().user.error).toStrictEqual('Select an answer before proceed!')
     );
 
-    await user.click(answer1Text);
-    await user.click(submitBtn);
+    await act(() => user.click(answer1Text));
+    await act(() => user.click(submitBtn));
 
     await waitFor(() => expect(call === 'GET next question').toBe(true));
   });
@@ -260,7 +260,7 @@ describe('Quiz Page', () => {
 
     const submitBtn = getByRole('button', { name: /Skip/ });
 
-    await user.click(submitBtn);
+    await act(() => user.click(submitBtn));
 
     await waitFor(() => expect(call === 'GET next question').toBe(true));
   });
@@ -283,7 +283,7 @@ describe('Quiz Page', () => {
 
     expect(answer).toBeInTheDocument();
 
-    await user.click(arrowRight);
+    await act(() => user.click(arrowRight));
 
     await waitFor(() => expect(call === 'GET next question').toBe(true));
 
@@ -292,7 +292,7 @@ describe('Quiz Page', () => {
     const answer2 = await findByText('React is a programming language.');
     expect(answer2).toBeInTheDocument();
 
-    await user.click(arrowLeft);
+    await act(() => user.click(arrowLeft));
     expect(answer2).not.toBeInTheDocument();
   });
 
@@ -305,8 +305,8 @@ describe('Quiz Page', () => {
 
     const arrowRight = getByText('React Basics').nextSibling.lastChild;
 
-    await user.click(arrowRight);
-    await user.click(arrowRight);
+    await act(() => user.click(arrowRight));
+    await act(() => user.click(arrowRight));
 
     await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('An error occured!'));
   });
@@ -332,7 +332,7 @@ describe('Quiz Page', () => {
 
     const discardBtn = getByRole('button', { name: /Discard/ });
 
-    await user.click(discardBtn);
+    await act(() => user.click(discardBtn));
 
     const modal = await findByText('Do you want to discard?');
 
@@ -410,12 +410,12 @@ describe('Quiz Page', () => {
     expect(answer1).toBeInTheDocument();
     expect(answer2).toBeInTheDocument();
 
-    await user.click(answer1);
-    await user.click(answer2);
+    await act(() => user.click(answer1));
+    await act(() => user.click(answer2));
 
     await waitFor(() => expect(store.getState().quiz.selectedOptions[0]).toStrictEqual([1, 2]));
 
-    await user.click(answer2);
+    await act(() => user.click(answer2));
 
     await waitFor(() => expect(store.getState().quiz.selectedOptions[0]).toStrictEqual([1]));
   });
@@ -434,10 +434,10 @@ describe('Quiz Page', () => {
     expect(answer2).toBeInTheDocument();
 
     const discardBtn = await findByRole('button', { name: /Discard/ });
-    await user.click(discardBtn);
+    await act(() => user.click(discardBtn));
 
     const cancelBtn = await findByRole('button', { name: /Cancel/ });
-    await user.click(cancelBtn);
+    await act(() => user.click(cancelBtn));
 
     expect(cancelBtn).not.toBeInTheDocument();
   });
@@ -451,14 +451,14 @@ describe('Quiz Page', () => {
 
     const answer1 = await findByText('Hypertext Markup Language');
 
-    await user.click(answer1);
+    await act(() => user.click(answer1));
 
     const submitBtn = await findByRole('button', { name: /Submit/ });
-    await user.click(submitBtn);
+    await act(() => user.click(submitBtn));
 
     const answer2 = await findByText('To group and style content.');
     expect(answer2).toBeInTheDocument();
-    await user.click(answer2);
+    await act(() => user.click(answer2));
   });
 
   it('clicking discard on rendered modal window should end quiz', async () => {
@@ -478,12 +478,12 @@ describe('Quiz Page', () => {
     expect(answer2).toBeInTheDocument();
 
     const discardBtn = await findByRole('button', { name: /Discard/ });
-    await user.click(discardBtn);
+    await act(() => user.click(discardBtn));
 
     const discardBtn2 = (await findByRole('button', { name: /Cancel/ })).nextSibling;
     expect(discardBtn2).toBeInTheDocument();
 
-    await user.click(discardBtn2);
+    await act(() => user.click(discardBtn2));
 
     await waitFor(() => expect(store.getState().quiz.quiz.id).toStrictEqual(undefined));
   });

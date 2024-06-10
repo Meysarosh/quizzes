@@ -20,7 +20,6 @@ const dayTheme = {
     linen: '#f3e9dc',
     desertSand: '#dab49d',
   },
-  font: {},
 };
 
 const nigthTheme = {
@@ -40,7 +39,6 @@ const nigthTheme = {
     linen: '#695651',
     desertSand: '#dab49d',
   },
-  font: {},
 };
 
 theme.colors = { ...dayTheme.colors };

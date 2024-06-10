@@ -6,6 +6,7 @@ import { LoginPage } from './LoginPage';
 import { server } from '../../mocks/server';
 import { MemoryRouter } from 'react-router-dom';
 import { http } from 'msw';
+import { act } from 'react-dom/test-utils';
 
 const loggedOutInitialState = {
   ...initialState,
@@ -71,9 +72,9 @@ describe('Login Page', () => {
       name: /Login/,
     });
 
-    await user.type(emailInput, 'email@gmail.com');
-    await user.type(passwordInput, 'password');
-    await user.click(Btn);
+    await act(() => user.type(emailInput, 'email@gmail.com'));
+    await act(() => user.type(passwordInput, 'password'));
+    await act(() => user.click(Btn));
 
     await waitFor(() => {
       expect(call === 'POST login').toBe(true);
@@ -92,9 +93,9 @@ describe('Login Page', () => {
       name: /Login/,
     });
 
-    await user.type(emailInput, 'email@gmail.com');
-    await user.type(passwordInput, 'password');
-    await user.click(Btn);
+    await act(() => user.type(emailInput, 'email@gmail.com'));
+    await act(() => user.type(passwordInput, 'password'));
+    await act(() => user.click(Btn));
 
     await waitFor(() => expect(passwordInput.value === '').toBe(true));
   });
@@ -110,9 +111,9 @@ describe('Login Page', () => {
       name: /Login/,
     });
 
-    await user.type(emailInput, 'email@gmail.com');
-    await user.type(passwordInput, 'error');
-    await user.click(Btn);
+    await act(() => user.type(emailInput, 'email@gmail.com'));
+    await act(() => user.type(passwordInput, 'error'));
+    await act(() => user.click(Btn));
 
     await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('An error occured!'));
   });

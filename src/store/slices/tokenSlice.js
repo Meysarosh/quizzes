@@ -29,6 +29,15 @@ export const tokenSlice = createSlice({
       state.token = null;
       state.refreshToken = null;
     });
+    builder.addMatcher(
+      (action) => action.type.endsWith('/rejected'),
+      (state, action) => {
+        if (action.payload === 'jwt expired') {
+          state.token = null;
+          state.refreshToken = null;
+        }
+      }
+    );
   },
 });
 

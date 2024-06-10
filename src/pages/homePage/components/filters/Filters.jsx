@@ -42,6 +42,7 @@ export function Filters({ onClick }) {
   const difficultiesContainerRef = useRef(null);
   const userAnswersFilterRef = useRef(null);
   const topicsRef = useRef(null);
+  const multiRef = useRef(null);
 
   const { darkMode } = useSelector((state) => state.user);
   const {
@@ -59,17 +60,13 @@ export function Filters({ onClick }) {
   const [isOpenDifficultyFilter, setIsOpenDifficultyFilter] = useState(false);
   const [isOpenUserAnswersFilter, setIsOpenUserAnswersFilter] = useState(false);
   const [isAllDifficulties, setIsAllDifficulties] = useState(true);
+  const [optionsForMultiAnswer, setOptionsForMultiAnswer] = useState([]);
 
   const optionsForUserAnswers = ['unanswered', 'answered', 'correct', 'incorrect'];
   const quantityOptions = [
     { value: '', label: 'All' },
     { value: 5, label: '5' },
     { value: 10, label: '10' },
-  ];
-  const multiOptions = [
-    { value: 'all', label: 'All' },
-    { value: 'multi', label: 'Multi' },
-    { value: 'single', label: 'Single' },
   ];
 
   useEffect(() => {
@@ -89,6 +86,18 @@ export function Filters({ onClick }) {
         .map(({ topic }) => ({ value: topic, label: topic }))
     );
   }, [quizTopics, selectedFilters.quizBank]);
+
+  useEffect(() => {
+    const multiOptions = [
+      { value: 'all', label: 'All' },
+      { value: 'multi', label: 'Multi' },
+      { value: 'single', label: 'Single' },
+    ];
+    multiRef.current.clearValue();
+    setOptionsForMultiAnswer(
+      selectedFilters.quizBank === 'React' ? multiOptions : [multiOptions[2]]
+    );
+  }, [selectedFilters.quizBank]);
 
   useEffect(() => {
     selectedFilters.quizBank &&
@@ -351,9 +360,10 @@ export function Filters({ onClick }) {
           Multi answer
         </Label>
         <Select
+          ref={multiRef}
           inputId="multiAnswer"
           onChange={handleMultiChange}
-          options={multiOptions}
+          options={optionsForMultiAnswer}
           styles={darkMode ? selectStyles : selectStyles}
           components={{ DropdownIndicator }}
           hideSelectedOptions={true}

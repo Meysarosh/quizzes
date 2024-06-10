@@ -2,6 +2,7 @@ import { renderWithProviders } from '../../utils/test-utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Tooltip } from './Tooltip';
+import { act } from 'react-dom/test-utils';
 
 const initialState = {
   user: {
@@ -41,11 +42,11 @@ describe('Tooltip', () => {
 
     const tooltipContainer = container.getElementsByClassName('hidden')[0];
 
-    await user.hover(tooltipContainer);
+    await act(() => user.hover(tooltipContainer));
 
     expect(tooltipContainer).toHaveClass('tooltip-right');
 
-    await user.unhover(tooltipContainer);
+    await act(() => user.unhover(tooltipContainer));
 
     expect(tooltipContainer).toHaveClass('hidden');
   });
