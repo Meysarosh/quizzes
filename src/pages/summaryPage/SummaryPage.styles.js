@@ -91,6 +91,23 @@ const Button = styled.button`
   }
 `;
 
+const PdfBtnsContainer = styled.div`
+  display: flex;
+`;
+
+const BtnPrint = styled.button`
+  height: 100%;
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  color: ${(props) => props.theme.colors.caputMortuum};
+  background-color: transparent;
+  border: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 const Icon = styled.div`
   display: inline;
   height: 2rem;
@@ -156,6 +173,8 @@ export {
   GreyBar,
   Span,
   Button,
+  PdfBtnsContainer,
+  BtnPrint,
   Icon,
   Section,
   QuestionContainer,

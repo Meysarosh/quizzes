@@ -133,6 +133,25 @@ const inititalSummaryState = {
   partialyAnsweredQ: [],
 };
 
+const history = [
+  '/home',
+  '/quiz/1',
+  '/home',
+  '/quiz/2',
+  '/home',
+  '/quiz/3',
+  '/home',
+  '/quiz/4',
+  '/home',
+  '/quiz/5',
+  '/home',
+];
+
+const stateWithHistory = {
+  ...initialState,
+  user: { ...initialState.user, history },
+};
+
 const renderFunction = () =>
   renderWithProviders(
     <MemoryRouter initialEntries={['/home']}>
@@ -170,6 +189,20 @@ describe('Header', () => {
     expect(navigate).toHaveBeenCalledWith('/profile');
   });
 
+  it('should logout when click logout button', async () => {
+    const user = userEvent.setup();
+
+    const { store, getByRole } = renderFunction();
+    const header = getByRole('banner');
+
+    const logoutBtn = header.lastChild.firstChild;
+
+    await act(() => user.click(logoutBtn));
+
+    await vi.waitFor(() => expect(store.getState().token.token).toBe(null));
+    await vi.waitFor(() => expect(store.getState().token.refreshToken).toBe(null));
+  });
+
   it('should navigate to home page if when click on logo', async () => {
     const user = userEvent.setup();
 
@@ -184,6 +217,22 @@ describe('Header', () => {
     await user.click(logo);
 
     expect(navigate).toHaveBeenCalledWith('/home');
+  });
+
+  it('should store history not longr then 10', async () => {
+    const { store } = renderWithProviders(
+      <MemoryRouter initialEntries={['/home']}>
+        <Header />
+      </MemoryRouter>,
+      {
+        preloadedState: stateWithHistory,
+      }
+    );
+
+    const shiftedHistory = [...history];
+    shiftedHistory.shift();
+
+    await vi.waitFor(() => expect(store.getState().user.history).toStrictEqual(shiftedHistory));
   });
 
   it('should display user image if it is set', () => {

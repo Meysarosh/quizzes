@@ -13,6 +13,32 @@ export const initialState = {
           { id: 2, answer: 2 },
         ],
       },
+      answerStat: {
+        React: {
+          correct: 6,
+          incorrect: 3,
+        },
+        HTML: {
+          correct: 6,
+          incorrect: 3,
+        },
+        CSS: {
+          correct: 6,
+          incorrect: 3,
+        },
+        SCSS: {
+          correct: 6,
+          incorrect: 3,
+        },
+        JavaScript: {
+          correct: 6,
+          incorrect: 3,
+        },
+        TypeScript: {
+          correct: 6,
+          incorrect: 3,
+        },
+      },
       img: 'user.img',
       id: 1,
     },

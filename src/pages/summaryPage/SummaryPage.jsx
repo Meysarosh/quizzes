@@ -10,6 +10,8 @@ import {
   GreyBar,
   Span,
   Button,
+  PdfBtnsContainer,
+  BtnPrint,
   Icon,
   Section,
   QuestionContainer,
@@ -25,6 +27,11 @@ import { AiTwotoneQuestionCircle } from 'react-icons/ai';
 import { prepairQuizForCopy } from '../../store/slices/quizSlice';
 import { Tooltip } from '../../components/tooltip';
 import { Highlight } from '../../components/highlight/Highlight';
+import { Pdf } from './Pdf';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
+import { BsFiletypePdf } from 'react-icons/bs';
+import { IoPrintOutline } from 'react-icons/io5';
 
 export function SummaryPage() {
   const dispatch = useDispatch();
@@ -32,7 +39,7 @@ export function SummaryPage() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { history } = useSelector((state) => state.user);
+  const { history, user } = useSelector((state) => state.user);
   const { quiz } = useSelector((state) => state.quiz);
   const {
     questions,
@@ -189,6 +196,41 @@ export function SummaryPage() {
     return 'right';
   }
 
+  async function createPdf() {
+    const element = document.getElementById('pdf-element');
+
+    const A4_WIDTH = 595.28;
+    const WIDTH_MARGIN = 10;
+    const HEIGHT_MARGIN = 10;
+
+    const pdf = new jsPDF('p', 'pt', 'a4');
+
+    const canvas = await html2canvas(element);
+
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    const imgWidth = A4_WIDTH - 2 * WIDTH_MARGIN;
+    const imgHeight = (imgWidth / canvasWidth) * canvasHeight;
+
+    const pageImg = canvas.toDataURL('image/png', 1.0);
+    const usedHeight = HEIGHT_MARGIN;
+
+    pdf.addImage(pageImg, 'png', WIDTH_MARGIN, usedHeight, imgWidth, imgHeight);
+
+    return pdf;
+  }
+
+  async function savePdf() {
+    const pdf = await createPdf();
+    pdf.save(`summary.pdf`);
+  }
+
+  async function printPdf() {
+    const pdf = await createPdf();
+    window.open(pdf.output('bloburl'), '_blank');
+  }
+
   if (quiz.isFinished)
     return (
       <Main>
@@ -227,10 +269,18 @@ export function SummaryPage() {
             >
               <Button onClick={handleBtnLeave}>Leave</Button>
             </Tooltip>
-            <div>
-              <p>PDF</p>
-              <p>PRINT</p>
-            </div>
+            <PdfBtnsContainer>
+              <Tooltip text="Click if you want to save your summary to pdf file." position="bottom">
+                <BtnPrint onClick={savePdf} data-testid="save-pdf">
+                  <BsFiletypePdf />
+                </BtnPrint>
+              </Tooltip>
+              <Tooltip text="Click if you want to print your summary." position="bottom">
+                <BtnPrint onClick={printPdf}>
+                  <IoPrintOutline />
+                </BtnPrint>
+              </Tooltip>
+            </PdfBtnsContainer>
           </ActionsContainer>
           <Tooltip
             text={`Your correct answers score is ${Math.round(correctCount)}%`}
@@ -285,6 +335,13 @@ export function SummaryPage() {
               </QuestionContainer>
             ))}
         </Section>
+        <Pdf
+          user={user}
+          quiz={quiz}
+          correct={correctlyAnsweredQid.length}
+          incorrect={incorrectlyAnsweredQid.length + partialyAnsweredQ.length}
+          unanswered={unansweredQid.length}
+        />
       </Main>
     );
 }

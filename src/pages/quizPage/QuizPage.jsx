@@ -161,10 +161,25 @@ export function QuizPage() {
     blocker.proceed();
   }
 
+  function isEqual(a, b) {
+    let result = true;
+
+    a.length != b.length && (result = false);
+
+    a.forEach((el) => !b.find((e) => e === el) && (result = false));
+
+    return result;
+  }
+
   function handleBtnSubmit() {
     if (selectedAnswer) {
+      const answerStat = structuredClone(user.answerStat);
       const answeredQuestions = structuredClone(user.answeredQuestions);
+      const isCorrect = selectedAnswer.length
+        ? isEqual(selectedAnswer, currentQuestion.correct_answer)
+        : selectedAnswer === currentQuestion.correct_answer;
       const bank = quiz.filters.quizBank;
+
       if (answeredQuestions[bank]) {
         const idx = answeredQuestions[bank].findIndex(({ id }) => id === currentQuestion.id);
 
@@ -183,7 +198,17 @@ export function QuizPage() {
         ];
       }
 
-      dispatch(updateUserData({ answeredQuestions }));
+      if (!answerStat[bank]) {
+        answerStat[bank] = {
+          correct: 0,
+          incorrect: 0,
+        };
+      }
+
+      isCorrect && (answerStat[bank].correct += 1);
+      !isCorrect && (answerStat[bank].incorrect += 1);
+
+      dispatch(updateUserData({ answeredQuestions, answerStat }));
 
       if (currentPosition < quiz.filters.quantity) {
         updateQuiz(false, true);

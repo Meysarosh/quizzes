@@ -16,7 +16,6 @@ export default defineConfig({
         'src/components/authorized/index.js',
         'src/components/toast/index.js',
         'src/pages/index.js',
-        'src/store/slices/tokenSlice.js',
       ],
     },
   },

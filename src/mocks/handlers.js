@@ -545,6 +545,8 @@ export const handlers = [
     if (newQuiz.filters.topic === 'React Components')
       return new HttpResponse('jwt expired', { status: 400 });
 
+    if (newQuiz.questions.length === 2) return HttpResponse.json(quiz1);
+
     return HttpResponse.json(quiz);
   }),
 

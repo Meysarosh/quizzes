@@ -8,7 +8,8 @@ export const createNewUser = createAsyncThunk(
     const response = await axios
       .post(`${import.meta.env.VITE_URL_DATA}/users`, {
         ...data,
-        answeredQuestions: [],
+        answeredQuestions: {},
+        answerStat: {},
       })
       .catch(function (error) {
         if (error.response && typeof error.response.data == 'string')
