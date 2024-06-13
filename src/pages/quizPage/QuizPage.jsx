@@ -188,12 +188,14 @@ export function QuizPage() {
           : answeredQuestions[bank].push({
               id: currentQuestion.id,
               answer: selectedAnswer,
+              isCorrect,
             });
       } else {
         answeredQuestions[bank] = [
           {
             id: currentQuestion.id,
             answer: selectedAnswer,
+            isCorrect,
           },
         ];
       }

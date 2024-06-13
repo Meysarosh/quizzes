@@ -101,6 +101,36 @@ const initialStateNewQuiz = {
   },
 };
 
+const initialStateNewQuestionReject = {
+  quiz: {
+    quiz: {
+      userId: 1,
+      isFinished: false,
+      filters: {
+        quizBank: 'CSS',
+        topic: 'CSS',
+        difficulty: [],
+        quantity: 2,
+        isCorrectlyAnswered: true,
+        isIncorrectlyAnswered: true,
+        isUnanswered: true,
+        multiAnswer: 'all',
+      },
+      questions: [],
+      submittedAnswers: [],
+      correctAnswers: [],
+      date: 1716558957755,
+      id: 1,
+    },
+    currentQuestion: null,
+    selectedOptions: [],
+  },
+  user: {
+    ...initialState.user,
+    history: ['/home', '/quiz/1'],
+  },
+};
+
 const initialStateForHTMLQuiz = {
   ...initialState,
   quiz: {
@@ -224,7 +254,7 @@ describe('Quiz Page', () => {
     server.events.on('request:start', ({ request }) => {
       request.method === 'GET' &&
       request.url ===
-        'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1'
+        'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1&_limit=1'
         ? (call = 'GET next question')
         : '';
     });
@@ -251,7 +281,7 @@ describe('Quiz Page', () => {
     server.events.on('request:start', ({ request }) => {
       request.method === 'GET' &&
       request.url ===
-        'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1'
+        'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1&_limit=1'
         ? (call = 'GET next question')
         : '';
     });
@@ -270,7 +300,7 @@ describe('Quiz Page', () => {
     server.events.on('request:start', ({ request }) => {
       request.method === 'GET' &&
       request.url ===
-        'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1'
+        'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1&_limit=1'
         ? (call = 'GET next question')
         : '';
     });
@@ -311,7 +341,7 @@ describe('Quiz Page', () => {
     await vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('An error occured!'));
   });
 
-  it('network error creaes error message', async () => {
+  it('network error on quiz request creaes error message', async () => {
     server.use(http.get('/quizzes', (res) => res.networkError()));
 
     const { store } = renderWithProviders(<RouterProvider router={router} />, {
@@ -382,11 +412,22 @@ describe('Quiz Page', () => {
     await waitFor(() => expect(call === 'GET question by id').toBe(true));
   });
 
+  it('network error on question request creates error message', async () => {
+    const { store } = renderWithProviders(<RouterProvider router={router2} />, {
+      preloadedState: initialStateNewQuestionReject,
+    });
+
+    await act(() =>
+      vi.waitFor(() => expect(store.getState().user.error).toStrictEqual('ERR_BAD_RESPONSE'))
+    );
+  });
+
   it('should request a question when the quiz is just created', async () => {
     let call;
     server.events.on('request:start', ({ request }) => {
       request.method === 'GET' &&
-      request.url === 'http://localhost:4000/React?topic=React%20Basics&isMulti=true'
+      request.url ===
+        'http://localhost:4000/React?topic=React%20Basics&isMulti=true&id_ne=1&id_ne=2&_limit=1'
         ? (call = 'GET question by filters')
         : '';
     });

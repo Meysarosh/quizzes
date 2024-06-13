@@ -465,6 +465,9 @@ export const handlers = [
   }),
 
   http.get('http://localhost:4000/CSS', ({ request }) => {
+    if (request.url === 'http://localhost:4000/CSS?topic=CSS&_limit=1')
+      return HttpResponse.networkError();
+
     if (request.url === 'http://localhost:4000/CSS?&level=Easy&level=Medium&level=Hard')
       return new HttpResponse('jwt expired', { status: 400 });
   }),
@@ -490,7 +493,7 @@ export const handlers = [
 
     if (
       request.url ===
-      'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1'
+      'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1&_limit=1'
     )
       return HttpResponse.json([
         {
@@ -516,11 +519,14 @@ export const handlers = [
 
     if (
       request.url ===
-      'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1&id_ne=49'
+      'http://localhost:4000/React?topic=React%20Basics&correct_answer=1&correct_answer=2&correct_answer=3&id_ne=1&id_ne=49&_limit=1'
     )
       return new HttpResponse('An error occured!', { status: 400 });
 
-    if (request.url === 'http://localhost:4000/React?topic=React%20Basics&isMulti=true')
+    if (
+      request.url ===
+      'http://localhost:4000/React?topic=React%20Basics&isMulti=true&id_ne=1&id_ne=2&_limit=1'
+    )
       return HttpResponse.json([questionMulti]);
 
     return HttpResponse.json(questions);
@@ -529,7 +535,7 @@ export const handlers = [
   http.get('http://localhost:4000/HTML', ({ request }) => {
     if (
       request.url ===
-      'http://localhost:4000/HTML?topic=HTML&level=Easy&level=Medium&level=Hard&id_ne=77'
+      'http://localhost:4000/HTML?topic=HTML&level=Easy&level=Medium&level=Hard&id_ne=77&_limit=1'
     )
       return HttpResponse.json([htmlQuestion[1]]);
 

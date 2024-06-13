@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { filterByIds } from '../../utils/helperFunctions/filterById';
+import { createString } from '../../utils/helperFunctions/createStringFromIds';
 
 export const getQuestion = createAsyncThunk(
   'getQuestion',
@@ -18,6 +18,14 @@ export const getQuestion = createAsyncThunk(
       multiAnswer,
     } = filters;
 
+    const questionsFilterByUserAnswerQueryString = createString(
+      isCorrectlyAnswered,
+      isIncorrectlyAnswered,
+      isUnanswered,
+      answeredQuestions[quizBank],
+      questions
+    );
+
     const difficultiesQueryString = difficulty.map((el) => `&level=${el}`).join('');
     const prevQuestionsFilterQueryString = questions.map((id) => `&id_ne=${id}`).join('');
     const multi =
@@ -29,7 +37,7 @@ export const getQuestion = createAsyncThunk(
 
     const response = await axios
       .get(
-        `${import.meta.env.VITE_URL_QUESTIONS}/${quizBank}?topic=${topic}${difficultiesQueryString ?? ''}${multi}${prevQuestionsFilterQueryString ?? ''}`,
+        `${import.meta.env.VITE_URL_QUESTIONS}/${quizBank}?topic=${topic}${difficultiesQueryString ?? ''}${multi}${prevQuestionsFilterQueryString ?? ''}${questionsFilterByUserAnswerQueryString}&_limit=1`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -38,18 +46,11 @@ export const getQuestion = createAsyncThunk(
         }
       )
       .catch(function (error) {
-        if (error.response) throw rejectWithValue(error.response.data);
-        else throw rejectWithValue(error.message);
+        if (error.response && typeof error.response.data == 'string')
+          throw rejectWithValue(error.response.data);
+        else throw rejectWithValue(error.code);
       });
 
-    return isCorrectlyAnswered && isIncorrectlyAnswered && isUnanswered
-      ? response.data[0]
-      : filterByIds(
-          response.data,
-          answeredQuestions[quizBank],
-          isCorrectlyAnswered,
-          isIncorrectlyAnswered,
-          isUnanswered
-        )[0];
+    return response.data[0];
   }
 );
