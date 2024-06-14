@@ -35,6 +35,10 @@ export const GlobalStyles = createGlobalStyle`
   font-family: Jost, sans-serif;
 }
 
+body {
+  background-color: ${(props) => props.theme.colors.mainBackground};
+}
+
 .hidden {
   display: none;
 }
@@ -47,7 +51,10 @@ export const GlobalStyles = createGlobalStyle`
 .visible {
   height:3.5rem;
   opacity: 1;
-  /* overflow: visible; */
+}
+
+.transparent {
+  opacity: 0;
 }
 
 .filter-hidden {
@@ -143,6 +150,24 @@ export const GlobalStyles = createGlobalStyle`
     transform: translateY(50%);
     border-color:  transparent transparent  transparent #dab49d ;
   }
+}
+
+@keyframes rotates {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotating {
+  animation: 2s linear infinite rotates;
+  /* animation-duration: 2s;
+  animation-name: rotates;
+  animation-iteration-count: infinite; */
+
 }
 
 `;

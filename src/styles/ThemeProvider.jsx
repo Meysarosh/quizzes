@@ -53,5 +53,5 @@ export const ThemeProvider = ({ children }) => {
 };
 
 ThemeProvider.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.arrayOf(PropTypes.object),
 };

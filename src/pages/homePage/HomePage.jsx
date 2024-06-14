@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2';
 import { IoIosArrowDropup } from 'react-icons/io';
-import { FaArrowsRotate } from 'react-icons/fa6';
+import { Loader } from '../../components/loader/Loader';
+import { LoaderWrapper } from '../../components/loader/LoaderWrapper';
 import {
   PageTitle,
   Main,
@@ -14,7 +15,6 @@ import {
   BackToTopButton,
   PaginateContainer,
   PaginateBtn,
-  PaginateBtnText,
 } from './HomePage.styles';
 import { Filters, QuizCard } from './components';
 import { getQuestionsBanksAndTopics, getPaginatedTopics } from '../../store/actions';
@@ -32,7 +32,7 @@ export function HomePage() {
   const [loadPermit, setLoadPermit] = useState(true);
   const [localPagination, setLocalPagination] = useState(0);
 
-  const { history } = useSelector((state) => state.user);
+  const { history, isLoading, isPaginating } = useSelector((state) => state.user);
   const { availableTopics, quizBanks, selectedFilters } = useSelector((state) => state.filters);
 
   const paginate = useCallback(() => {
@@ -125,15 +125,17 @@ export function HomePage() {
           <HiOutlineAdjustmentsHorizontal />
         </FilterButton>
       </Header>
-      <Content>
-        {availableTopics.slice(0, localPagination).map(({ topic, title }) => (
-          <QuizCard key={topic} title={title} topic={topic} />
-        ))}
-      </Content>
-      <PaginateContainer>
+      <LoaderWrapper>
+        <Content>
+          {availableTopics.slice(0, localPagination).map(({ topic, title }) => (
+            <QuizCard key={topic} title={title} topic={topic} />
+          ))}
+        </Content>
+      </LoaderWrapper>
+      {isPaginating && <Loader />}
+      <PaginateContainer className={isLoading ? 'transparent' : ''}>
         <PaginateBtn onClick={handlePaginate} className={classPaginateBtn}>
-          <FaArrowsRotate />
-          <PaginateBtnText>Load more...</PaginateBtnText>
+          {isLoading ? 'Loading more...' : 'Load more...'}
         </PaginateBtn>
       </PaginateContainer>
       <BackToTopButton $isVisible={topVisibility} onClick={scroll}>

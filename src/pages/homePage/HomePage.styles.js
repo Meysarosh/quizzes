@@ -93,16 +93,15 @@ const BackToTopButton = styled.button`
 `;
 
 const PaginateContainer = styled.div`
-  margin-bottom: 3rem;
+  margin-bottom: 10rem;
   width: 100%;
   display: flex;
   justify-content: center;
 `;
 
 const PaginateBtn = styled.button`
-  width: max-content;
-  position: relative;
-  font-size: 5rem;
+  margin-top: 1rem;
+  font-size: 3rem;
   color: ${(props) => props.theme.colors.caramel};
   opacity: 0.3;
   background-color: transparent;
@@ -115,12 +114,6 @@ const PaginateBtn = styled.button`
   }
 `;
 
-const PaginateBtnText = styled.p`
-  font-size: 3rem;
-  color: ${(props) => props.theme.colors.caramel};
-  transform: translateY(-50%);
-`;
-
 export {
   Main,
   PageTitle,
@@ -131,5 +124,4 @@ export {
   BackToTopButton,
   PaginateContainer,
   PaginateBtn,
-  PaginateBtnText,
 };

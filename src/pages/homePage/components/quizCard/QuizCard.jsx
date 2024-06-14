@@ -4,6 +4,7 @@ import { PropTypes } from 'prop-types';
 import { Card, CardTitle, CardTopic, Button } from './QuizCard.styles';
 import { createNewQuiz, getAvailableQuestions } from '../../../../store/actions';
 import { setQuizBankFilter } from '../../../../store/slices/filtersSlice';
+import { setIsRedirecting } from '../../../../store/slices/userSlice';
 
 export function QuizCard({ title, topic }) {
   const dispatch = useDispatch();
@@ -11,6 +12,7 @@ export function QuizCard({ title, topic }) {
   const { selectedFilters } = useSelector((state) => state.filters);
 
   function handleBtnStart() {
+    dispatch(setIsRedirecting(true));
     dispatch(
       getAvailableQuestions({
         quizBank: title,

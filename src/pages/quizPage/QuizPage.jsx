@@ -29,10 +29,11 @@ import {
   getQuestionById,
   getQuizById,
 } from '../../store/actions';
-import { endQuiz, setSelectedOptions } from '../../store/slices/quizSlice';
+import { setSelectedOptions, endQuiz } from '../../store/slices/quizSlice';
 import { setUserMessage, setUserError } from '../../store/slices/userSlice';
 import { Modal } from '../../components/modal';
 import { Highlight } from '../../components/highlight/Highlight';
+import { LoaderWrapper } from '../../components/loader/LoaderWrapper';
 
 export function QuizPage() {
   const dispatch = useDispatch();
@@ -64,10 +65,10 @@ export function QuizPage() {
   }, [error, navigate]);
 
   useEffect(() => {
-    if (!quiz.id && history.at(-1) === location.pathname) {
+    if (!quiz.id && history.at(-1) === location.pathname && isBlocked) {
       dispatch(getQuizById({ id }));
     }
-  }, [quiz.id, history, location.pathname, dispatch, id]);
+  }, [quiz.id, history, location.pathname, dispatch, id, isBlocked]);
 
   useEffect(() => {
     history.at(-1) === location.pathname &&
@@ -157,7 +158,7 @@ export function QuizPage() {
 
   function handleModalBtnDiscard() {
     dispatch(setUserMessage('You can always find your unfinished quizzes at Profile Page.'));
-    dispatch(endQuiz());
+    // dispatch(endQuiz());
     blocker.proceed();
   }
 
@@ -300,96 +301,100 @@ export function QuizPage() {
   };
 
   return (
-    currentQuestion && (
-      <Main>
-        <Header>
-          <Heading>{currentQuestion.topic}</Heading>
-          <ProcessStatus>
-            <ArrowButton onClick={handleBtnBackward} className={classArrowBtnBack()}>
-              <GoChevronLeft />
-            </ArrowButton>
-            {currentPosition} / {quiz.filters.quantity}
-            <ArrowButton onClick={handleBtnForward} className={classArrowBtnForw()}>
-              <GoChevronRight />
-            </ArrowButton>
-          </ProcessStatus>
-        </Header>
-        <Highlight>
-          <QuestionText className="question" key={currentQuestion.id}>
-            {currentQuestion.question}
-          </QuestionText>
-        </Highlight>
-        <Form>
-          {answers.map((el, idx) => {
-            if (!currentQuestion.isMulti)
-              return (
-                <RadioContainer key={el} htmlFor={idx + 1}>
-                  <RadioInput
-                    type="radio"
-                    name="answer"
-                    id={idx + 1}
-                    onChange={handleSelection}
-                    checked={selectedAnswer === idx + 1 ? true : false}
-                  />
-                  <CustomRadio className={classCustomRadio()}>
-                    <Checked className={classChecked(idx)} />
-                  </CustomRadio>
-                  {el}
-                </RadioContainer>
-              );
-            else
-              return (
-                <CheckboxContainer key={el} htmlFor={idx + 1}>
-                  <CheckboxInput
-                    type="checkbox"
-                    name="answer"
-                    id={idx + 1}
-                    onChange={handleSelection}
-                    checked={
-                      selectedAnswer && selectedAnswer.length > 0
-                        ? selectedAnswer.includes(idx + 1)
-                          ? true
-                          : false
-                        : false
-                    }
-                  />
-                  <CustomCheckbox className={classCustomCheckbox()}>
-                    <CustomCheckboxChecked className={classMultiChecked(idx)} />
-                  </CustomCheckbox>
-                  {el}
-                </CheckboxContainer>
-              );
-          })}
-        </Form>
-        <Nav>
-          <Button $warning={true} onClick={handleBtnDiscard}>
+    <Main>
+      <Header>
+        <Heading>{quiz.filters.topic}</Heading>
+        <ProcessStatus>
+          <ArrowButton onClick={handleBtnBackward} className={classArrowBtnBack()}>
+            <GoChevronLeft />
+          </ArrowButton>
+          {currentPosition} / {quiz.filters.quantity}
+          <ArrowButton onClick={handleBtnForward} className={classArrowBtnForw()}>
+            <GoChevronRight />
+          </ArrowButton>
+        </ProcessStatus>
+      </Header>
+      <LoaderWrapper>
+        {currentQuestion && (
+          <>
+            <Highlight>
+              <QuestionText className="question" key={currentQuestion.id}>
+                {currentQuestion.question}
+              </QuestionText>
+            </Highlight>
+            <Form>
+              {answers.map((el, idx) => {
+                if (!currentQuestion.isMulti)
+                  return (
+                    <RadioContainer key={el} htmlFor={idx + 1}>
+                      <RadioInput
+                        type="radio"
+                        name="answer"
+                        id={idx + 1}
+                        onChange={handleSelection}
+                        checked={selectedAnswer === idx + 1 ? true : false}
+                      />
+                      <CustomRadio className={classCustomRadio()}>
+                        <Checked className={classChecked(idx)} />
+                      </CustomRadio>
+                      {el}
+                    </RadioContainer>
+                  );
+                else
+                  return (
+                    <CheckboxContainer key={el} htmlFor={idx + 1}>
+                      <CheckboxInput
+                        type="checkbox"
+                        name="answer"
+                        id={idx + 1}
+                        onChange={handleSelection}
+                        checked={
+                          selectedAnswer && selectedAnswer.length > 0
+                            ? selectedAnswer.includes(idx + 1)
+                              ? true
+                              : false
+                            : false
+                        }
+                      />
+                      <CustomCheckbox className={classCustomCheckbox()}>
+                        <CustomCheckboxChecked className={classMultiChecked(idx)} />
+                      </CustomCheckbox>
+                      {el}
+                    </CheckboxContainer>
+                  );
+              })}
+            </Form>
+          </>
+        )}
+      </LoaderWrapper>
+      <Nav>
+        <Button $warning={true} onClick={handleBtnDiscard}>
+          Discard
+        </Button>
+        <ForvardButtons>
+          <Button onClick={handleBtnSkip}>Skip</Button>
+          <Button onClick={handleBtnSubmit}>
+            {currentPosition === quiz.filters.quantity ? 'Finish' : 'Submit'}
+          </Button>
+        </ForvardButtons>
+      </Nav>
+      {blocker.state === 'blocked' ? (
+        <Modal
+          isModal={true}
+          title="Do you want to discard?"
+          text={
+            <>
+              You are trying to leave quiz evaluation page! <br />
+              Your changes will be saved into your profile on leave
+            </>
+          }
+        >
+          <Button onClick={handleModalBtnCancel}>Cancel</Button>
+          <Button $warning={true} onClick={handleModalBtnDiscard}>
             Discard
           </Button>
-          <ForvardButtons>
-            <Button onClick={handleBtnSkip}>Skip</Button>
-            <Button onClick={handleBtnSubmit}>
-              {currentPosition === quiz.filters.quantity ? 'Finish' : 'Submit'}
-            </Button>
-          </ForvardButtons>
-        </Nav>
-        {blocker.state === 'blocked' ? (
-          <Modal
-            isModal={true}
-            title="Do you want to discard?"
-            text={
-              <>
-                You are trying to leave quiz evaluation page! <br />
-                Your changes will be saved into your profile on leave
-              </>
-            }
-          >
-            <Button onClick={handleModalBtnCancel}>Cancel</Button>
-            <Button $warning={true} onClick={handleModalBtnDiscard}>
-              Discard
-            </Button>
-          </Modal>
-        ) : null}
-      </Main>
-    )
+        </Modal>
+      ) : null}
+    </Main>
   );
 }

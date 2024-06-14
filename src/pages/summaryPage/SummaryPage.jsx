@@ -32,6 +32,7 @@ import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { BsFiletypePdf } from 'react-icons/bs';
 import { IoPrintOutline } from 'react-icons/io5';
+import { LoaderWrapper } from '../../components/loader/LoaderWrapper';
 
 export function SummaryPage() {
   const dispatch = useDispatch();
@@ -40,7 +41,7 @@ export function SummaryPage() {
   const { id } = useParams();
 
   const { history, user } = useSelector((state) => state.user);
-  const { quiz } = useSelector((state) => state.quiz);
+  const { quiz, isPending } = useSelector((state) => state.quiz);
   const {
     questions,
     correctlyAnsweredQid,
@@ -91,10 +92,11 @@ export function SummaryPage() {
 
   useEffect(() => {
     !isUserAction &&
+      !isPending &&
       (!quiz.id || quiz.id != Number(id)) &&
       location.pathname === history.at(-1) &&
       dispatch(getQuizById({ id }));
-  }, [dispatch, history, location.pathname, id, quiz.id, isUserAction]);
+  }, [dispatch, history, location.pathname, id, quiz.id, isUserAction, isPending]);
 
   useEffect(() => {
     quiz.id === Number(id) &&
@@ -107,11 +109,15 @@ export function SummaryPage() {
     quiz.id === Number(id) &&
       location.pathname === history.at(-1) &&
       !quiz.isFinished &&
+      !isPending &&
       navigate('/*');
-  }, [dispatch, navigate, quiz, id, history, location.pathname]);
+  }, [dispatch, navigate, quiz, isPending, id, history, location.pathname]);
 
   useEffect(() => {
-    quiz.id && questions.length > 0 && dispatch(createSummaryResults(quiz.submittedAnswers));
+    quiz.id &&
+      questions.length > 0 &&
+      quiz.isFinished &&
+      dispatch(createSummaryResults(quiz.submittedAnswers));
   }, [questions, quiz, dispatch]);
 
   useEffect(() => {
@@ -124,7 +130,8 @@ export function SummaryPage() {
   }, [quiz, isUserAction, navigate, dispatch]);
 
   function handleBtnRetake() {
-    incorrectlyAnsweredQid.length + partialyAnsweredQ.length > 0 && retake(false);
+    unansweredQid.length + incorrectlyAnsweredQid.length + partialyAnsweredQ.length > 0 &&
+      retake(false);
   }
 
   function handleBtnRetakeAll() {
@@ -138,7 +145,7 @@ export function SummaryPage() {
   function retake(isAll) {
     const payload = isAll
       ? null
-      : [...incorrectlyAnsweredQid, ...partialyAnsweredQ.map(({ id }) => id)];
+      : [...unansweredQid, ...incorrectlyAnsweredQid, ...partialyAnsweredQ.map(({ id }) => id)];
     setIsUserAction(true);
     dispatch(prepairQuizForCopy(payload));
   }
@@ -246,7 +253,9 @@ export function SummaryPage() {
             >
               <Button
                 onClick={handleBtnRetake}
-                className={incorrectCount === 0 ? 'background-disabled' : ''}
+                className={
+                  incorrectCount === 0 && unansweredCount === 0 ? 'background-disabled' : ''
+                }
               >
                 Retake
               </Button>
@@ -301,40 +310,42 @@ export function SummaryPage() {
             </SuccessBar>
           </Tooltip>
         </Header>
-        <Section>
-          {questions.length > 0 &&
-            questions.map((q, qId) => (
-              <QuestionContainer key={q.id} className={isUnanswered(q.id)}>
-                <Highlight>
-                  <QuestionTitle>{q.question}</QuestionTitle>
-                </Highlight>
-                <Ul>
-                  {Object.values(q.answers).map((el, aId) => (
-                    <Li key={el.text}>
-                      {classAnswer(qId, aId) === 'yellow' ? (
-                        <Tooltip
-                          key={aId}
-                          position={checkWidth(`tooltip${q.id}${aId}`)}
-                          text="Yellow colored is the correct answer that wasn't checked"
-                        >
-                          <Highlight key={aId}>
-                            {<p className={classAnswer(qId, aId)}>{el.text}</p>}
+        <LoaderWrapper>
+          <Section>
+            {questions.length > 0 &&
+              questions.map((q, qId) => (
+                <QuestionContainer key={q.id} className={isUnanswered(q.id)}>
+                  <Highlight>
+                    <QuestionTitle>{q.question}</QuestionTitle>
+                  </Highlight>
+                  <Ul>
+                    {Object.values(q.answers).map((el, aId) => (
+                      <Li key={el.text}>
+                        {classAnswer(qId, aId) === 'yellow' ? (
+                          <Tooltip
+                            key={aId}
+                            position={checkWidth(`tooltip${q.id}${aId}`)}
+                            text="Yellow colored is the correct answer that wasn't checked"
+                          >
+                            <Highlight key={aId}>
+                              {<p className={classAnswer(qId, aId)}>{el.text}</p>}
+                            </Highlight>
+                            <Icon id={`tooltip${q.id}${aId}`}>
+                              <AiTwotoneQuestionCircle />
+                            </Icon>
+                          </Tooltip>
+                        ) : (
+                          <Highlight>
+                            <p className={classAnswer(qId, aId)}>{el.text}</p>
                           </Highlight>
-                          <Icon id={`tooltip${q.id}${aId}`}>
-                            <AiTwotoneQuestionCircle />
-                          </Icon>
-                        </Tooltip>
-                      ) : (
-                        <Highlight>
-                          <p className={classAnswer(qId, aId)}>{el.text}</p>
-                        </Highlight>
-                      )}
-                    </Li>
-                  ))}
-                </Ul>
-              </QuestionContainer>
-            ))}
-        </Section>
+                        )}
+                      </Li>
+                    ))}
+                  </Ul>
+                </QuestionContainer>
+              ))}
+          </Section>
+        </LoaderWrapper>
         <Pdf
           user={user}
           quiz={quiz}

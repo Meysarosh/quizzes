@@ -21,8 +21,9 @@ export default userQuizzes.reducer;
 function processUserQuizzes(data) {
   return data.reduce((acc, curr) => {
     const count = curr.submittedAnswers.reduce((acc, answer, idx) => {
-      if (!curr.correctAnswers[idx].length && answer === curr.correctAnswers[idx]) acc += 1;
-      if (curr.correctAnswers[idx].length > 0) {
+      if (typeof curr.correctAnswers[idx] == 'number' && answer === curr.correctAnswers[idx])
+        acc += 1;
+      if (curr.correctAnswers[idx] && curr.correctAnswers[idx].length > 0) {
         let result = true;
         curr.correctAnswers[idx].forEach((num, numIdx) => {
           if (answer && num !== answer[numIdx]) result = false;

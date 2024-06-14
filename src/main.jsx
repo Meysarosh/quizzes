@@ -10,10 +10,10 @@ import { GlobalStyles, ThemeProvider } from './styles';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <GlobalStyles />
     <PersistGate loading={null} persistor={persistor}>
       <Provider store={store}>
         <ThemeProvider>
+          <GlobalStyles />
           <RouterProvider router={router}>
             <App />
           </RouterProvider>

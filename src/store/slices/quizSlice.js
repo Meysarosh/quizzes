@@ -19,6 +19,7 @@ const initialState = {
   },
   currentQuestion: null,
   selectedOptions: [],
+  isPending: false,
 };
 
 export const quizSlice = createSlice({
@@ -61,9 +62,16 @@ export const quizSlice = createSlice({
     builder.addCase(createNewQuiz.fulfilled, (state, action) => {
       state.quiz = action.payload;
     });
+    builder.addCase(updateQuizData.pending, (state) => {
+      state.isPending = true;
+    });
     builder.addCase(updateQuizData.fulfilled, (state, action) => {
+      state.isPending = false;
       state.quiz.submittedAnswers = action.payload.submittedAnswers;
       state.quiz.isFinished = action.payload.isFinished;
+    });
+    builder.addCase(updateQuizData.rejected, (state) => {
+      state.isPending = false;
     });
     builder.addCase(getQuizById.fulfilled, (state, action) => {
       action.payload && (state.quiz = action.payload);

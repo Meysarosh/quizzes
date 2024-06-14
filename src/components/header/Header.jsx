@@ -9,11 +9,11 @@ import {
   SwitchBtn,
   SwitchText,
   LogoutBtn,
-  UserContainer,
+  ProfileContainer,
 } from './Header.styles';
 import { Logo } from '../logo/Logo';
 import { useLocation, useNavigate } from 'react-router';
-import { addLocation, setDarkMode } from '../../store/slices/userSlice';
+import { addLocation, setDarkMode, setIsRedirecting } from '../../store/slices/userSlice';
 import { endQuiz } from '../../store/slices/quizSlice';
 import { resetSummary } from '../../store/slices/summarySlice';
 import { switchHighlight, resetHighlight } from '../../store/slices/highlightSlice';
@@ -38,27 +38,33 @@ export function Header() {
   }, [location.pathname, dispatch]);
 
   useEffect(() => {
+    dispatch(setIsRedirecting(false));
+  }, [location.pathname, dispatch]);
+
+  useEffect(() => {
     history.at(-1) !== history.at(-2) &&
       !history.at(-1).includes('summary') &&
       dispatch(resetHighlight());
   }, [history, dispatch]);
 
   useEffect(() => {
-    history.length > 1 &&
+    location.pathname === history.at(-1) &&
+      history.length > 1 &&
       quiz.id &&
       !history.at(-1).includes('summary') &&
       (history.at(-2) === `/quiz/${quiz.id}` || history.at(-2) === `/summary/${quiz.id}`) &&
       !history.at(-1).includes('quiz') &&
       dispatch(endQuiz());
-  }, [history, quiz.id, dispatch]);
+  }, [history, quiz.id, location.pathname, dispatch]);
 
   useEffect(() => {
-    history.length > 2 &&
+    location.pathname === history.at(-1) &&
+      history.length > 2 &&
       history.at(-1).includes('quiz') &&
       history.at(-2).includes('quiz') &&
       history.at(-1) !== history.at(-2) &&
       dispatch(endQuiz());
-  }, [history, dispatch]);
+  }, [history, location.pathname, dispatch]);
 
   useEffect(() => {
     history.length > 1 &&
@@ -107,14 +113,14 @@ export function Header() {
             <SwitchText>highlight {highlight.isHighlight ? 'on' : 'off'}</SwitchText>
           </Switch>
         )}
-        <UserContainer>
+        <ProfileContainer>
           <LogoutBtn onClick={handleLogout} title="Logout">
             <HiOutlineLogout />
           </LogoutBtn>
           <Avatar onClick={handleClickAvatar} title="Profile">
             <Img src={user.img ? `/src/assets/img/${user.img}` : '/src/assets/img/default.png'} />
           </Avatar>
-        </UserContainer>
+        </ProfileContainer>
       </HeaderContainer>
     )
   );

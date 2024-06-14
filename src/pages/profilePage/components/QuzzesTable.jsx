@@ -24,6 +24,7 @@ import { selectStylesQuizTable } from '../../../styles/selectStylesQuizTable';
 import { AiOutlineClear } from 'react-icons/ai';
 import { FaSortAmountDownAlt, FaSortAmountUpAlt } from 'react-icons/fa';
 import { TbTriangleInvertedFilled, TbTriangleFilled } from 'react-icons/tb';
+import { LoaderWrapper } from '../../../components/loader/LoaderWrapper';
 
 export function QuizzesTable() {
   const tableHead = ['Quiz', 'Progress', 'Enrolled on', 'Status', 'Actions'];
@@ -302,75 +303,83 @@ export function QuizzesTable() {
       </FiltersContainer>
 
       <TableContainer>
-        <Table>
-          <thead>
-            <tr>
-              {tableHead.map((el) => (
-                <Th key={el}>
-                  {el}
-                  {(el === 'Progress' || el === 'Enrolled on') && (
-                    <BtnSort
-                      className={
-                        sortState.active
-                          ? sortState.active === el ||
-                            (sortState.active === 'date' && el === 'Enrolled on')
-                            ? 'red'
+        <LoaderWrapper>
+          <Table>
+            <thead>
+              <tr>
+                {tableHead.map((el) => (
+                  <Th key={el}>
+                    {el}
+                    {(el === 'Progress' || el === 'Enrolled on') && (
+                      <BtnSort
+                        className={
+                          sortState.active
+                            ? sortState.active === el ||
+                              (sortState.active === 'date' && el === 'Enrolled on')
+                              ? 'red'
+                              : ''
                             : ''
-                          : ''
+                        }
+                        onClick={() => sort({ type: el === 'Progress' ? 'Progress' : 'date' })}
+                      >
+                        {el === 'Progress' && sortState.progress !== 'desc' && (
+                          <FaSortAmountUpAlt />
+                        )}
+                        {el === 'Progress' && sortState.progress === 'desc' && (
+                          <FaSortAmountDownAlt />
+                        )}
+                        {el === 'Enrolled on' && sortState.date !== 'desc' && <FaSortAmountUpAlt />}
+                        {el === 'Enrolled on' && sortState.date === 'desc' && (
+                          <FaSortAmountDownAlt />
+                        )}
+                      </BtnSort>
+                    )}
+                  </Th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {tableData.map(
+                ({
+                  quizId,
+                  date,
+                  quizBank,
+                  topic,
+                  questionsQuantity,
+                  correctAnswersQuantity,
+                  isFinished,
+                }) => (
+                  <tr key={quizId}>
+                    <Td>
+                      {quizBank} - {topic}
+                    </Td>
+                    <Td
+                      className={
+                        (correctAnswersQuantity / questionsQuantity) * 100 >= 50 ? 'green' : 'red'
                       }
-                      onClick={() => sort({ type: el === 'Progress' ? 'Progress' : 'date' })}
                     >
-                      {el === 'Progress' && sortState.progress !== 'desc' && <FaSortAmountUpAlt />}
-                      {el === 'Progress' && sortState.progress === 'desc' && (
-                        <FaSortAmountDownAlt />
-                      )}
-                      {el === 'Enrolled on' && sortState.date !== 'desc' && <FaSortAmountUpAlt />}
-                      {el === 'Enrolled on' && sortState.date === 'desc' && <FaSortAmountDownAlt />}
-                    </BtnSort>
-                  )}
-                </Th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.map(
-              ({
-                quizId,
-                date,
-                quizBank,
-                topic,
-                questionsQuantity,
-                correctAnswersQuantity,
-                isFinished,
-              }) => (
-                <tr key={quizId}>
-                  <Td>
-                    {quizBank} - {topic}
-                  </Td>
-                  <Td
-                    className={
-                      (correctAnswersQuantity / questionsQuantity) * 100 >= 50 ? 'green' : 'red'
-                    }
-                  >
-                    {correctAnswersQuantity}/{questionsQuantity}
-                  </Td>
-                  <Td>{new Date(date).toUTCString()}</Td>
-                  <Td>{isFinished ? 'Finished' : 'Unfinished'}</Td>
-                  <Td>
-                    <ButtonsContainer>
-                      <Button onClick={() => handleActionBtn('quiz', quizId)}>
-                        {isFinished ? 'Retake' : 'Resume'}
-                      </Button>
-                      {isFinished && (
-                        <Button onClick={() => handleActionBtn('summary', quizId)}>Summary</Button>
-                      )}
-                    </ButtonsContainer>
-                  </Td>
-                </tr>
-              )
-            )}
-          </tbody>
-        </Table>
+                      {correctAnswersQuantity}/{questionsQuantity}
+                    </Td>
+                    <Td>{new Date(date).toUTCString()}</Td>
+                    <Td>{isFinished ? 'Finished' : 'Unfinished'}</Td>
+                    <Td>
+                      <ButtonsContainer>
+                        <Button onClick={() => handleActionBtn('quiz', quizId)}>
+                          {isFinished ? 'Retake' : 'Resume'}
+                        </Button>
+                        {isFinished && (
+                          <Button onClick={() => handleActionBtn('summary', quizId)}>
+                            Summary
+                          </Button>
+                        )}
+                      </ButtonsContainer>
+                    </Td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          </Table>
+        </LoaderWrapper>
       </TableContainer>
     </>
   );

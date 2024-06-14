@@ -70,11 +70,10 @@ const SwitchText = styled.p`
   font-weight: 600;
 `;
 
-const UserContainer = styled.div`
+const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
   column-gap: 0.5rem;
-  /* justify-content: center; */
 `;
 
 const LogoutBtn = styled.button`
@@ -100,5 +99,5 @@ export {
   SwitchBtn,
   SwitchText,
   LogoutBtn,
-  UserContainer,
+  ProfileContainer,
 };

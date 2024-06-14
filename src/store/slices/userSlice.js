@@ -1,5 +1,17 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { createNewUser, login, updateUserData, updateQuizData, getQuizById } from '../actions';
+import { createSlice, isPending, isFulfilled, isRejected } from '@reduxjs/toolkit';
+import {
+  createNewUser,
+  login,
+  updateUserData,
+  updateQuizData,
+  getQuizById,
+  getPaginatedTopics,
+  getAvailableQuestions,
+  getQuestion,
+  getQuestionById,
+  getQuestionsForSummary,
+  getUserQuizzes,
+} from '../actions';
 
 const initialState = {
   user: {},
@@ -8,6 +20,9 @@ const initialState = {
   history: [],
   lastActivity: null,
   darkMode: false,
+  isLoading: false,
+  isPaginating: false,
+  isRedirecting: false,
 };
 
 export const userSlice = createSlice({
@@ -28,6 +43,9 @@ export const userSlice = createSlice({
     resetUserMessage(state) {
       state.error = null;
       state.message = null;
+    },
+    setIsRedirecting(state, action) {
+      state.isRedirecting = action.payload;
     },
     setDarkMode(state) {
       state.darkMode = !state.darkMode;
@@ -57,15 +75,72 @@ export const userSlice = createSlice({
     builder.addCase(getQuizById.fulfilled, (state, action) => {
       !action.payload && (state.error = 'Quiz Not Found');
     });
+    builder.addCase(getPaginatedTopics.pending, (state) => {
+      state.isPaginating = true;
+    });
+    builder.addCase(getPaginatedTopics.fulfilled, (state) => {
+      state.isPaginating = false;
+    });
+    builder.addCase(getPaginatedTopics.rejected, (state) => {
+      state.isPaginating = false;
+    });
     builder.addMatcher(
       (action) => action.type.endsWith('/rejected'),
       (state, action) => {
         state.error = action.payload;
       }
     );
+    builder.addMatcher(
+      isPending(
+        getPaginatedTopics,
+        getAvailableQuestions,
+        getQuestion,
+        getQuestionById,
+        getQuestionsForSummary,
+        getQuizById,
+        getUserQuizzes
+      ),
+      (state) => {
+        state.isLoading = true;
+      }
+    );
+    builder.addMatcher(
+      isFulfilled(
+        getPaginatedTopics,
+        getAvailableQuestions,
+        getQuestion,
+        getQuestionById,
+        getQuestionsForSummary,
+        getQuizById,
+        getUserQuizzes
+      ),
+      (state) => {
+        !state.isRedirecting && (state.isLoading = false);
+      }
+    );
+    builder.addMatcher(
+      isRejected(
+        getPaginatedTopics,
+        getAvailableQuestions,
+        getQuestion,
+        getQuestionById,
+        getQuestionsForSummary,
+        getQuizById,
+        getUserQuizzes
+      ),
+      (state) => {
+        !state.isRedirecting && (state.isLoading = false);
+      }
+    );
   },
 });
 
 export default userSlice.reducer;
-export const { addLocation, setUserMessage, setUserError, resetUserMessage, setDarkMode } =
-  userSlice.actions;
+export const {
+  addLocation,
+  setUserMessage,
+  setUserError,
+  resetUserMessage,
+  setDarkMode,
+  setIsRedirecting,
+} = userSlice.actions;
