@@ -6,7 +6,7 @@ export function Loader() {
   const { isLoading } = useSelector((state) => state.user);
 
   return (
-    <LoaderContainer className={isLoading ? 'rotating' : ''}>
+    <LoaderContainer data-testid="loader" className={isLoading ? 'rotating' : ''}>
       <FaArrowsRotate />
     </LoaderContainer>
   );

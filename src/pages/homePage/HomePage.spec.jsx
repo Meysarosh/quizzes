@@ -217,7 +217,7 @@ describe('Home Page', () => {
     await act(() => user.click(paginateBtn));
 
     expect(await findByText(/Test topic 9/i)).toBeInTheDocument();
-    expect(paginateBtn.parentElement).toHaveClass('hidden');
+    expect(paginateBtn).toHaveClass('hidden');
   });
 
   it('When scrolling down button BackToTopButton should be visible, after scroll back to top it shold be hidden', async () => {

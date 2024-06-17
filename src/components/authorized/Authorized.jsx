@@ -39,7 +39,7 @@ export function Authorized({ children }) {
     if (token) {
       const refreshTimeout = setTimeout(() => {
         dispatch(login({ email: user.email, password: tokenParse(refreshToken) }));
-      }, inactivityTime);
+      }, inactivityTime + 1000);
 
       return () => clearTimeout(refreshTimeout);
     }

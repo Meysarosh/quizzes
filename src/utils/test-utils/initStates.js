@@ -47,6 +47,9 @@ export const initialState = {
     history: ['/home'],
     lastActivity: null,
     darkMode: false,
+    isLoading: false,
+    isPaginating: false,
+    isRedirecting: false,
   },
   filters: {
     quizBanks: [],

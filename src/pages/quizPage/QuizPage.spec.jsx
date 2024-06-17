@@ -502,15 +502,12 @@ describe('Quiz Page', () => {
     await act(() => user.click(answer2));
   });
 
-  it('clicking discard on rendered modal window should end quiz', async () => {
+  it('clicking discard on rendered modal window should navigate to home page', async () => {
     const user = userEvent.setup();
 
-    const { store, findByText, findByRole } = renderWithProviders(
-      <RouterProvider router={router2} />,
-      {
-        preloadedState: initialStateNewQuiz,
-      }
-    );
+    const { findByText, findByRole } = renderWithProviders(<RouterProvider router={router2} />, {
+      preloadedState: initialStateNewQuiz,
+    });
 
     const answer1 = await findByText('It returns an array with two elements');
     const answer2 = await findByText('The first element is the current state');
@@ -519,13 +516,15 @@ describe('Quiz Page', () => {
     expect(answer2).toBeInTheDocument();
 
     const discardBtn = await findByRole('button', { name: /Discard/ });
-    await act(() => user.click(discardBtn));
+
+    await user.click(discardBtn);
 
     const discardBtn2 = (await findByRole('button', { name: /Cancel/ })).nextSibling;
     expect(discardBtn2).toBeInTheDocument();
 
     await act(() => user.click(discardBtn2));
 
-    await waitFor(() => expect(store.getState().quiz.quiz.id).toStrictEqual(undefined));
+    const homePageTitle = await findByText('Quizzes');
+    expect(homePageTitle).toBeInTheDocument();
   });
 });
