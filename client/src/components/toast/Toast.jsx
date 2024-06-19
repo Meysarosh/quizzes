@@ -13,7 +13,6 @@ export function Toast() {
   useEffect(() => {
     message && notify('success', message);
     error && notify('error', error);
-    !token && notify('error', 'Please login to comtinue!');
 
     const timeout = setTimeout(() => {
       (message || error) && dispatch(resetUserMessage());

@@ -15,6 +15,7 @@
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },
+  "proxy": "http://localhost:5173/",
   "lint-staged": {
     "*.jsx": "eslint"
   },
@@ -22,11 +23,11 @@
     "styled-components": "^5"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.2.4",
     "@hookform/resolvers": "^3.3.4",
     "@reduxjs/toolkit": "^2.2.1",
     "axios": "^1.6.8",
     "eslint-plugin-vitest": "^0.5.4",
-    "history": "^5.3.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "react": "^18.2.0",
@@ -38,7 +39,6 @@
     "react-router-dom": "^6.22.3",
     "react-select": "^5.8.0",
     "react-toastify": "^10.0.5",
-    "redux-first-history": "^5.2.0",
     "redux-persist": "^6.0.0",
     "styled-components": "^6.1.8",
     "yup": "^1.4.0"

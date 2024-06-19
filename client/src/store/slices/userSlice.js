@@ -23,6 +23,8 @@ const initialState = {
   isLoading: false,
   isPaginating: false,
   isRedirecting: false,
+  isAuth0: false,
+  isRefreshing: false,
 };
 
 export const userSlice = createSlice({
@@ -50,6 +52,12 @@ export const userSlice = createSlice({
     setDarkMode(state) {
       state.darkMode = !state.darkMode;
     },
+    setIsAuth0(state) {
+      state.isAuth0 = !state.isAuth0;
+    },
+    setIsRefreshing(state) {
+      state.isRefreshing = !state.isRefreshing;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(createNewUser.fulfilled, (state, action) => {
@@ -58,7 +66,8 @@ export const userSlice = createSlice({
     });
     builder.addCase(login.fulfilled, (state, action) => {
       state.user = action.payload.user;
-      state.message = `Welcome back, ${action.payload.user.fullname.split(' ')[0]}!`;
+      !state.isRefreshing &&
+        (state.message = `Welcome back, ${action.payload.user.fullname.split(' ')[0]}!`);
     });
     builder.addCase(login.rejected, (state) => {
       state.user = null;
@@ -87,7 +96,7 @@ export const userSlice = createSlice({
     builder.addMatcher(
       (action) => action.type.endsWith('/rejected'),
       (state, action) => {
-        state.error = action.payload;
+        !state.isAuth0 && (state.error = action.payload);
       }
     );
     builder.addMatcher(
@@ -143,4 +152,6 @@ export const {
   resetUserMessage,
   setDarkMode,
   setIsRedirecting,
+  setIsAuth0,
+  setIsRefreshing,
 } = userSlice.actions;
