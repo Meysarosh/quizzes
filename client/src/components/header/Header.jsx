@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   HeaderContainer,
   Avatar,
@@ -13,7 +13,12 @@ import {
 } from './Header.styles';
 import { Logo } from '../logo/Logo';
 import { useLocation, useNavigate } from 'react-router';
-import { addLocation, setDarkMode, setIsRedirecting } from '../../store/slices/userSlice';
+import {
+  addLocation,
+  setDarkMode,
+  setIsAuth0,
+  setIsRedirecting,
+} from '../../store/slices/userSlice';
 import { endQuiz } from '../../store/slices/quizSlice';
 import { resetSummary } from '../../store/slices/summarySlice';
 import { switchHighlight, resetHighlight } from '../../store/slices/highlightSlice';
@@ -21,17 +26,27 @@ import { BsMoonStars, BsSun } from 'react-icons/bs';
 import { isHighlightAvailable } from '../highlight/highlightPages';
 import { Tooltip } from '../tooltip';
 import { HiOutlineLogout } from 'react-icons/hi';
-import { logout } from '../../store/slices/tokenSlice';
+import { logout as logoutJSA } from '../../store/slices/tokenSlice';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export function Header() {
+  const { logout } = useAuth0();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const { token } = useSelector((state) => state.token);
-  const { user, history, darkMode } = useSelector((state) => state.user);
+  const { user, history, darkMode, isAuth0 } = useSelector((state) => state.user);
   const { quiz } = useSelector((state) => state.quiz);
   const { questions } = useSelector((state) => state.summary);
   const { highlight } = useSelector((state) => state.highlight);
+
+  const [userImg, setUserImg] = useState(null);
+
+  useEffect(() => {
+    user?.img
+      ? setUserImg(user.img.includes('http') ? user.img : `/src/assets/img/${user.img}`)
+      : setUserImg('/src/assets/img/default.png');
+  }, [user]);
 
   useEffect(() => {
     dispatch(addLocation(location.pathname));
@@ -91,8 +106,12 @@ export function Header() {
     dispatch(setDarkMode());
   }
 
-  function handleLogout() {
-    dispatch(logout());
+  async function handleLogout() {
+    if (isAuth0) {
+      dispatch(setIsAuth0());
+    }
+    dispatch(logoutJSA());
+    logout();
   }
 
   return (
@@ -118,7 +137,7 @@ export function Header() {
             <HiOutlineLogout />
           </LogoutBtn>
           <Avatar onClick={handleClickAvatar} title="Profile">
-            <Img src={user.img ? `/src/assets/img/${user.img}` : '/src/assets/img/default.png'} />
+            <Img src={userImg} />
           </Avatar>
         </ProfileContainer>
       </HeaderContainer>

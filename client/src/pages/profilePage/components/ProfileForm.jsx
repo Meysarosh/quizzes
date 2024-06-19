@@ -15,6 +15,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import { updateUserData } from '../../../store/actions';
+import { uploadFile } from '../../../utils/uploadFile';
+import { setUserError } from '../../../store/slices/userSlice';
 
 export function ProfileForm() {
   const dispatch = useDispatch();
@@ -26,22 +28,46 @@ export function ProfileForm() {
   } = useForm({ resolver: yupResolver(schema) });
 
   const addFileRef = useRef();
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState({ preview: '', data: '' });
 
   useEffect(() => {
     user.img && setFile(user.img);
   }, [user]);
 
   function handleChange(e) {
-    setFile(e.target.files[0].name);
+    const img = {
+      preview: URL.createObjectURL(e.target.files[0]),
+      data: e.target.files[0],
+    };
+    setFile(img);
   }
 
   function addUserImage() {
     addFileRef && addFileRef.current.click();
   }
 
-  function onSubmit({ fullname, username, email, password, dateofbirth }) {
-    dispatch(updateUserData({ fullname, username, email, password, dateofbirth, img: file }));
+  async function onSubmit({ fullname, username, email, password, dateofbirth }) {
+    let isFileUploaded = false;
+    if (file.data) {
+      let formData = new FormData();
+      formData.append('file', file.data);
+
+      const response = await uploadFile(formData, `user-img${user.id}.png`);
+      response.ok ? (isFileUploaded = true) : dispatch(setUserError(response));
+    }
+
+    dispatch(
+      updateUserData({
+        fullname,
+        username,
+        email,
+        password,
+        dateofbirth,
+        img: file.data && isFileUploaded ? `user-img${user.id}.png` : user.img ? user.img : null,
+      })
+    );
+
+    setFile({ preview: '', data: '' });
   }
 
   return (
@@ -49,7 +75,15 @@ export function ProfileForm() {
       <Avatar>
         <ImgContainer>
           <Img
-            src={file ? `/src/assets/img/${file}` : '/src/assets/img/default.png'}
+            src={
+              file.preview
+                ? `${file.preview}`
+                : user.img
+                  ? user.img.includes('http')
+                    ? user.img
+                    : `/src/assets/img/${user.img}`
+                  : '/src/assets/img/default.png'
+            }
             alt="profile photo"
           ></Img>
         </ImgContainer>
